@@ -5,12 +5,9 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dpas.Core", "dpas.Core\dpas.Core.xproj", "{03334850-FE3B-494B-8049-28DA0A5372A6}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F8534886-A951-44CF-9147-AF43383B799E}"
-	ProjectSection(SolutionItems) = preProject
-		dpas.Net\dpas.Net.xproj = dpas.Net\dpas.Net.xproj
-	EndProjectSection
-EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dpas.Net", "dpas.Net\dpas.Net.xproj", "{4FC215E9-4F90-4791-83BC-45D5F63C568C}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dpas.Console", "dpas.Console\dpas.Console.xproj", "{98B1FDB8-6274-46E2-9FDA-CF7C7A9A7516}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +23,10 @@ Global
 		{4FC215E9-4F90-4791-83BC-45D5F63C568C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4FC215E9-4F90-4791-83BC-45D5F63C568C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4FC215E9-4F90-4791-83BC-45D5F63C568C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98B1FDB8-6274-46E2-9FDA-CF7C7A9A7516}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98B1FDB8-6274-46E2-9FDA-CF7C7A9A7516}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98B1FDB8-6274-46E2-9FDA-CF7C7A9A7516}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98B1FDB8-6274-46E2-9FDA-CF7C7A9A7516}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

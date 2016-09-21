@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using System.Collections.Generic;
-using dpas.Core.IO.Debug;
+//using dpas.Core.IO.Debug;
 
 namespace dpas.Net.Http
 {
@@ -45,7 +45,7 @@ namespace dpas.Net.Http
             else
                 filePath = string.Concat(pathSources, Request.Path, "/", Request.File);
 
-            BaseLog.WriteToLog(string.Format(filePath));
+            //BaseLog.WriteToLog(string.Format(filePath));
 
             if (!File.Exists(filePath))
             {
