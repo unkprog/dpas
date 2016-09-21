@@ -48,8 +48,7 @@ namespace dpas.Console.TcpSockets
 
         public static void RunCommandLine(string[] args)
         {
-            ServerAndClient test = new ServerAndClient();
-            test.Run();
+            new ServerAndClient().Run();
         }
 
         public void Run()
@@ -106,6 +105,7 @@ namespace dpas.Console.TcpSockets
         {
 
         }
+
 
 
         private void Help()
