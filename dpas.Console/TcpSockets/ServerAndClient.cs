@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using dpas.Core.IO.Debug;
+using dpas.Net;
 
 namespace dpas.Console.TcpSockets
 {
@@ -48,6 +46,7 @@ namespace dpas.Console.TcpSockets
 
         public static void RunCommandLine(string[] args)
         {
+            LogConsole.Setup();
             new ServerAndClient().Run();
         }
 
@@ -75,19 +74,39 @@ namespace dpas.Console.TcpSockets
         }
 
         bool isExit = false;
-        private void Exit()
+        private async void Exit()
         {
+            if (server != null)
+            {
+                bool stopped = await server.StopAsync();
+                server.Dispose();
+                server = null;
+            }
             isExit = true;
         }
 
+        private TcpServer server;
         private void StartServer()
         {
-
+            System.Console.WriteLine("Command begin: Start server");
+            if (server == null)
+            {
+                server = new TcpServer();
+                server.Settings.IsLogging = true;
+            }
+            var task = server.StartAsync();
+            System.Console.WriteLine("Command end: Start server");
         }
 
         private void StopServer()
         {
-
+            System.Console.WriteLine("Command begin: Stop server");
+            if (server == null)
+            {
+                System.Console.WriteLine("Server not started");
+            }
+            var task = server.StopAsync();
+            System.Console.WriteLine("Command end: Stop server");
         }
 
 

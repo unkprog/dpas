@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using dpas.Core;
+using dpas.Core.IO.Debug;
 //using dpas.Core.IO.Debug;
 
 namespace dpas.Net
@@ -33,7 +34,7 @@ namespace dpas.Net
 
         public virtual void WriteToLog(string data)
         {
-            //BaseLog.WriteToLog(data);
+            BaseLog.WriteToLog(data);
         }
 
         // An IPEndPoint contains all of the information about a server or client

@@ -36,10 +36,10 @@ namespace dpas.Net
 
         protected virtual void ProcessError(TcpSocketAsyncEventArgs e)
         {
-            if (e.LastOperation == SocketAsyncOperation.Receive)
-            {
+            //if (e.LastOperation == SocketAsyncOperation.Receive)
+            //{
                 poolEventArgs.Push(e);
-            }
+            //}
 #if DEBUG
             if (isLogging)
                 WriteToLog("ProcessError(TcpSocketAsyncEventArgs e): CountPool = " + poolEventArgs.CountEventsLock);

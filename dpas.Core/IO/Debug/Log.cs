@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace dpas.Core.IO.Debug
 {
@@ -11,7 +7,7 @@ namespace dpas.Core.IO.Debug
         void Write(string data);
     }
 
-    public class LogBase : ILog
+    public class BaseLog : ILog
     {
         internal static ILog log;
 
@@ -39,7 +35,7 @@ namespace dpas.Core.IO.Debug
 
         public static void Setup()
         {
-            LogBase.log = new LogConsole();
+            BaseLog.log = new LogConsole();
         }
     }
 
