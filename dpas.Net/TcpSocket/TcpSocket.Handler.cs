@@ -51,19 +51,16 @@ namespace dpas.Net
         // This method processes the read socket once it has a transaction
         protected virtual void ProcessReceive(TcpSocketAsyncEventArgs e)
         {
-            // Если количество переданных байтов 0, то соединение было закрыто
-            if (!(e.BytesTransferred > 0))
+            // Если количество переданных байтов 0 или принимающий сокет удален, то закроем соединение
+            if (e.BytesTransferred == 0 || this.socket == null)
             {
 #if DEBUG
                 if (isLogging)
                     WriteToLog("ProcessReceive: Connection closed.");
 #endif
                 if (e.Socket.Connected)
-                {
                     e.Socket.Shutdown(SocketShutdown.Both);
-                    e.Socket.Dispose();
-                }
-                //e.Socket = null;
+                e.Socket.Dispose();
                 poolEventArgs.Push(e);
                 return;
             }
@@ -77,14 +74,8 @@ namespace dpas.Net
 
             // Прочитаны все данные, можем их теперь обработать
             if (e.Socket.Available == 0)
-            {
                 OnReceiveHandle(e);
-                //poolEventArgs.Push(e);
-                //e.Socket.Shutdown(SocketShutdown.Both);
-                //e.Socket.Dispose();
-                //poolEventArgs.Push(e);
-            }
-            //else // иначе продолжаем читать
+            // и продолжаем читать дальше
             if (!e.Socket.ReceiveAsync(e))
                 ProcessReceive(e);
         }
@@ -97,7 +88,6 @@ namespace dpas.Net
                 WriteToLog(string.Concat("ProcessSend: Send ", e.BytesTransferred, " bytes"));
 #endif
             OnSendHandle(e);
-            //poolEventArgs.Push(e);
         }
 
         protected virtual void ProcessOther(TcpSocketAsyncEventArgs e) { }
