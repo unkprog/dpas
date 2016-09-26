@@ -5,7 +5,7 @@ namespace dpas.Net
     public partial class TcpSocket
     {
 
-        // This method is called when there is no more data to read from a connected client
+        // Обработчик событий сокета
         protected void OnSocketAsyncEventArgsCompleted(object sender, SocketAsyncEventArgs e)
         {
             TcpSocketAsyncEventArgs ee = (TcpSocketAsyncEventArgs)e;
@@ -20,8 +20,7 @@ namespace dpas.Net
                 ProcessError(ee);
                 return;
             }
-            // Determine which type of operation just completed and call the associated handler.
-            // We are only processing receives right now on this server.
+            // Определяем, какой тип операции был завершен и вызываем соответствующий обработчик
             switch (e.LastOperation)
             {
                 case SocketAsyncOperation.Accept    : this.ProcessAccept(ee); break;
@@ -36,19 +35,19 @@ namespace dpas.Net
 
         protected virtual void ProcessError(TcpSocketAsyncEventArgs e)
         {
-            //if (e.LastOperation == SocketAsyncOperation.Receive)
-            //{
-                poolEventArgs.Push(e);
-            //}
+            // В случае ошиьки всегда возвращаем в пул объект события
+            poolEventArgs.Push(e);
 #if DEBUG
             if (isLogging)
                 WriteToLog("ProcessError(TcpSocketAsyncEventArgs e): CountPool = " + poolEventArgs.CountEventsLock);
 #endif
         }
+
         protected virtual void ProcessAccept(TcpSocketAsyncEventArgs e) { }
         protected virtual void ProcessConnect(TcpSocketAsyncEventArgs e) { }
         protected virtual void ProcessDisconnect(TcpSocketAsyncEventArgs e) { }
-        // This method processes the read socket once it has a transaction
+       
+        // Обработка чтения данных из сокета
         protected virtual void ProcessReceive(TcpSocketAsyncEventArgs e)
         {
             // Если количество переданных байтов 0 или принимающий сокет удален, то закроем соединение
@@ -80,7 +79,7 @@ namespace dpas.Net
                 ProcessReceive(e);
         }
 
-        // Called when a SendAsync operation completes
+        // Обработка после отправки данных
         protected virtual void ProcessSend(TcpSocketAsyncEventArgs e)
         {
 #if DEBUG

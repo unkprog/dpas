@@ -40,7 +40,7 @@ namespace dpas.Console.TcpSockets
                 default: return Command.Undefined;
             }
 
-            return Command.Undefined;
+            //return Command.Undefined;
         }
 
         public static void RunCommandLine(string[] args)
