@@ -7,6 +7,16 @@ namespace dpas.Core.IO
 {
     public static class AssemblyExt
     {
+        public static string GetCurrentDirectory()
+        {
+            return GetCurrentDirectory(Assembly.GetEntryAssembly());
+        }
+
+        public static string GetCurrentDirectory(Assembly assembly)
+        {
+            return Path.GetDirectoryName(assembly.Location);
+        }
+
         private static Dictionary<string, Assembly> _loadedAssemblies = new Dictionary<string, Assembly>();
 
         public static Assembly LoadFromFile(string assemblyPath)

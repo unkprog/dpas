@@ -5,75 +5,32 @@ namespace dpas.Console.TcpSockets
 {
     public class ServerAndClient
     {
-        public enum Command
-        {
-            Exit,
-            Start,
-            Stop,
-            Connect,
-            Disconnect,
-            Send,
-            Help,
-            Undefined
-        }
-
-
-        // Parse a command from a string
-        public static Command ParseCommand(string command, out string paramstring)
-        {
-            string cmd, commandstring = command.Trim();
-            int indexcommand = commandstring.IndexOf(' ');
-
-            cmd = indexcommand > -1 ? commandstring.Substring(0, indexcommand).ToLower() : commandstring.ToLower();
-            paramstring = indexcommand > -1 && commandstring.Length > indexcommand ? commandstring.Substring(indexcommand+ 1, commandstring.Length - indexcommand - 1) : string.Empty;
-
-            switch (cmd)
-            {
-                case "exit": return Command.Exit;
-                case "start": return Command.Start;
-                case "stop": return Command.Stop;
-                case "connect": return Command.Connect;
-                case "disconnect": return Command.Disconnect;
-                case "send": return Command.Send;
-                case "?":
-                case "help": return Command.Help;
-                default: return Command.Undefined;
-            }
-
-            //return Command.Undefined;
-        }
+       
 
         public static void RunCommandLine(string[] args)
         {
-            LogConsole.Setup();
             new ServerAndClient().Run();
         }
 
         public void Run()
-        { 
-           
-            while (!isExit)
-            {
-                string userinput = System.Console.ReadLine();
-                if (!string.IsNullOrEmpty(userinput))
-                {
-                    string userparams = string.Empty;
-                    switch (ParseCommand(userinput, out userparams))
-                    {
-                        case Command.Exit: Exit(); break;
-                        case Command.Start: StartServer(); break;
-                        case Command.Stop: StopServer(); break;
-                        case Command.Connect: ConnectClient(); break;
-                        case Command.Disconnect: DisconnectClient(); break;
-                        case Command.Send: SendToServer(userparams); break;
-                        case Command.Help: Help(); break;
-                    }
-                }
-            }
+        {
 
+            new ConsoleHandler().Input((command, userparams) =>
+            {
+                switch (command)
+                {
+                    case CommandParser.Command.Exit      : Exit();                   return true;
+                    case CommandParser.Command.Start     : StartServer();            return true;
+                    case CommandParser.Command.Stop      : StopServer();             return true;
+                    case CommandParser.Command.Connect   : ConnectClient();          return true;
+                    case CommandParser.Command.Disconnect: DisconnectClient();       return true;
+                    case CommandParser.Command.Send      : SendToServer(userparams); return true;
+                    case CommandParser.Command.Help      : Help();                   return true;
+                }
+                return false;
+            });
         }
 
-        bool isExit = false;
         private async void Exit()
         {
             if (server != null)
@@ -82,7 +39,6 @@ namespace dpas.Console.TcpSockets
                 server.Dispose();
                 server = null;
             }
-            isExit = true;
         }
 
         private TcpServer server;
@@ -158,7 +114,6 @@ namespace dpas.Console.TcpSockets
             System.Console.WriteLine("disconnect     = Disconnect client from the server");
             System.Console.WriteLine("send <message> = Send a message to the server");
             System.Console.WriteLine("exit           = Stop the server and quit the program");
-
         }
     }
 }

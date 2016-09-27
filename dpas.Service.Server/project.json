@@ -1,7 +1,9 @@
-﻿{
+{
   "version": "1.0.0-*",
 
   "dependencies": {
+    "dpas.Core": "1.0.0-*",
+    "dpas.Net": "1.0.0-*",
     "NETStandard.Library": "1.6.0"
   },
 
