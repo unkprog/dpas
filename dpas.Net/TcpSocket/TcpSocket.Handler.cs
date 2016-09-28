@@ -6,6 +6,11 @@ namespace dpas.Net
     {
 
         // Обработчик событий сокета
+        /// <summary>
+        /// Асинхронный обработчик событий сокета
+        /// </summary>
+        /// <param name="sender">Объект, для которого произошло событие</param>
+        /// <param name="e">Параметр с текущим состоянием сокета</param>
         protected void OnSocketAsyncEventArgsCompleted(object sender, SocketAsyncEventArgs e)
         {
             TcpSocketAsyncEventArgs ee = (TcpSocketAsyncEventArgs)e;
@@ -33,9 +38,13 @@ namespace dpas.Net
             }
         }
 
+        /// <summary>
+        /// Обработка асинхронного события при возникновении ошибки
+        /// </summary>
+        /// <param name="e">Параметр с текущим состоянием сокета</param>
         protected virtual void ProcessError(TcpSocketAsyncEventArgs e)
         {
-            // В случае ошиьки всегда возвращаем в пул объект события
+            // В случае ошибки всегда возвращаем в пул объект события
             poolEventArgs.Push(e);
 #if DEBUG
             if (isLogging)
@@ -43,11 +52,29 @@ namespace dpas.Net
 #endif
         }
 
+        /// <summary>
+        /// Обработка асинхронного события при получении нового подключения
+        /// </summary>
+        /// <param name="e">Параметр с текущим состоянием сокета</param>
         protected virtual void ProcessAccept(TcpSocketAsyncEventArgs e) { }
+
+        /// <summary>
+        /// Обработка асинхронного события при завершении операции подключения к серверу
+        /// </summary>
+        /// <param name="e">Параметр с текущим состоянием сокета</param>
         protected virtual void ProcessConnect(TcpSocketAsyncEventArgs e) { }
+
+        /// <summary>
+        /// Обработка асинхронного события при завершении операции отключения от сервера
+        /// </summary>
+        /// <param name="e">Параметр с текущим состоянием сокета</param>
         protected virtual void ProcessDisconnect(TcpSocketAsyncEventArgs e) { }
-       
-        // Обработка чтения данных из сокета
+
+
+        /// <summary>
+        /// Обработка события чтения данных из сокета
+        /// </summary>
+        /// <param name="e">Параметр с текущим состоянием сокета</param>
         protected virtual void ProcessReceive(TcpSocketAsyncEventArgs e)
         {
             // Если количество переданных байтов 0 или принимающий сокет удален, то закроем соединение
@@ -79,7 +106,10 @@ namespace dpas.Net
                 ProcessReceive(e);
         }
 
-        // Обработка после отправки данных
+        /// <summary>
+        /// Обработка асинхронного события при завершении операции отправки данных серверу
+        /// </summary>
+        /// <param name="e">Параметр с текущим состоянием сокета</param>
         protected virtual void ProcessSend(TcpSocketAsyncEventArgs e)
         {
 #if DEBUG
@@ -89,6 +119,10 @@ namespace dpas.Net
             OnSendHandle(e);
         }
 
+        /// <summary>
+        /// Обработка асинхронного события, для которого не назначен обработчик
+        /// </summary>
+        /// <param name="e">Параметр с текущим состоянием сокета</param>
         protected virtual void ProcessOther(TcpSocketAsyncEventArgs e) { }
 
 

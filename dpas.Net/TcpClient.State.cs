@@ -12,16 +12,19 @@
         }
 
         /// <summary>
-        /// Флаг индикации, что сервер запущен
+        /// Флаг индикации, что сокет подключен
         /// </summary>
         public bool IsConnected { get { return State == TcpClentState.Connect; } }
 
         /// <summary>
-        /// Текущий статус сервера
+        /// Текущий статус сокета
         /// </summary>
         public TcpClentState State { get; private set; } = TcpClentState.Unknown;
 
-
+        /// <summary>
+        /// Установка статуса сокета
+        /// </summary>
+        /// <param name="state">Устанавливаемый статус</param>
         private void SetState(TcpClentState state)
         {
             State = state;
@@ -29,6 +32,10 @@
                 WriteToLog(string.Concat("State=", State));
         }
 
+        /// <summary>
+        /// Процедура записи в лог информационного сообщения
+        /// </summary>
+        /// <param name="data">Сообщение</param>
         public override void WriteToLog(string data)
         {
             string logData = socket == null ? string.Empty : string.Concat("(", socket.AddressFamily, ", ", endpoint, ")");

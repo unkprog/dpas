@@ -18,6 +18,10 @@ namespace dpas.Net
                 return false;
         }
 
+        /// <summary>
+        /// Проверка при отключении от сервера
+        /// </summary>
+        /// <returns>True - в случае если подключены к серверу</returns>
         private bool CheckDisconnect()
         {
             if (this.State != TcpClentState.Connect)
@@ -38,7 +42,6 @@ namespace dpas.Net
         {
             try
             {
-                //DisposePoolHandlers();
                 DisposeSocket();
                 SetState(TcpClentState.Disconnect);
             }
@@ -51,12 +54,17 @@ namespace dpas.Net
         }
 
       
-
+        /// <summary>
+        /// Освобождение ресурсов
+        /// </summary>
+        /// <param name="disposing"></param>
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
+                Disconnect();
                 OnConnect = null;
+                OnDisconnect = null;
             }
             base.Dispose(disposing);
         }
@@ -73,6 +81,10 @@ namespace dpas.Net
                 return false;
         }
 
+        /// <summary>
+        /// Проверка при подключении к серверу
+        /// </summary>
+        /// <returns>True - в случае если не подключены к серверу</returns>
         private bool CheckConnect()
         {
             if (!(this.State ==  TcpClentState.Unknown || this.State == TcpClentState.Disconnect))

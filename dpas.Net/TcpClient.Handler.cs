@@ -5,18 +5,27 @@ namespace dpas.Net
     public partial class TcpClient
     {
         public event SocketHandler OnConnect;
+        public event SocketHandler OnDisconnect;
 
+        /// <summary>
+        /// Обработка асинхронного события при возникновении ошибки
+        /// </summary>
+        /// <param name="e">Параметр с текущим состоянием сокета</param>
         protected override void ProcessError(TcpSocketAsyncEventArgs e)
         {
 #if DEBUG
             if (isLogging)
                 WriteToLog("ProcessError");
 #endif
-            if (e.LastOperation == SocketAsyncOperation.Connect) //e.SocketError == SocketError.ConnectionReset) // if (e.LastOperation == SocketAsyncOperation.Connect)
+            if (e.LastOperation == SocketAsyncOperation.Connect)
                 Disconnect();
             base.ProcessError(e);
         }
 
+        /// <summary>
+        /// Обработка асинхронного события, для которого не назначен обработчик
+        /// </summary>
+        /// <param name="e">Параметр с текущим состоянием сокета</param>
         protected override void ProcessOther(TcpSocketAsyncEventArgs e)
         {
 #if DEBUG
@@ -28,9 +37,9 @@ namespace dpas.Net
         }
 
         /// <summary>
-        /// Этот метод вызывается при завершении асинхронной операции подключения к серверу
+        /// Обработка асинхронного события при завершении операции подключения к серверу
         /// </summary>
-        /// <param name="AsyncEventArgs"></param>
+        /// <param name="e">Параметр с текущим состоянием сокета</param>
         protected override void ProcessConnect(TcpSocketAsyncEventArgs e)
         {
 #if DEBUG
@@ -47,9 +56,9 @@ namespace dpas.Net
         }
 
         /// <summary>
-        /// Этот метод вызывается при завершении асинхронной операции отключения от сервера
+        /// Обработка асинхронного события при завершении операции отключения от сервера
         /// </summary>
-        /// <param name="AsyncEventArgs"></param>
+        /// <param name="e">Параметр с текущим состоянием сокета</param>
         protected override void ProcessDisconnect(TcpSocketAsyncEventArgs e)
         {
 #if DEBUG
@@ -57,31 +66,31 @@ namespace dpas.Net
                 WriteToLog("ProcessDisconnect");
 #endif
             base.ProcessDisconnect(e);
+
+            if (OnDisconnect != null)
+                OnDisconnect(this, e);
+
             poolEventArgs.Push(e);
         }
 
-        protected override void ProcessReceive(TcpSocketAsyncEventArgs e)
-        {
-#if DEBUG
-            if (isLogging)
-                WriteToLog("ProcessReceive");
-#endif
-            base.ProcessReceive(e);
-        }
+        // Используется только для отладки
+        //        protected override void ProcessReceive(TcpSocketAsyncEventArgs e)
+        //        {
+        //#if DEBUG
+        //            if (isLogging)
+        //                WriteToLog("ProcessReceive");
+        //#endif
+        //            base.ProcessReceive(e);
+        //        }
 
+        /// <summary>
+        /// Обработка события при завершении асинхронной операции отправки данных серверу
+        /// </summary>
+        /// <param name="e">Параметр с текущим состоянием сокета</param>
         protected override void ProcessSend(TcpSocketAsyncEventArgs e)
         {
-#if DEBUG
-            if (isLogging)
-                WriteToLog("ProcessSend");
-#endif
             base.ProcessSend(e);
-
-#if DEBUG
-            if (isLogging)
-                WriteToLog("ProcessSend->e.Socket.ReceiveAsync");
-#endif
-            //Read data sent from the server
+            // Стартуем чтение данных от сервера
             e.Socket.ReceiveAsync(e);
         }
     }
