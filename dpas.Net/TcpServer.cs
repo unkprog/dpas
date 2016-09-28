@@ -136,8 +136,5 @@ namespace dpas.Net
                 listenEvent.WaitOne();
             }
         }
-
-
-
     }
 }
