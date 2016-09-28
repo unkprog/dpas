@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("dpas.Console")]
 [assembly: AssemblyDescription("Консоль для управления DPAS")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("unkprog")]
+[assembly: AssemblyCompany("UnkProg")]
 [assembly: AssemblyProduct("dpas.Console")]
 [assembly: AssemblyCopyright("2016 Copyright © by UnkProg")]
 [assembly: AssemblyTrademark("")]
@@ -22,13 +22,7 @@ using System.Runtime.InteropServices;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("98b1fdb8-6274-46e2-9fda-cf7c7a9a7516")]
 
-// Version information for an assembly consists of the following four values:
-//
-//      Major Version
-//      Minor Version 
-//      Build Number
-//      Revision
-//
-// You can specify all the values or you can default the Revision and Build Numbers 
-// by using the '*' as shown below:
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
+
 [assembly: NeutralResourcesLanguageAttribute("ru")]

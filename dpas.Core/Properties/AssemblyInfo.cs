@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("dpas.Core")]
 [assembly: AssemblyDescription("Библиотека классов DPAS")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("unkprog")]
+[assembly: AssemblyCompany("UnkProg")]
 [assembly: AssemblyProduct("dpas.Core")]
 [assembly: AssemblyCopyright("2016 Copyright © by UnkProg")]
 [assembly: AssemblyTrademark("")]
@@ -21,9 +21,9 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("03334850-fe3b-494b-8049-28da0a5372a6")]
+
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-
 
 [assembly: NeutralResourcesLanguageAttribute("ru")]
 
