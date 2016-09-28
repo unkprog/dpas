@@ -24,12 +24,12 @@ namespace dpas.Net
 
         private bool CheckStop()
         {
-            if (this.State != TcpServer.TcpServerState.Started)
+            if (this.State != TcpServer.ServerState.Started)
             {
                 WriteToLog("Сервер не запущен...");
                 return false;
             }
-            SetState(TcpServerState.Stopping);
+            SetState(ServerState.Stopping);
             return true;
         }
 
@@ -37,7 +37,7 @@ namespace dpas.Net
         {
             base.DisposeSocket(false);
             DisposeListenEvent();
-            SetState(TcpServerState.Stopped);
+            SetState(ServerState.Stopped);
             return true;
         }
 
@@ -85,12 +85,12 @@ namespace dpas.Net
 
         private bool CheckStart()
         {
-            if (!(this.State == TcpServer.TcpServerState.Unknown || this.State == TcpServerState.Stopped))
+            if (!(this.State == TcpServer.ServerState.Unknown || this.State == ServerState.Stopped))
             {
                 WriteToLog(string.Concat("Сервер находится в статусе ", State, ", запуск невозможен..."));
                 return false;
             }
-            SetState(TcpServerState.Starting);
+            SetState(ServerState.Starting);
             return true;
         }
 
@@ -106,7 +106,7 @@ namespace dpas.Net
                 socket.Bind(endpoint);
                 // Запускаем прослушиватель и ждем подключений
                 socket.Listen(this.Settings.MaxConnections);
-                SetState(TcpServerState.Started);
+                SetState(ServerState.Started);
                 OnStartHandle();
                 LoopProcessAccept();
                 return true;

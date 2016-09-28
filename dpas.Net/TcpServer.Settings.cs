@@ -22,15 +22,5 @@ namespace dpas.Net
         }
 
         public ServerSettings Settings { get; private set; } = new ServerSettings();
-
-        public void SaveSettings()
-        {
-            Settings.Save(System.IO.Directory.GetCurrentDirectory() + "/server.cfg");
-        }
-
-        public void ReadSettings()
-        {
-            Settings.Read(System.IO.Directory.GetCurrentDirectory() + "/server.cfg");
-        }
     }
 }

@@ -16,14 +16,36 @@ namespace dpas.Console
             {
                 switch (command)
                 {
-                    //case CommandParser.Command.Tcp: ServerAndClient.RunCommandLine(args); return true;
-                    //case CommandParser.Command.Server: Server.RunCommandLine(args); return true;
-                    case CommandParser.Command.Help: Help(); return true;
+                    case CommandParser.Command.Start: StartServer(); return true;
+                    case CommandParser.Command.Stop : StopServer(); return true;
+                    case CommandParser.Command.Help : Help(); return true;
                 }
                 return false;
             });
         }
 
+        private Service.IServer server;
+        private void StartServer()
+        {
+            System.Console.WriteLine("Command begin: Start server");
+            if (server == null)
+            {
+                server = new Service.Server();
+                server.Settings.IsLogging = true;
+            }
+            server.Start();
+            System.Console.WriteLine("Command end: Start server");
+        }
+
+        private void StopServer()
+        {
+            System.Console.WriteLine("Command begin: Stop server");
+            if (server != null)
+                server.Stop();
+            else
+                System.Console.WriteLine("Server not started");
+            System.Console.WriteLine("Command end: Stop server");
+        }
 
         private void Help()
         {

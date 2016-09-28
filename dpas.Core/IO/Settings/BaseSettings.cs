@@ -28,7 +28,7 @@ namespace dpas.Core.IO.Settings
             if (File.Exists(fullFileName))
             {
                 dictSettings.Clear();
-                using (XmlReader vReader = XmlReader.Create(fullFileName)) // new XmlTextReader(fullFileName))
+                using (XmlReader vReader = XmlReader.Create(fullFileName))
                 {
                     //try
                     //{

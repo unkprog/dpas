@@ -17,7 +17,7 @@ namespace dpas.Console
             bool isExit = false;
             while (!isExit)
             {
-                System.Console.Write("> ");
+                //System.Console.Write("> ");
                 string userinput = System.Console.ReadLine();
                 if (!string.IsNullOrEmpty(userinput))
                 {
@@ -27,8 +27,7 @@ namespace dpas.Console
                     {
                         case CommandParser.Command.Exit:
                             {
-                                if (handler != null)
-                                    handler(command, userparams);
+                                handler?.Invoke(command, userparams);
                                 isExit = true;
                                 break;
                             }

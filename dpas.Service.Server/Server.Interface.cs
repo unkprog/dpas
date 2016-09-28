@@ -1,12 +1,23 @@
-﻿using dpas.Net;
+﻿using System;
+using dpas.Net;
 
 namespace dpas.Service
 {
     /// <summary>
     /// Интерфейс сервера
     /// </summary>
-    interface IServer
+    public interface IServer: IDisposable
     {
+        /// <summary>
+        /// Состояние сервера
+        /// </summary>
+        TcpServer.ServerState State { get; }
+
+        /// <summary>
+        /// Настройки сервера
+        /// </summary>
+        TcpServer.ServerSettings Settings { get; }
+
         /// <summary>
         /// Запустить сервер
         /// </summary>
@@ -16,15 +27,22 @@ namespace dpas.Service
         /// Остановить сервер
         /// </summary>
         void Stop();
+
     }
 
 
     public partial class Server
     {
+        TcpServer.ServerState IServer.State { get { return server.State; } }
+
+        TcpServer.ServerSettings IServer.Settings { get { return server.Settings; } }
+
         void IServer.Start()
         {
             if (server == null)
                 server = new TcpServer();
+            CreateDirectories();
+            server.Settings.Read(settingsFile);
             var startTask = server.StartAsync();
         }
 

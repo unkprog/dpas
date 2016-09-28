@@ -2,7 +2,7 @@
 {
     public partial class TcpServer
     {
-        public enum TcpServerState
+        public enum ServerState
         {
             Unknown = 0,
             Starting = 1,
@@ -14,15 +14,15 @@
         /// <summary>
         /// Флаг индикации, что сервер запущен
         /// </summary>
-        public bool IsStarted {  get { return State == TcpServerState.Started; } }
+        public bool IsStarted {  get { return State == ServerState.Started; } }
 
         /// <summary>
         /// Текущий статус сервера
         /// </summary>
-        public TcpServerState State { get; private set; } = TcpServerState.Unknown;
+        public ServerState State { get; private set; } = ServerState.Unknown;
 
 
-        private void SetState(TcpServerState state)
+        private void SetState(ServerState state)
         {
             State = state;
             if (this.Settings.IsLogging)
