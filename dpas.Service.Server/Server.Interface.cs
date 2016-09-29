@@ -43,6 +43,7 @@ namespace dpas.Service
                 server = new TcpServer();
             CreateDirectories();
             server.Settings.Read(settingsFile);
+            server.OnReceive += Server_OnReceive;
             var startTask = server.StartAsync();
         }
 
@@ -50,6 +51,7 @@ namespace dpas.Service
         {
             if (server != null)
             {
+                server.OnReceive -= Server_OnReceive;
                 var stopTask = server.StopAsync();
             }
         }

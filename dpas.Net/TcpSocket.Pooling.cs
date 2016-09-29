@@ -17,20 +17,20 @@ namespace dpas.Net
 
             public TcpSocketAsyncEventArgs(int bufferSize) : this()
             {
-                this.SetBuffer(new byte[bufferSize], 0, bufferSize);
+                SetBuffer(new byte[bufferSize], 0, bufferSize);
             }
 
             private List<byte[]> data;
 
-            public Socket Socket { get { return this.AcceptSocket == null ? this.ConnectSocket : this.AcceptSocket; } }
+            public Socket Socket { get { return AcceptSocket == null ? ConnectSocket : AcceptSocket; } }
 
-            // TODO: Здесь сделать оптимизацию по памяти!!!
+            // TODO: Здесь сделать оптимизацию по использованию памяти!!!
             public bool Read()
             {
-                int bytecount = this.BytesTransferred;
+                int bytecount = BytesTransferred;
                 byte[] buffer = new byte[bytecount];
                 data.Add(buffer);
-                Array.Copy(this.Buffer, this.Offset, buffer, 0, bytecount);
+                Array.Copy(Buffer, Offset, buffer, 0, bytecount);
                 return true;
             }
 
@@ -57,9 +57,9 @@ namespace dpas.Net
             public new void Dispose()
             {
                 AcceptSocket = null;
-                this.Clear();
-                this.data = null;
-                this.UserToken = null;
+                Clear();
+                data = null;
+                UserToken = null;
                 base.Dispose();
             }
 
@@ -67,6 +67,18 @@ namespace dpas.Net
             {
                 if (data != null)
                     data.Clear();
+            }
+
+            public void CloseSocket()
+            {
+                if (Socket!= null && Socket.Connected)
+                {
+                    try
+                    {
+                        Socket.Shutdown(SocketShutdown.Both);
+                    }
+                    catch (Exception) { }
+                }
             }
         }
 
@@ -98,7 +110,7 @@ namespace dpas.Net
                 this.onSocketAsyncEventArgsCompleted = onSocketAsyncEventArgsCompleted;
                 this.newSocketAsyncEventArgs         = newSocketAsyncEventArgs;
                 this.disposeSocketAsyncEventArgs     = disposeSocketAsyncEventArgs;
-                this.stackSocketAsyncEventArgs       = new Stack<TcpSocketAsyncEventArgs>(capacity);
+                stackSocketAsyncEventArgs = new Stack<TcpSocketAsyncEventArgs>(capacity);
 
                 for (int i = 0; i < capacity; i++)
                     stackSocketAsyncEventArgs.Push(NewSocketAsyncEventArgs());
@@ -106,7 +118,7 @@ namespace dpas.Net
 
             public void WriteToLog(string data)
             {
-                this.owner.WriteToLog("PoolSocketAsyncEventArgs: " + data);
+                owner.WriteToLog("PoolSocketAsyncEventArgs: " + data);
             }
             
             /// <summary>
@@ -116,7 +128,7 @@ namespace dpas.Net
             private TcpSocketAsyncEventArgs NewSocketAsyncEventArgs()
             {
                 TcpSocketAsyncEventArgs e = (newSocketAsyncEventArgs != null ? newSocketAsyncEventArgs() : new TcpSocketAsyncEventArgs());
-                e.Completed += this.onSocketAsyncEventArgsCompleted;
+                e.Completed += onSocketAsyncEventArgsCompleted;
                 return e;
             }
 
@@ -148,7 +160,7 @@ namespace dpas.Net
                     }
 #if DEBUG
                     if (isLogging)
-                        WriteToLog("PoolSocketAsyncEventArgs.Pop(): CountLock = " + this.CountEventsLock);
+                        WriteToLog("PoolSocketAsyncEventArgs.Pop(): CountLock = " + CountEventsLock);
 #endif
                 }
                 if (result != null)
@@ -179,7 +191,7 @@ namespace dpas.Net
                     stackSocketAsyncEventArgs.Push(NewSocketAsyncEventArgs());
 #if DEBUG
                     if (isLogging)
-                        WriteToLog("PoolSocketAsyncEventArgs.Push(): CountLock = " + this.CountEventsLock);
+                        WriteToLog("PoolSocketAsyncEventArgs.Push(): CountLock = " + CountEventsLock);
 #endif
                 }
 
@@ -187,8 +199,8 @@ namespace dpas.Net
 
             private void DisposeItem(TcpSocketAsyncEventArgs e)
             {
-                if (this.disposeSocketAsyncEventArgs != null)
-                    this.disposeSocketAsyncEventArgs(e);
+                if (disposeSocketAsyncEventArgs != null)
+                    disposeSocketAsyncEventArgs(e);
                 e.Completed -= onSocketAsyncEventArgsCompleted;
                 e.Dispose();
             }
@@ -206,11 +218,11 @@ namespace dpas.Net
                     {
                         DisposeItem(e);
                     }
-                    this.stackSocketAsyncEventArgs.Clear();
-                    this.stackSocketAsyncEventArgs       = null;
-                    this.disposeSocketAsyncEventArgs     = null;
-                    this.newSocketAsyncEventArgs         = null;
-                    this.onSocketAsyncEventArgsCompleted = null;
+                    stackSocketAsyncEventArgs.Clear();
+                    stackSocketAsyncEventArgs = null;
+                    disposeSocketAsyncEventArgs = null;
+                    newSocketAsyncEventArgs = null;
+                    onSocketAsyncEventArgsCompleted = null;
                 }
                 base.Dispose(disposing);
             }

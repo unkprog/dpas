@@ -84,8 +84,7 @@ namespace dpas.Net
                 if (isLogging)
                     WriteToLog("ProcessReceive: Connection closed.");
 #endif
-                if (e.Socket.Connected)
-                    e.Socket.Shutdown(SocketShutdown.Both);
+                e.CloseSocket();
                 e.Socket.Dispose();
                 poolEventArgs.Push(e);
                 return;
@@ -137,14 +136,12 @@ namespace dpas.Net
 
         protected virtual void OnSendHandle(TcpSocketAsyncEventArgs e)
         {
-            if (OnSend != null)
-                OnSend(this, e);
+            OnSend?.Invoke(this, e);
         }
 
         protected virtual void OnReceiveHandle(TcpSocketAsyncEventArgs e)
         {
-            if (OnReceive != null)
-                OnReceive(this, e);
+            OnReceive?.Invoke(this, e);
         }
     }
 }

@@ -17,7 +17,9 @@ namespace dpas.Service
             if (disposing)
             {
                 if (server != null)
+                {
                     server.Dispose();
+                }
                 server = null;
             }
             base.Dispose(disposing);

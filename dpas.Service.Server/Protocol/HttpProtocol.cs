@@ -1,15 +1,16 @@
-﻿using dpas.Net;
-using dpas.Net.Http;
-using System;
-using System.IO;
+﻿using System;
 using System.Net;
+using System.IO;
 using System.Text;
+using dpas.Net;
+using dpas.Net.Http;
+using System.Net.Sockets;
 
-namespace dpas.Service
+namespace dpas.Service.Protocol
 {
-    public partial class Server
+    public partial class HttpProtocol : Server.IProtocol
     {
-        private void HandleHttpProtocol(TcpSocket socketHandler, byte[] data)
+        void Server.IProtocol.Handle(TcpSocket.TcpSocketAsyncEventArgs e, byte[] data)
         {
             // HttpParser request = new 
             HttpRequest request = HttpParser.ParseRequest(data);
@@ -23,15 +24,15 @@ namespace dpas.Service
             {
                 response = RequestError(request, ex, HttpStatusCode.InternalServerError);
             }
-            SendResponse(socketHandler, request, response);
+            SendResponse(e, request, response);
         }
 
         /// <summary>
         /// Отправка ответа
         /// </summary>
-        /// <param name="socketHandler">Сокет</param>
+        /// <param name="socket">Сокет</param>
         /// <param name="response">Ответ</param>
-        private void SendResponse(TcpSocket socketHandler, HttpRequest request, HttpResponse response)
+        private void SendResponse(TcpSocket.TcpSocketAsyncEventArgs e, HttpRequest request, HttpResponse response)
         {
             byte[] responseData = null;
 
@@ -49,18 +50,15 @@ namespace dpas.Service
 
             if (responseData != null)
             {
-                if (!response.Header.ShouldKeepAlive)
-                {
-                    TcpSocket.SocketHandler onSend = null;
-                    onSend = (o, e) =>
-                    {
-                        socketHandler.OnSend -= onSend;
-                        socketHandler.Dispose();
-                    };
-                    socketHandler.OnSend += onSend;
-                }
-                var sendTask = socketHandler.SendAsync(responseData);
+                var sendTask = e.Socket.Send(responseData);
             }
+
+            if (!response.Header.ShouldKeepAlive)
+            {
+                e.CloseSocket();
+                e.Socket.Dispose();
+            }
+
             response.Dispose();
         }
 

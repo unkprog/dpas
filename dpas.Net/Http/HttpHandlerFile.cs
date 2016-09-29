@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Collections.Generic;
+using System.Net;
 //using dpas.Core.IO.Debug;
 
 namespace dpas.Net.Http
@@ -49,7 +50,10 @@ namespace dpas.Net.Http
 
             if (!File.Exists(filePath))
             {
-                Response.StatusCode = System.Net.HttpStatusCode.NotFound; 
+                Response.StatusCode = HttpStatusCode.NotFound;
+                Response.Parameters.Add(HttpHeader.ContentType, string.Concat(Mime.Text.Html, "; charset=utf-8"));
+                Response.StreamText.Write(string.Concat("<html><body><h1>", ((int)Response.StatusCode).ToString(), " ", ((HttpStatusCode)Response.StatusCode).ToString(), "</h1><div>Не найден файл</div><div></div></body></html>"));
+
                 return;
             }
 
