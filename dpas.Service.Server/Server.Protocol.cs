@@ -8,6 +8,16 @@ namespace dpas.Service
     {
         public interface IProtocol
         {
+            /// <summary>
+            /// Размер буфера 
+            /// </summary>
+            int BufferSize { get; set; }
+
+            /// <summary>
+            /// Обработка данных сокета
+            /// </summary>
+            /// <param name="e">Аргумент события сокета</param>
+            /// <param name="data">Данные</param>
             void Handle(TcpSocket.TcpSocketAsyncEventArgs e, byte[] data);
         }
 
@@ -19,7 +29,7 @@ namespace dpas.Service
         private void HandleDpasProtocol(TcpSocket.TcpSocketAsyncEventArgs e, byte[] data)
         {
             if (dpasProtocol == null)
-                dpasProtocol = new DpasProtocol();
+                dpasProtocol = new DpasProtocol() { BufferSize = server.Settings.BufferSize };
             dpasProtocol.Handle(e, data);
         }
 
@@ -27,8 +37,16 @@ namespace dpas.Service
         private void HandleHttpProtocol(TcpSocket.TcpSocketAsyncEventArgs e, byte[] data)
         {
             if (httpProtocol == null)
-                httpProtocol = new HttpProtocol();
+                httpProtocol = new HttpProtocol() { BufferSize = server.Settings.BufferSize };
             httpProtocol.Handle(e, data);
+        }
+
+        private void SetupProtocols()
+        {
+            if (dpasProtocol != null)
+                dpasProtocol.BufferSize = server.Settings.BufferSize;
+            if (httpProtocol != null)
+                httpProtocol.BufferSize = server.Settings.BufferSize;
         }
     }
 }

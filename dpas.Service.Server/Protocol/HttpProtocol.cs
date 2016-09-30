@@ -10,6 +10,13 @@ namespace dpas.Service.Protocol
 {
     public partial class HttpProtocol : Server.IProtocol
     {
+        public HttpProtocol()
+        {
+            BufferSize = 1024;
+        }
+
+        public int BufferSize { get; set; }
+
         void Server.IProtocol.Handle(TcpSocket.TcpSocketAsyncEventArgs e, byte[] data)
         {
             // HttpParser request = new 
@@ -39,7 +46,7 @@ namespace dpas.Service.Protocol
             using (MemoryStream ms = new MemoryStream())
             {
                 response.Parameters.Add(HttpHeader.ContentLength, response.ContentLength.ToString());
-                using (var sw = new StreamWriter(ms, Encoding.UTF8, 1024, true))
+                using (var sw = new StreamWriter(ms, Encoding.UTF8, 10, true))
                 {
                     sw.Write(response.ToString());
                 }
