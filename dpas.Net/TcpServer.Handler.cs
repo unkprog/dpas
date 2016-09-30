@@ -48,7 +48,7 @@ namespace dpas.Net
                             WriteToLog("ProcessAccept: acceptSocket.ReceiveAsync()");
 #endif
                         //e.SetBuffer(new byte[Settings.BufferSize], 0, Settings.BufferSize);
-                        e.SetBuffer(new byte[10], 0, 10);
+                        e.SetBuffer(new byte[Settings.BufferSize], 0, Settings.BufferSize);
                         // Start a receive request and immediately check to see if the receive is already complete
                         // Otherwise OnIOCompleted will get called when the receive is complete
                         if (!e.Socket.ReceiveAsync(e))
@@ -76,26 +76,26 @@ namespace dpas.Net
 //            base.ProcessReceive(e);
 //        }
 
-        protected override void OnReceiveHandle(TcpSocketAsyncEventArgs e)
-        {
-            base.OnReceiveHandle(e);
-            if (e.BytesTransferred > 0 && e.Socket.Connected)
-            {
-                //Task<bool> send = SendAsync(e.ToArray(), e.Socket);
-                bool send = Send(e.ToArray(), e.Socket);
-                e.Clear();
+        //protected override void OnReceiveHandle(TcpSocketAsyncEventArgs e)
+        //{
+        //    base.OnReceiveHandle(e);
+        //    if (e.BytesTransferred > 0 && e.Socket.Connected)
+        //    {
+        //        //Task<bool> send = SendAsync(e.ToArray(), e.Socket);
+        //        bool send = Send(e.ToArray(), e.Socket);
+        //        e.Clear();
 
-                //if (!e.Socket.ReceiveAsync(e))
-                //    ProcessReceive(e);
-            }
-            //else
-            //{
-            //    e.Clear();
-            //    e.Socket.Shutdown(SocketShutdown.Both);
-            //    e.Socket.Dispose();
-            //    //poolEventArgs.Push(e);
-            //}
-        }
+        //        //if (!e.Socket.ReceiveAsync(e))
+        //        //    ProcessReceive(e);
+        //    }
+        //    //else
+        //    //{
+        //    //    e.Clear();
+        //    //    e.Socket.Shutdown(SocketShutdown.Both);
+        //    //    e.Socket.Dispose();
+        //    //    //poolEventArgs.Push(e);
+        //    //}
+        //}
 
         protected override void ProcessSend(TcpSocketAsyncEventArgs e)
         {

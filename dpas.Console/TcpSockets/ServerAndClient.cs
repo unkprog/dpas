@@ -49,6 +49,13 @@ namespace dpas.Console.TcpSockets
             {
                 server = new TcpServer();
                 server.Settings.IsLogging = true;
+                server.OnReceive += (o, e) =>
+                {
+                    if (e.BytesTransferred > 0 && e.Socket.Connected)
+                    {
+                        var sendTask = server.SendAsync(e.ToArray(), e.Socket);
+                    }
+                };
             }
             var task = server.StartAsync();
             System.Console.WriteLine("Command end: Start server");
