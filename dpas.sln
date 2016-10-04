@@ -17,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dpas.Web.Application", "dpas.Web.Application\dpas.Web.Application.xproj", "{71DB3C0C-20D6-42FC-A02A-EAEC5FC4F797}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dpas.Web.Application", "dpas.Web.Application\dpas.Web.Application.xproj", "{8FCE52A0-FE78-45F3-825C-F130A50D8F23}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,10 +41,10 @@ Global
 		{1A4B6E33-2D58-4A93-BCBF-DC9805620E14}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A4B6E33-2D58-4A93-BCBF-DC9805620E14}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A4B6E33-2D58-4A93-BCBF-DC9805620E14}.Release|Any CPU.Build.0 = Release|Any CPU
-		{71DB3C0C-20D6-42FC-A02A-EAEC5FC4F797}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{71DB3C0C-20D6-42FC-A02A-EAEC5FC4F797}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{71DB3C0C-20D6-42FC-A02A-EAEC5FC4F797}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{71DB3C0C-20D6-42FC-A02A-EAEC5FC4F797}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FCE52A0-FE78-45F3-825C-F130A50D8F23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FCE52A0-FE78-45F3-825C-F130A50D8F23}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FCE52A0-FE78-45F3-825C-F130A50D8F23}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FCE52A0-FE78-45F3-825C-F130A50D8F23}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
