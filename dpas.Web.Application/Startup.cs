@@ -28,14 +28,20 @@ namespace dpas.Web.Application
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            app.UseStaticFiles();
+            //app.MapWhen(context =>
+            //{
+            //    var path = context.Request.Path.Value;
+            //    return path.StartsWith("/content/css", StringComparison.OrdinalIgnoreCase);
+            //}, config => config.UseStaticFiles());
+            //app.UseStaticFiles();
+            //app.UseStaticFiles("/content");
+            //app.UseDefaultFiles();
             //app.UseWelcomePage("wwwroot\\Index.html");
             //app.us.UseStaticFiles();
             app.Run(async (context) =>
             {
                 //await context.Response.WriteAsync("Hello World!");
-                await Startup.Handle(context);
+                await Handle(context);
             });
         }
 
@@ -44,7 +50,7 @@ namespace dpas.Web.Application
 
             Task result = new Task(() =>
             {
-                string pathBase = context.Request.PathBase;
+                string pathBase = context.Request.Path.Value;
                 string action = string.Empty;
                 if (!string.IsNullOrEmpty(pathBase))
                 {
@@ -53,6 +59,16 @@ namespace dpas.Web.Application
                     {
                         action = pathBase.Substring(index);
                     }
+
+                    //if (!string.IsNullOrEmpty(pathBase))
+                    //{
+                    //    int indexExt = pathBase.LastIndexOf('.');
+                    //    if (indexExt > -1)
+                    //    {
+                    //        FileName = pathBase.Substring(0, indexExt);
+                    //        FileExt = indexExt < pathBase.Length ? pathBase.Substring(indexExt, pathBase.Length - indexExt) : string.Empty;
+                    //    }
+                    //}
                 }
                
               // context.Response.WriteAsync("Hello World!");
@@ -95,7 +111,7 @@ namespace dpas.Web.Application
                 if (isAjax)
                     Page(context, action, path);
                 else
-                    ReadIndexHtml(context);
+                    ReadFile(context);
                     //context.Response.Redirect("/", true);
             });
 
@@ -126,13 +142,15 @@ namespace dpas.Web.Application
             //context.Response.Write(GACode);
         }
 
-        private static void ReadIndexHtml(HttpContext context)
+        private static void ReadFile(HttpContext context)
         {
-            string pathFile = string.Concat(System.IO.Directory.GetCurrentDirectory(), "/wwwroot/Index.html");
+            string path = context.Request.Path.Value;
+            string pathFile = path == "/" ? string.Concat(System.IO.Directory.GetCurrentDirectory(), "/content/Index.html"): string.Concat(System.IO.Directory.GetCurrentDirectory(), path);
             // System.Environment
             if (!File.Exists(pathFile)) return;
 
-            //context.Response.ContentType = "text/html";
+            if (path.StartsWith("/content/css", StringComparison.OrdinalIgnoreCase)) context.Response.ContentType = "text/css";
+            else context.Response.ContentType = "text/html";
             using (StreamReader sr = File.OpenText(pathFile))
             {
                 string htmlLine = String.Empty;
