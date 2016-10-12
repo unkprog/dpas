@@ -23,7 +23,7 @@ namespace dpas.Core.Helpers
 
         public static string String(object aValue, string aDefault = "")
         {
-            return String(aValue, aDefault);
+            return (aValue == null ? aDefault : aValue.ToString());
         }
 
         public static double Double(string aValue, double aDefault = 0.0)

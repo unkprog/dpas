@@ -1,0 +1,24 @@
+﻿html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+footer.page-footer {
+    margin: 0;
+    padding: 1px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+    footer.page-footer .footer-copyright {
+        height: 30px;
+        line-height: 30px;
+        margin-left: 0.5em;
+    }

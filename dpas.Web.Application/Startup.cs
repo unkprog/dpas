@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.IO;
+using dpas.Net.Http.Mvc;
+using dpas.Core.Extensions;
 
 namespace dpas.Web.Application
 {
@@ -28,16 +28,7 @@ namespace dpas.Web.Application
             {
                 app.UseDeveloperExceptionPage();
             }
-            //app.MapWhen(context =>
-            //{
-            //    var path = context.Request.Path.Value;
-            //    return path.StartsWith("/content/css", StringComparison.OrdinalIgnoreCase);
-            //}, config => config.UseStaticFiles());
-            //app.UseStaticFiles();
-            //app.UseStaticFiles("/content");
-            //app.UseDefaultFiles();
-            //app.UseWelcomePage("wwwroot\\Index.html");
-            //app.us.UseStaticFiles();
+
             app.Run(async (context) =>
             {
                 //await context.Response.WriteAsync("Hello World!");
@@ -50,69 +41,71 @@ namespace dpas.Web.Application
 
             Task result = new Task(() =>
             {
-                string pathBase = context.Request.Path.Value;
-                string action = string.Empty;
-                if (!string.IsNullOrEmpty(pathBase))
+                string dpasKey = context.Request.Cookies["dpas"];
+                if (string.IsNullOrEmpty(dpasKey))
                 {
-                    int index = pathBase.LastIndexOf('/');
-                    if(index > -1)
-                    {
-                        action = pathBase.Substring(index);
-                    }
-
-                    //if (!string.IsNullOrEmpty(pathBase))
-                    //{
-                    //    int indexExt = pathBase.LastIndexOf('.');
-                    //    if (indexExt > -1)
-                    //    {
-                    //        FileName = pathBase.Substring(0, indexExt);
-                    //        FileExt = indexExt < pathBase.Length ? pathBase.Substring(indexExt, pathBase.Length - indexExt) : string.Empty;
-                    //    }
-                    //}
+                    dpasKey = Guid.NewGuid().ToString();
+                    context.Response.Cookies.Append("dpas", dpasKey);
                 }
-               
-              // context.Response.WriteAsync("Hello World!");
-               
+
+                ControllerInfo controllerInfo = new ControllerInfo(string.Concat(context.Request.Path.Value, context.Request.QueryString));
+
+                System.Diagnostics.Debug.WriteLine(string.Concat("Handle(HttpContext context): ", controllerInfo));
+
+                var state = ControllerState.GetState(dpasKey);
 
                 bool isAjax = context.Request.Query.ContainsKey("ajax");
-            string path = string.Concat(context.Request.PathBase);// context.Request.CurrentExecutionFilePath.Replace("/navigation", "").Replace("/curpage", ""));
+                //string path = string.Concat(context.Request.PathBase);
+                if (isAjax && controllerInfo.Controller == "/nav")
+                {
+                    string curPage = controllerInfo.Action;
+                    if (curPage == "/curpage")
+                        curPage = state.GetString("curpage");
 
-                //    //if (string.IsNullOrEmpty(action))
-                //    //{
-                //    //    object objPage = context.Session["curPage"];
-                //    //    if (objPage != null)
-                //    //        action = objPage.ToString();
-                //    //    else
-                //    //    {
-                //    //        action = "index";
-                //    //        path = string.Empty;
-                //    //        context.Session["curPage"] = action;
-                //    //        context.Session["curPath"] = path;
-                //    //    }
-                //    //}
+                    if (string.IsNullOrEmpty(curPage))
+                        curPage = "index";
 
-                //    if (string.IsNullOrEmpty(action) || action.ToLower() == "curpage")
-                //    {
-                //        object objPage = context.Session["curPage"];
-                //        action = objPage != null ? objPage.ToString() : string.Empty;
-                //        objPage = context.Session["curPath"];
-                //        path = objPage != null ? objPage.ToString() : string.Empty;
-                //    }
+                    state["curpage"] = curPage;
 
-                //    if (string.IsNullOrEmpty(action))
-                //    {
-                //        action = "index";
-                //        path = string.Empty;
-                //    }
-                //    path = path.Replace("/" + action, "");
-                //    context.Session["curPage"] = action;
-                //    context.Session["curPath"] = path;
+                    // context.Request.CurrentExecutionFilePath.Replace("/navigation", "").Replace("/curpage", ""));
 
-                if (isAjax)
-                    Page(context, action, path);
+                    //    //if (string.IsNullOrEmpty(action))
+                    //    //{
+                    //    //    object objPage = context.Session["curPage"];
+                    //    //    if (objPage != null)
+                    //    //        action = objPage.ToString();
+                    //    //    else
+                    //    //    {
+                    //    //        action = "index";
+                    //    //        path = string.Empty;
+                    //    //        context.Session["curPage"] = action;
+                    //    //        context.Session["curPath"] = path;
+                    //    //    }
+                    //    //}
+
+                    //    if (string.IsNullOrEmpty(action) || action.ToLower() == "curpage")
+                    //    {
+                    //        object objPage = context.Session["curPage"];
+                    //        action = objPage != null ? objPage.ToString() : string.Empty;
+                    //        objPage = context.Session["curPath"];
+                    //        path = objPage != null ? objPage.ToString() : string.Empty;
+                    //    }
+
+                    //    if (string.IsNullOrEmpty(action))
+                    //    {
+                    //        action = "index";
+                    //        path = string.Empty;
+                    //    }
+                    //    path = path.Replace("/" + action, "");
+                    //    context.Session["curPage"] = action;
+                    //    context.Session["curPath"] = path;
+
+
+                    Page(context, controllerInfo, curPage);
+                }
                 else
-                    ReadFile(context);
-                    //context.Response.Redirect("/", true);
+                    ReadFile(context, controllerInfo);
+                //context.Response.Redirect("/", true);
             });
 
             result.Start();
@@ -120,13 +113,12 @@ namespace dpas.Web.Application
             return result;
 
         }
+       
 
-
-        private static void Page(HttpContext context, string action, string path)
+        private static void Page(HttpContext context, ControllerInfo controllerInfo, string curPage)
         {
-            string pathFile = string.Concat(path, "/", action, ".html");
-            pathFile = string.Concat(System.IO.Directory.GetCurrentDirectory() + context.Request.PathBase, "/content/views", pathFile);
-           // System.Environment
+            string pathFile = string.Concat(System.IO.Directory.GetCurrentDirectory(), "/content/mvc/view/", curPage, ".html");
+            // System.Environment
             if (!File.Exists(pathFile)) return;
 
             context.Response.ContentType = "text/html";
@@ -139,17 +131,24 @@ namespace dpas.Web.Application
                     context.Response.WriteAsync(Environment.NewLine);
                 }
             }
+
+            pathFile = string.Concat(System.IO.Directory.GetCurrentDirectory(), "/content/mvc/controller/", curPage, ".js");
+
+            if (!File.Exists(pathFile)) return;
+            context.Response.WriteAsync(string.Concat("<script type=", '"', "text/javascript", '"', "src=", '"', "mvc/controller/index.js", '"', "></script>", Environment.NewLine));
+            context.Response.WriteAsync(Environment.NewLine);
+
             //context.Response.Write(GACode);
         }
 
-        private static void ReadFile(HttpContext context)
+        private static void ReadFile(HttpContext context, ControllerInfo controllerInfo)
         {
-            string path = context.Request.Path.Value;
-            string pathFile = path == "/" ? string.Concat(System.IO.Directory.GetCurrentDirectory(), "/content/Index.html"): string.Concat(System.IO.Directory.GetCurrentDirectory(), path);
+            string path = controllerInfo.Path;
+            string pathFile = string.Concat(System.IO.Directory.GetCurrentDirectory(), "/content", path == "/" ? "/Index.html" : path);
             // System.Environment
             if (!File.Exists(pathFile)) return;
 
-            if (path.StartsWith("/content/css", StringComparison.OrdinalIgnoreCase)) context.Response.ContentType = "text/css";
+            if (path.StartsWith("/css", StringComparison.OrdinalIgnoreCase)) context.Response.ContentType = "text/css";
             else context.Response.ContentType = "text/html";
             using (StreamReader sr = File.OpenText(pathFile))
             {

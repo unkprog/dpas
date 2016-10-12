@@ -1,15 +1,15 @@
-﻿<!DOCTYPE html>
+﻿<!DOCTYPE html >
 <html lang="ru">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
     <title>DPAS</title>
     <meta name="description" content="Система обработки и анализа данных" />
 
     <!-- CSS  -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="content/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection" />
-    <!--link href="content/css/style.css" type="text/css" rel="stylesheet" media="screen,projection" /-->
+    <link href="css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection" />
+    <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
 </head>
 <body>
 
@@ -24,14 +24,27 @@
         </div>
     </nav>
 
-    <div id="main">
-    </div>
-    <footer id="footer">
-        © 2016 Copyright UnkProg
-    </footer>
 
+    <div id="content" class="ajax-content">
+
+    </div>
+
+    
+
+    
+    <footer id="footer" class="page-footer">
+        <div class="footer-copyright">© 2016 Copyright UnkProg</div>
+    </footer>
     <!--Import jQuery before materialize.js-->
-    <script type="text/javascript" src="content/js/jquery-2.1.1.min.js"></script>
-    <script type="text/javascript" src="content/js/materialize.min.js"></script>
+    <script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="js/materialize.min.js"></script>
+    <script type="text/javascript" src="mvc/dpas.application.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+    <!--<script type="text/javascript">
+        $(document).ready(function () {
+            // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+            $('#modal1').openModal();
+        });
+    </script>-->
 </body>
 </html>
