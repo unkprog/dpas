@@ -24,11 +24,11 @@ function navigate(url, el, isAmber) {
                    function (html) {
                        currentUrl = url;
                        content.html(html);
-                       var scripts = content[0].getElementsByTagName("script");
-                       for (var i = 0; i < scripts.length; ++i) {
-                           var script = scripts[i];
-                           eval(script);
-                       }
+                       //var scripts = content[0].getElementsByTagName("script");
+                       //for (var i = 0; i < scripts.length; ++i) {
+                       //    var script = scripts[i];
+                       //    eval(script.innerText);
+                       //}
 
                        var elAmber = isAmber === true ? el : $(".a-index");
                        nav_desktop_a_spans.removeClass('amber-text').addClass('white-text');
@@ -66,10 +66,10 @@ $(document).ready(function () {
             (function (eventInfo) {
 
                 function getReference(target) {
-                    if (target === undefined) return undefined;
+                    if (target === undefined || target === null) return undefined;
                     if (target.nodeName === 'A') return target;
                     var parent = target.parentNode;
-                    while (parent != undefined) {
+                    while (parent !== undefined && parent !== null) {
                         if (parent.nodeName === 'A') return parent;
                         parent = parent.parentNode;
                     }

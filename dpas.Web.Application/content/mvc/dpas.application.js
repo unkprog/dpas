@@ -1,4 +1,6 @@
-﻿(function () {
+﻿var exports = window.exports = window.exports || {};
+
+(function () {
     var dpas = window.dpas = window.dpas || {};
     dpas.Application = function () {
 
@@ -48,11 +50,11 @@
         };
 
         this.getDataParams = function (url, data, callback) {
-            var location = '' + (window.history.location || window.location);
+            var locationPath = '' + (window.history.location || window.location);
             var params = data;
             if (!params) {
-                var location = '' + (window.history.location || window.location);
-                params = this.getParams(location);
+                locationPath = '' + (window.history.location || window.location);
+                params = this.getParams(locationPath);
             }
 
             $.ajax({

@@ -135,6 +135,17 @@ namespace dpas.Web.Application
             pathFile = string.Concat(System.IO.Directory.GetCurrentDirectory(), "/content/mvc/controller/", curPage, ".js");
 
             if (!File.Exists(pathFile)) return;
+            //context.Response.WriteAsync(string.Concat("<script type=", '"', "text/javascript", '"',  ">", Environment.NewLine));
+            //using (StreamReader sr = File.OpenText(pathFile))
+            //{
+            //    string htmlLine = String.Empty;
+            //    while ((htmlLine = sr.ReadLine()) != null)
+            //    {
+            //        context.Response.WriteAsync(htmlLine);
+            //        context.Response.WriteAsync(Environment.NewLine);
+            //    }
+            //}
+            //context.Response.WriteAsync(string.Concat("</script>", Environment.NewLine));
             context.Response.WriteAsync(string.Concat("<script type=", '"', "text/javascript", '"', "src=", '"', "mvc/controller/index.js", '"', "></script>", Environment.NewLine));
             context.Response.WriteAsync(Environment.NewLine);
 

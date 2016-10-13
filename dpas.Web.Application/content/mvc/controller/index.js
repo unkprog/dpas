@@ -16,3 +16,4 @@ function Init() {
     (new View.Index()).ShotAuth();
 }
 Init();
+//# sourceMappingURL=index.js.map

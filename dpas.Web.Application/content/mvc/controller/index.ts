@@ -1,4 +1,4 @@
-﻿
+﻿declare var $: any;
 export module View {
     export class Index {
 
