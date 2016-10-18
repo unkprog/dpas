@@ -1,23 +1,29 @@
-﻿<!-- Modal Structure -->
-<div id="modal1" class="modal">
-    <div class="modal-content">
-        <h4>Авторизация</h4>
-        <form class="col s12">
-            <div class="row">
-                <div class="input-field col s12">
-                    <input id="login" type="text" class="validate">
-                    <label for="login">Пользователь</label>
-                </div>
+﻿
+
+    <div class="carousel">
+        <a class="carousel-item">
+            <div class="card-panel itemMenu">
+                <span class="blue-text text-darken-2">Новый проект</span>
             </div>
-            <div class="row">
-                <div class="input-field col s12">
-                    <input id="password" type="password" class="validate">
-                    <label for="password">Пароль</label>
-                </div>
+        </a>
+        <a class="carousel-item">
+            <div class="card-panel itemMenu">
+                <span class="blue-text text-darken-2">Открыть проект</span>
             </div>
-        </form>
-    </div>
-    <div class="modal-footer">
-        <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
-    </div>
+        </a>
+        <a class="carousel-item">
+            <div class="card-panel itemMenu">
+                <span class="blue-text text-darken-2">Настройки сервера</span>
+            </div>
+        </a>
 </div>
+
+    <script>
+        $('.carousel').carousel();
+    </script>
+<style>
+    .itemMenu {
+        height: 15em;
+        width: 15em;
+    }
+</style>
