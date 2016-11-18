@@ -1,4 +1,5 @@
 ﻿declare var $: any;
+declare var jQuery: any;
 export module View {
     export class Index {
 
@@ -13,6 +14,7 @@ export module View {
 }
 
 function Init() {
-   // (new View.Index()).ShowCarousel();
+    
+    
 }
 Init();

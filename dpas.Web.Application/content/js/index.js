@@ -46,7 +46,7 @@ $(document).ready(function () {
         dataType: "script",
         success: function (script, textStatus, jqXHR) {
 
-            loading = $('#loading');
+            loading = $('.dpas-loadbar');
             loading.show();
             content = $("#content");
             ////////nav_desktop = $("#nav-desktop");
