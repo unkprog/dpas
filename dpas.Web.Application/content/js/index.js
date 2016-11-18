@@ -30,10 +30,11 @@ function navigate(url, el, isAmber) {
                        //    eval(script.innerText);
                        //}
 
-                       var elAmber = isAmber === true ? el : $(".a-index");
-                       nav_desktop_a_spans.removeClass('amber-text').addClass('white-text');
-                       $(el).find('span').removeClass('white-text').addClass('amber-text');
-                       Materialize.fadeInImage(content);
+                       //////var elAmber = isAmber === true ? el : $(".a-index");
+                       //////nav_desktop_a_spans.removeClass('amber-text').addClass('white-text');
+                       //////$(el).find('span').removeClass('white-text').addClass('amber-text');
+                       content.css({ opacity: 1 });
+                       //Materialize.fadeInImage(content);
                        loading.hide();
                    });
     }
@@ -48,19 +49,19 @@ $(document).ready(function () {
             loading = $('#loading');
             loading.show();
             content = $("#content");
-            nav_desktop = $("#nav-desktop");
-            nav_desktop_a_spans = nav_desktop.find('a span');
-            div_top_offset = $("#div-top-offset");
-            div_top_offset.height($("#nav-header-navigation").height());
-            //$("#nav-desktop").on("click", "a", function (event) {
-            //    event.preventDefault();
-            //    navigate(event.currentTarget.href, event.currentTarget, true);
-            //});
+            ////////nav_desktop = $("#nav-desktop");
+            ////////nav_desktop_a_spans = nav_desktop.find('a span');
+            ////////div_top_offset = $("#div-top-offset");
+            ////////div_top_offset.height($("#nav-header-navigation").height());
+            //////////$("#nav-desktop").on("click", "a", function (event) {
+            //////////    event.preventDefault();
+            //////////    navigate(event.currentTarget.href, event.currentTarget, true);
+            //////////});
             var el = $(".a-index");
-            //$('#logo-container').on("click", function (event) {
-            //    event.preventDefault();
-            //    navigate(el[0].href, el[0], false);
-            //});
+            //////////$('#logo-container').on("click", function (event) {
+            //////////    event.preventDefault();
+            //////////    navigate(el[0].href, el[0], false);
+            //////////});
            
 
             (function (eventInfo) {

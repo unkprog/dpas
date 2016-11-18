@@ -3,11 +3,11 @@
 
   "dependencies": {
     "dpas.Core": "1.0.0-*",
-    "NETStandard.Library": "1.6.0",
-    "System.ComponentModel.Primitives": "4.1.0",
-    "System.Net.NameResolution": "4.0.0",
-    "System.ObjectModel": "4.0.12",
-    "System.Threading.Thread": "4.0.0"
+    "NETStandard.Library": "1.6.1",
+    "System.ComponentModel.Primitives": "4.3.0",
+    "System.Net.NameResolution": "4.3.0",
+    "System.ObjectModel": "4.3.0",
+    "System.Threading.Thread": "4.3.0"
   },
 
   "frameworks": {

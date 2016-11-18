@@ -9,16 +9,30 @@ html {
     min-height: 100%;
 }
 
-footer.page-footer {
-    margin: 0;
-    padding: 1px;
-    position: absolute;
-    bottom: 0;
+.dpas-header {
     width: 100%;
+    background: #ff9800;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    left: 0;
+    top: 0;
 }
 
-    footer.page-footer .footer-copyright {
-        height: 30px;
-        line-height: 30px;
-        margin-left: 0.5em;
-    }
+.dpas-content-header {
+    height: 45px;
+}
+
+.dpas-content {
+    width: 100%; /* Ширина слоя */
+    margin: 0 auto 50px; /* Выравнивание по центру */
+}
+
+.dpas-footer {
+    width: 100%;
+    background: #ff9800;
+    padding: 3px 10px;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+}

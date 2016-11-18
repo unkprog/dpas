@@ -1,15 +1,12 @@
 {
   "dependencies": {
-    "Microsoft.AspNetCore.Diagnostics": "1.0.0",
-    "Microsoft.AspNetCore.StaticFiles": "1.0.0",
-    "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0",
-    "Microsoft.Extensions.Logging.Console": "1.0.0",
-    "Microsoft.AspNetCore.Server.Kestrel": "1.0.1",
-    "Microsoft.NETCore.App": {
-      "type": "platform",
-      "version": "1.0.1"
-    },
-    "NETStandard.Library": "1.6.0",
+    "Microsoft.AspNetCore.Diagnostics": "1.1.0",
+    "Microsoft.AspNetCore.StaticFiles": "1.1.0",
+    "Microsoft.AspNetCore.Server.IISIntegration": "1.1.0",
+    "Microsoft.Extensions.Logging.Console": "1.1.0",
+    "Microsoft.AspNetCore.Server.Kestrel": "1.1.0",
+    "Microsoft.NETCore.App": "1.1.0",
+    "NETStandard.Library": "1.6.1",
     "dpas.Net.Http.Mvc": "1.0.0-*"
   },
 
@@ -30,7 +27,9 @@
     "emitEntryPoint": true,
     "preserveCompilationContext": true
   },
-
+  "runtimes": {
+    "win10-x64": {}
+  },
   "runtimeOptions": {
     "configProperties": {
       "System.GC.Server": true
