@@ -55,7 +55,7 @@ namespace dpas.Web.Application
                 var state = ControllerState.GetState(dpasKey);
 
                 bool isAjax = context.Request.Query.ContainsKey("ajax");
-                //string path = string.Concat(context.Request.PathBase);
+
                 if (isAjax && controllerInfo.Controller == "/nav")
                 {
                     string curPage = controllerInfo.Action;
@@ -67,45 +67,12 @@ namespace dpas.Web.Application
 
                     state["curpage"] = curPage;
 
-                    // context.Request.CurrentExecutionFilePath.Replace("/navigation", "").Replace("/curpage", ""));
-
-                    //    //if (string.IsNullOrEmpty(action))
-                    //    //{
-                    //    //    object objPage = context.Session["curPage"];
-                    //    //    if (objPage != null)
-                    //    //        action = objPage.ToString();
-                    //    //    else
-                    //    //    {
-                    //    //        action = "index";
-                    //    //        path = string.Empty;
-                    //    //        context.Session["curPage"] = action;
-                    //    //        context.Session["curPath"] = path;
-                    //    //    }
-                    //    //}
-
-                    //    if (string.IsNullOrEmpty(action) || action.ToLower() == "curpage")
-                    //    {
-                    //        object objPage = context.Session["curPage"];
-                    //        action = objPage != null ? objPage.ToString() : string.Empty;
-                    //        objPage = context.Session["curPath"];
-                    //        path = objPage != null ? objPage.ToString() : string.Empty;
-                    //    }
-
-                    //    if (string.IsNullOrEmpty(action))
-                    //    {
-                    //        action = "index";
-                    //        path = string.Empty;
-                    //    }
-                    //    path = path.Replace("/" + action, "");
-                    //    context.Session["curPage"] = action;
-                    //    context.Session["curPath"] = path;
-
-
+                    if (!state.GetBool("IsAuthentificated"))
+                        curPage = "auth";
                     Page(context, controllerInfo, curPage);
                 }
                 else
                     ReadFile(context, controllerInfo);
-                //context.Response.Redirect("/", true);
             });
 
             result.Start();
@@ -146,7 +113,7 @@ namespace dpas.Web.Application
             //    }
             //}
             //context.Response.WriteAsync(string.Concat("</script>", Environment.NewLine));
-            context.Response.WriteAsync(string.Concat("<script type=", '"', "text/javascript", '"', "src=", '"', "mvc/controller/index.js", '"', "></script>", Environment.NewLine));
+            context.Response.WriteAsync(string.Concat("<script type=", '"', "text/javascript", '"', "src=", '"', "mvc/controller/", curPage, ".js", '"', "></script>", Environment.NewLine));
             context.Response.WriteAsync(Environment.NewLine);
 
             //context.Response.Write(GACode);
