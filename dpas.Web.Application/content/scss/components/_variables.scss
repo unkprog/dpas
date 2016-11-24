@@ -77,6 +77,7 @@ $button-large-height: $button-height * 1.5 !default;
 $button-flat-color: #ffffff !default;
 $button-flat-disabled-color: lighten(#999, 10%) !default;
 $button-flat-background-color: $secondary-color !default;
+$button-flat-focus-background-color: lighten($secondary-color, 10%) !default;
 
 // Floating buttons
 $button-floating-background: $secondary-color !default;

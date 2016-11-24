@@ -3728,7 +3728,7 @@ button.btn-floating {
   .btn-flat:focus, .btn-flat:active {
     background-color: transparent; }
   .btn-flat:focus, .btn-flat:hover {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: #72bcf8;
     box-shadow: none; }
   .btn-flat:active {
     background-color: rgba(0, 0, 0, 0.2); }
