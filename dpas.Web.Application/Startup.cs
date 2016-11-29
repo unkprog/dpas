@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.IO;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System.IO;
 using dpas.Net.Http.Mvc;
-using dpas.Core.Extensions;
+using dpas.Web.Application.Controller;
+using dpas.Web.Application.Controller.Api;
 
 namespace dpas.Web.Application
 {
@@ -49,27 +51,20 @@ namespace dpas.Web.Application
                 }
 
                 ControllerInfo controllerInfo = new ControllerInfo(string.Concat(context.Request.Path.Value, context.Request.QueryString));
-
-                //System.Diagnostics.Debug.WriteLine(string.Concat("Handle(HttpContext context): ", controllerInfo));
-
-                var state = ControllerState.GetState(dpasKey);
+                Dictionary<string, object> state = ControllerState.GetState(dpasKey);
 
                 bool isAjax = context.Request.Query.ContainsKey("ajax");
 
                 if (isAjax && controllerInfo.Controller == "/nav")
                 {
-                    string curPage = controllerInfo.Action;
-                    if (curPage == "/curpage")
-                        curPage = state.GetString("curpage");
-
-                    if (string.IsNullOrEmpty(curPage))
-                        curPage = "index";
-
-                    state["curpage"] = curPage;
-
-                    if (!state.GetBool("IsAuthentificated"))
-                        curPage = "auth";
-                    Page(context, controllerInfo, curPage);
+                    new Navigation().Exec(context, controllerInfo, state);
+                }
+                else if (controllerInfo.Controller == "/api")
+                {
+                    if(controllerInfo.Action == "/auth")
+                        new Auth().Exec(context, controllerInfo, state);
+                    else if (controllerInfo.Action == "/prj")
+                        new Auth().Exec(context, controllerInfo, state);
                 }
                 else
                     ReadFile(context, controllerInfo);

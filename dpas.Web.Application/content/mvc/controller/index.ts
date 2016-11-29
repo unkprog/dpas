@@ -1,19 +1,56 @@
 ﻿declare var $: any;
+declare var navigateClear, navigate: any;
+declare var showError: any;
 export module View {
     export class Index {
         
-        //public ShowCarousel() {
-        //    // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
-        //   // $('#modal1').openModal();
-        //    $('.carousel').carousel({ no_wrap: true, padding: 50 });
-        //    $('.carousel').height(500);
-        //}
+        public Init() {
+            var that = this;
+            $("#modal-prj-form").submit(function (e) {
+                e.preventDefault();
+                $('#modal-prj-name').modal('close');
+            });
+
+
+            $('#modal-prj-name').modal({
+                dismissible: false,
+                complete: function () { that.NewProject(); }
+            });
+
+
+            $('#btnNewProject').on("click", function () {
+                $('#modal-prj-name').modal({
+                    dismissible: false,
+                    complete: function () { that.NewProject(); }
+                });
+
+                $('#modal-prj-name').modal('open');
+            });
+        }
+
+        public NewProject() {
+            if ('' + $('#prjName').val() === '') {
+                return;
+            }
+            navigateClear();
+            var data = { prjName: $('#prjName').val(), prjComment: $('#prjComment').val() };
+           
+            $.ajax({
+                type: "POST", url: location.protocol + '//' + location.host + '/api/prj',
+                async: true,
+                data: data,
+                dataType: "json",
+                success: function (result) {
+                    navigate("/nav/prj/editor");
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    showError(thrownError);
+                }
+            });
+        }
     }
 
 }
 
-function Init() {
-    
-    
-}
-Init();
+
+(new View.Index()).Init();

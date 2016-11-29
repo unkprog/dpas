@@ -1,16 +1,33 @@
-﻿using dpas.Net.Http.Mvc;
-using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.IO;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
+using dpas.Net.Http.Mvc;
+using dpas.Core.Extensions;
 
 namespace dpas.Web.Application.Controller
 {
-    public class Navigation
+    public class Navigation : IController
     {
-
-        private static void Page(HttpContext context, ControllerInfo controllerInfo, string curPage)
+        public virtual void Exec(HttpContext context, ControllerInfo controllerInfo, Dictionary<string, object> state)
         {
-            string pathFile = string.Concat(System.IO.Directory.GetCurrentDirectory(), "/content/mvc/view/", curPage, ".html");
+            string curPage = controllerInfo.Action;
+            if (curPage == "/curpage")
+                curPage = state.GetString("curpage");
+
+            if (string.IsNullOrEmpty(curPage))
+                curPage = "/index";
+
+            state["curpage"] = curPage;
+
+            if (!state.GetBool("IsAuthentificated"))
+                curPage = "/auth";
+            Page(context, controllerInfo, curPage);
+        }
+
+        private void Page(HttpContext context, ControllerInfo controllerInfo, string curPage)
+        {
+            string pathFile = string.Concat(System.IO.Directory.GetCurrentDirectory(), "/content/mvc/view", curPage, ".html");
             // System.Environment
             if (!File.Exists(pathFile)) return;
 
@@ -34,24 +51,5 @@ namespace dpas.Web.Application.Controller
             //context.Response.Write(GACode);
         }
 
-        private static void ReadFile(HttpContext context, ControllerInfo controllerInfo)
-        {
-            string path = controllerInfo.Path;
-            string pathFile = string.Concat(System.IO.Directory.GetCurrentDirectory(), "/content", path == "/" ? "/Index.html" : path);
-            // System.Environment
-            if (!File.Exists(pathFile)) return;
-
-            if (path.StartsWith("/css", StringComparison.OrdinalIgnoreCase)) context.Response.ContentType = "text/css";
-            else context.Response.ContentType = "text/html";
-            using (StreamReader sr = File.OpenText(pathFile))
-            {
-                string htmlLine = String.Empty;
-                while ((htmlLine = sr.ReadLine()) != null)
-                {
-                    context.Response.WriteAsync(htmlLine);
-                    context.Response.WriteAsync(Environment.NewLine);
-                }
-            }
-        }
     }
 }

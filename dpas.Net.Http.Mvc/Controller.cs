@@ -1,25 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 
 namespace dpas.Net.Http.Mvc
 {
     public interface IController
     {
+        void Exec(HttpContext context, ControllerInfo controllerInfo, Dictionary<string, object> state);
     }
 
     public class Controller : IController
     {
-        internal static Dictionary<string, Dictionary<string, IController>> dictionaryController = new Dictionary<string, Dictionary<string, IController>>();
-        internal static object lockObject = new object();
 
-        public static IController GetController(string key, string controllerName)
+        public virtual void Exec(HttpContext context, ControllerInfo controllerInfo, Dictionary<string, object> state)
         {
-            Dictionary<string, IController> controllers;
-            IController result = null;
-            if(dictionaryController.TryGetValue(key, out controllers))
-                controllers.TryGetValue(controllerName, out result);
-            return result;
+
         }
+
+
+        //internal static Dictionary<string, Dictionary<string, IController>> dictionaryController = new Dictionary<string, Dictionary<string, IController>>();
+        //internal static object lockObject = new object();
+
+        //public static IController GetController(string key, string controllerName)
+        //{
+        //    Dictionary<string, IController> controllers;
+        //    IController result = null;
+        //    if(dictionaryController.TryGetValue(key, out controllers))
+        //        controllers.TryGetValue(controllerName, out result);
+        //    return result;
+        //}
 
         //public static IController AddController(string controllerName, )
         //{

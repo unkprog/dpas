@@ -1,21 +1,13 @@
-﻿var content, nav_desktop, nav_desktop_a_spans, loading, div_top_offset;
-/*function navigate(url, el, isAmber) {
-    loading.show();
-    content.css({ opacity: 0 });
-    content.empty();
-    $.get(url, { ajax: true, cache: false, async: true }, function (data) {
-        content.html(data);
-        var elAmber = isAmber === true ? el : $(".a-index");
-        nav_desktop_a_spans.removeClass('amber-text').addClass('white-text');
-        $(el).find('span').removeClass('white-text').addClass('amber-text');
-        Materialize.fadeInImage(content);
-        loading.hide();
-    });
-}*/
+﻿var content, loading, modal_error, modal_error_content; //, nav_desktop, nav_desktop_a_spans, div_top_offset;
 
 var currentUrl;
+function navigateClear()
+{
+    currentUrl = '';
+}
+
 function navigate(url, el, isAmber) {
-    if (currentUrl !== url) {
+    if (currentUrl !== url)  {
         loading.show();
 
         content.css({ opacity: 0 });
@@ -39,16 +31,31 @@ function navigate(url, el, isAmber) {
                    });
     }
 }
+function showError(msg) {
+    if (modal_error === undefined) {
+        modal_error = $("#modal-error");
+        modal_error_content = $("#modal-error-content");
+        modal_error.modal({
+            dismissible: false,
+            
+        });
+        $("#modal-error-ok").on("click", function () { modal_error.modal('close'); });
+    }
+    modal_error_content.html(msg);
+    modal_error.modal('open');
+}
 
 $(document).ready(function () {
+    loading = $('.dpas-loadbar');
+    loading.show();
+    content = $("#content");
+
     $.ajax({
         url: "/mvc/dpas.application.js",
         dataType: "script",
         success: function (script, textStatus, jqXHR) {
 
-            loading = $('.dpas-loadbar');
-            loading.show();
-            content = $("#content");
+           
             ////////nav_desktop = $("#nav-desktop");
             ////////nav_desktop_a_spans = nav_desktop.find('a span');
             ////////div_top_offset = $("#div-top-offset");
