@@ -55,15 +55,18 @@ namespace dpas.Web.Application
 
                 bool isAjax = context.Request.Query.ContainsKey("ajax");
 
-                if (isAjax && controllerInfo.Controller == "/nav")
+                if (isAjax)
                 {
-                    new Navigation().Exec(context, controllerInfo, state);
+                    if (controllerInfo.Prefix == "/nav")
+                        new Navigation().Exec(context, controllerInfo, state);
+                    
                 }
-                else if (controllerInfo.Controller == "/api")
+                
+                else if (controllerInfo.Prefix == "/api")
                 {
-                    if(controllerInfo.Action == "/auth")
+                    if(controllerInfo.Controller == "/auth")
                         new Auth().Exec(context, controllerInfo, state);
-                    else if (controllerInfo.Action == "/prj")
+                    else if (controllerInfo.Controller == "/prj")
                         new Auth().Exec(context, controllerInfo, state);
                 }
                 else
