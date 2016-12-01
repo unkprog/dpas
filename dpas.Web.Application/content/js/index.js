@@ -100,17 +100,20 @@ $(document).ready(function () {
                     var target = getReference(event.target || event.srcElement);
                     // ищем все ссылки с классом 'ajax'
                     if (target && target.nodeName === 'A' && (' ' + target.className + ' ').indexOf('ajax') >= 0) {
-                        // заносим ссылку в историю
+                       
                         var r = target.href;
-                        history.pushState({ url: r }, null, r);
-                        //history.replaceState({ path: r }, '');
-                        // тут можете вызвать подгрузку данных и т.п.
-                        navigate(r, target, false);
-                        // не даем выполнить действие по умолчанию
-                        if (event.preventDefault) {
-                            event.preventDefault();
-                        } else {
-                            event.returnValue = false;
+                        if (r !== '') {
+                            // заносим ссылку в историю
+                            history.pushState({ url: r }, null, r);
+                            //history.replaceState({ path: r }, '');
+                            // тут можете вызвать подгрузку данных и т.п.
+                            navigate(r, target, false);
+                            // не даем выполнить действие по умолчанию
+                            if (event.preventDefault) {
+                                event.preventDefault();
+                            } else {
+                                event.returnValue = false;
+                            }
                         }
                     }
                 }, false);
