@@ -16,12 +16,13 @@ namespace dpas.Web.Application.Controller
                 curPage = state.GetString("curpage");
 
             if (string.IsNullOrEmpty(curPage))
-                curPage = "/index";
+                curPage = "/prj/editor";
+            //curPage = "/index";
 
             state["curpage"] = curPage;
 
-            if (!state.GetBool("IsAuthentificated"))
-                curPage = "/auth";
+            //if (!state.GetBool("IsAuthentificated"))
+            //    curPage = "/auth";
             Page(context, controllerInfo, curPage);
         }
 

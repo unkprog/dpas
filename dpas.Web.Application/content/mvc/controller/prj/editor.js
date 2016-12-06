@@ -11,6 +11,8 @@ var View;
                 $("#btnMainMenu").on("click", function (event) {
                     navigate("/nav/index");
                 });
+                $(".tree").treemenu({ delay: 300 }); //.openActive();
+                $('ul.tabs').tabs();
             };
             return Editor;
         }());

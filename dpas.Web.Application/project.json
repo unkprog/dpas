@@ -44,6 +44,7 @@
   },
 
   "scripts": {
+    "postcompile": [ "xcopy /y %project:Directory%/content/js %project:Directory%/../dpas.Service.Server/test" ],
     "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
   }
 }

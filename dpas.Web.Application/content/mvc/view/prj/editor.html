@@ -1,21 +1,116 @@
-﻿<div id="editor-menu">
-    <ul>
-        <li>
-            <div class="userView">
-                <div class="background">
-                    <img src="images/office.jpg">
-                </div>
-                <a href="#!user"><img class="circle" src="images/yuna.jpg"></a>
-                <a href="#!name"><span class="white-text name">John Doe</span></a>
-                <a href="#!email"><span class="white-text email">jdandturk@gmail.com</span></a>
+﻿<link href="/css/dpas.tree.css" rel="stylesheet" />
+
+<style>
+
+        .tree li,
+        .tree li > a,
+        .tree li > span {
+            padding: 4pt;
+            border-radius: 4px;
+        }
+
+            .tree li a {
+               /* color: #46CFB0;*/
+                text-decoration: none;
+                line-height: 20pt;
+                border-radius: 4px;
+            }
+
+                .tree li a:hover {
+                    background-color: #64b5f6;
+                    color: #fff;
+                }
+
+    .active {
+        background-color: #64b5f6;
+        color: white;
+    }
+
+        .active a {
+            color: #fff;
+        }
+
+    .tree li a.active:hover {
+        background-color: #64b5f6;
+    }
+
+    #editor-menu {
+        margin: 0;
+        background: red;
+    }
+</style>
+
+<div id="editor-content" class="row">
+    <div id="editor-menu" class="col s2">
+        <ul class="tree">
+            <li><a href="">Home</a></li>
+            <li>
+                <span>Category</span>
+                <ul>
+                    <li>
+                        <a href="#">jQuery</a>
+                        <ul>
+                            <li><a href="#">jQuery</a></li>
+                            <li><a href="#">jQuery UI</a></li>
+                            <li><a href="#">jQuery Mobile</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#">JavaScript</a>
+                        <ul>
+                            <li><a class="active" href="#">AngularJS</a></li>
+                            <li><a href="#">React</a></li>
+                            <li><a href="#">Backbone</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#suits">Golang</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#about">About</a>
+                <ul>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li>
+                        <a href="#">Jobs</a>
+                        <ul>
+                            <li><a href="#jobs1">Job 1</a></li>
+                            <li><a href="#jobs2">Job 2</a></li>
+                            <li><a href="#jobs3">Job 3</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div id="editor-content" class="col s10">
+        <div class="row">
+            <ul class="tabs">
+                <li class="tab col s6"><a href="#designer-view">Дизайнер</a></li>
+                <li class="tab col s6"><a class="active" href="#code-view">Код</a></li>
+            </ul>
+            
+            <div id="designer-view" class="col s12">
+                <a id="btnMainMenu" class="waves-effect waves-teal btn-flat btn-large dashboard-item dashboard-item-50 blue lighten-2 valign-wrapper"><span class="valign">Главное меню</span></a>
             </div>
-        </li>
-        <li><a href="#!"><i class="material-icons">cloud</i>First Link With Icon</a></li>
-        <li><a href="#!">Second Link</a></li>
-        <li><div class="divider"></div></li>
-        <li><a class="subheader">Subheader</a></li>
-        <li><a class="waves-effect" href="#!">Third Link With Waves</a></li>
-    </ul>
+            <div id="code-view" class="col s12">
+                <textarea id="code-view-textarea" class="materialize-textarea">
+                    class Record
+                    {
+                    }
+                </textarea>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script type="text/javascript" src="/js/dpas.tree.js"></script>
+<!--
+<div id="editor-menu">
+    <ul class="collapsible" data-collapsible="expandable"></ul>
 </div>
 <div id="editor-content">
     <div>
@@ -78,7 +173,7 @@
         Редактор
     </div>
 </div>
-
+ 
 <style>
 #editor-menu { /* Левая колонка */
     float: left; /* Обтекание справа */
@@ -93,3 +188,4 @@
     border: 1px solid #333; /* Параметры рамки */
    }
 </style>
+       -->
