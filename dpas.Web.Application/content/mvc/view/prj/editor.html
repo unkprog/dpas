@@ -1,44 +1,11 @@
 ﻿<link href="/css/dpas.tree.css" rel="stylesheet" />
 
 <style>
-    .tree {
-        margin-top: 0;
-    }
-        .tree li,
-        .tree li > a,
-        .tree li > span {
-            padding-left: 4pt;
-            /*border-radius: 4px;*/
-        }
 
-            .tree li a {
-               /* color: #46CFB0;*/
-                text-decoration: none;
-                line-height: 20pt;
-                /*border-radius: 4px;*/
-            }
-
-                .tree li a:hover {
-                    background-color: #64b5f6;
-                    color: #fff;
-                }
-
-    .tree-active {
-        background-color: #64b5f6;
-        color: white;
-    }
-
-        /*.active a {
-            color: #fff;
-        }*/
-
-    .tree li a.active:hover {
-        background-color: #64b5f6;
-    }
 
     #editor-menu {
         margin: 0;
-        background: red;
+        /*background: red;*/
         position:absolute;
         overflow:auto;
         width:255px;
@@ -46,7 +13,7 @@
 
     #editor-content{
         overflow:hidden;
-        background: green;
+        /*background: green;*/
         margin-left:255px;
     }
 
@@ -117,12 +84,13 @@
         width:255px;
         margin-top: 70px;
         overflow: auto;
+        padding-right: 6pt;
     }
 
     #editor-designer-view, #editor-code-view {
         position: relative;
         overflow: auto;
-        background: yellow;
+        /*background: yellow;*/
     }
 
     #editor-designer-view {
@@ -145,7 +113,7 @@
         </li>
     </ul>
     <div id="editor-menu-tree">
-        <ul id="editor-menu-tree-view" class="tree">
+        <ul id="editor-menu-tree-view" class="dpas-tree">
             <li>
                 <span>Проект</span>
                 <ul>

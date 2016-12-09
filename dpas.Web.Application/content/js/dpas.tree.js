@@ -5,12 +5,12 @@
         options.delay = options.delay || 0;
         options.openActive = options.openActive || false;
         options.closeOther = options.closeOther || false;
-        options.activeSelector = options.activeSelector || ".active";
+        options.activeSelector = options.activeSelector || ".dpas-tree-active";
 
-        that.addClass("treemenu");
+        that.addClass("dpas-treemenu");
 
         if (!options.nonroot) {
-            that.addClass("treemenu-root");
+            that.addClass("dpas-treemenu-root");
         }
 
         options.nonroot = true;
@@ -18,40 +18,40 @@
         that.find("> li").each(function () {
             e = $(this);
             var subtree = e.find('> ul');
-            var button = e.find('.toggler').eq(0);
+            var button = e.find('.dpas-toggler').eq(0);
 
             if (button.length == 0) {
                 // create toggler
                 var button = $('<span>');
-                button.addClass('toggler');
+                button.addClass('dpas-toggler');
                 e.prepend(button);
             }
 
             if (subtree.length > 0) {
                 subtree.hide();
 
-                e.addClass('tree-closed');
+                e.addClass('dpas-tree-closed');
 
                 e.find(button).click(function () {
                     var li = $(this).parent('li');
 
-                    if (options.closeOther && li.hasClass('tree-closed')) {
-                        var siblings = li.parent('ul').find("li:not(.tree-empty)");
-                        siblings.removeClass("tree-opened");
-                        siblings.addClass("tree-closed");
+                    if (options.closeOther && li.hasClass('dpas-tree-closed')) {
+                        var siblings = li.parent('ul').find("li:not(.dpas-tree-empty)");
+                        siblings.removeClass("dpas-tree-opened");
+                        siblings.addClass("dpas-tree-closed");
                         siblings.removeClass(options.activeSelector);
                         siblings.find('> ul').slideUp(options.delay);
                     }
 
                     li.find('> ul').slideToggle(options.delay);
-                    li.toggleClass('tree-opened');
-                    li.toggleClass('tree-closed');
+                    li.toggleClass('dpas-tree-opened');
+                    li.toggleClass('dpas-tree-closed');
                     li.toggleClass(options.activeSelector);
                 });
 
                 $(this).find('> ul').treemenu(options);
             } else {
-                $(this).addClass('tree-empty');
+                $(this).addClass('dpas-tree-empty');
             }
         });
 

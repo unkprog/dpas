@@ -1,23 +1,77 @@
-﻿.treemenu li {
+﻿.dpas-treemenu li {
     list-style: none;
 }
-.treemenu .toggler {
+.dpas-treemenu .dpas-toggler {
     cursor: pointer;
+    position: absolute;
+    padding: 4pt;
+    right: 0px;
+    display: block;
 }
-    .treemenu .toggler:before {
-        display: inline-block;
+    .dpas-treemenu .dpas-toggler:before {
         margin-right: 2pt;
     }
-li.tree-empty > .toggler {
+li.dpas-tree-empty > .dpas-toggler {
     opacity: 0.3;
     cursor: default;
 }
-    li.tree-empty > .toggler:before {
+    li.dpas-tree-empty > .dpas-toggler:before {
         content: "\2212";
     }
-li.tree-closed > .toggler:before {
+li.dpas-tree-closed > .dpas-toggler:before {
     content: "+";
 }
-li.tree-opened > .toggler:before {
+li.dpas-tree-opened > .dpas-toggler:before {
     content: "\2212";
 }
+
+    .dpas-tree {
+        margin-top: 0;
+        /*background:green;*/
+        position:relative;
+    }
+        .dpas-tree li,
+        .dpas-tree li > a,
+        .dpas-tree li > span {
+            display: block;
+            padding-left:6pt;
+            border-radius: 2px;
+            transition: .3s ease-out;
+        }
+     
+        .dpas-tree li > span {
+            padding: 2pt 4pt;
+        }
+
+            .dpas-tree li a {
+               /* color: #46CFB0;*/
+                text-decoration: none;
+                line-height: 20pt;
+                 padding: 2pt 4pt;
+                 color:rgba(0, 0, 0, 0.87)
+                /*border-radius: 4px;*/
+            }
+
+                .dpas-tree li a:hover {
+                    background-color: #64b5f6 !important; 
+                    /*#333;*/
+                    color: #fff;
+                    box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12), 0px 3px 1px -2px rgba(0,0,0,0.2);
+                }
+
+    .dpas-tree-active {
+         background-color: #64b5f6 !important; 
+                    /*#333;*/
+        color: white;
+    }
+
+        /*.active a {
+            color: #fff;
+        }*/
+
+    .dpas-tree li a.dpas-active:hover {
+         background-color: #64b5f6 !important; 
+                    /*#333;*/
+                                       box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12), 0px 3px 1px -2px rgba(0,0,0,0.2);
+
+    }

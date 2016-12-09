@@ -36,21 +36,18 @@ var View;
                 var drawItemTree = function (curItem) {
                     var isReference = false || curItem.type === 0 || curItem.type === 3 || curItem.type === 4;
                     var result = '<li>';
-                    if (isReference) {
-                        result += '<a id="';
-                        result += curItem.path;
-                        result += '" data-id="';
-                        result += ids.length.toString();
-                        result += '">';
-                        ids.push(curItem);
-                    }
-                    else
-                        result += '<span>';
+                    //if (isReference) {
+                    result += '<a id="';
+                    result += curItem.path;
+                    result += '" data-id="';
+                    result += ids.length.toString();
+                    result += '">';
+                    ids.push(curItem);
+                    //}
+                    //else
+                    //    result += '<span>';
                     result += curItem.name;
-                    result += isReference ? '</a>' : '</span>';
-                    if (isReference) {
-                        result += '</a>';
-                    }
+                    result += '</a>'; //isReference ? '</a>' : '</span>';
                     if (curItem.children !== undefined) {
                         for (var i = 0, icount = curItem.children.length; i < icount; i++) {
                             result += '<ul>';
