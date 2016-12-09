@@ -1,20 +1,21 @@
 ﻿(function ($) {
-    $.fn.treemenu = function (options) {
-        options = options || {};
+    $.fn.treemenu = function (a_options) {
+        var that = this;
+        var options = a_options || {};
         options.delay = options.delay || 0;
         options.openActive = options.openActive || false;
         options.closeOther = options.closeOther || false;
         options.activeSelector = options.activeSelector || ".active";
 
-        this.addClass("treemenu");
+        that.addClass("treemenu");
 
         if (!options.nonroot) {
-            this.addClass("treemenu-root");
+            that.addClass("treemenu-root");
         }
 
         options.nonroot = true;
 
-        this.find("> li").each(function () {
+        that.find("> li").each(function () {
             e = $(this);
             var subtree = e.find('> ul');
             var button = e.find('.toggler').eq(0);
@@ -54,27 +55,27 @@
             }
         });
 
-        if (options.openActive) {
-            var cls = this.attr("class");
+        //if (options.openActive) {
+        //    var cls = this.attr("class");
 
-            this.find(options.activeSelector).each(function () {
-                var el = $(this).parent();
+        //    this.find(options.activeSelector).each(function () {
+        //        var el = $(this).parent();
 
-                while (el.attr("class") !== cls) {
-                    el.find('> ul').show();
-                    if (el.prop("tagName") === 'UL') {
-                        el.show();
-                    } else if (el.prop("tagName") === 'LI') {
-                        el.removeClass('tree-closed');
-                        el.addClass("tree-opened");
-                        el.show();
-                    }
+        //        while (el.attr("class") !== cls) {
+        //            el.find('> ul').show();
+        //            if (el.prop("tagName") === 'UL') {
+        //                el.show();
+        //            } else if (el.prop("tagName") === 'LI') {
+        //                el.removeClass('tree-closed');
+        //                el.addClass("tree-opened");
+        //                el.show();
+        //            }
 
-                    el = el.parent();
-                }
-            });
-        }
+        //            el = el.parent();
+        //        }
+        //    });
+        //}
 
-        return this;
+        return that;
     }
 })(jQuery);

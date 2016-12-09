@@ -7,15 +7,15 @@
         .tree li,
         .tree li > a,
         .tree li > span {
-            padding: 4pt;
-            border-radius: 4px;
+            padding-left: 4pt;
+            /*border-radius: 4px;*/
         }
 
             .tree li a {
                /* color: #46CFB0;*/
                 text-decoration: none;
                 line-height: 20pt;
-                border-radius: 4px;
+                /*border-radius: 4px;*/
             }
 
                 .tree li a:hover {
@@ -115,7 +115,7 @@
 
     #editor-menu-tree {
         width:255px;
-        margin-top: 64px;
+        margin-top: 70px;
         overflow: auto;
     }
 
@@ -145,7 +145,7 @@
         </li>
     </ul>
     <div id="editor-menu-tree">
-        <ul class="tree">
+        <ul id="editor-menu-tree-view" class="tree">
             <li>
                 <span>Проект</span>
                 <ul>
@@ -188,6 +188,7 @@
 
         <div id="editor-designer-view" >
             <a id="btnMainMenu" class="waves-effect waves-teal btn-flat btn-large dashboard-item dashboard-item-50 blue lighten-2 valign-wrapper"><span class="valign">Главное меню</span></a>
+            <a id="btnMainMenu" class="waves-effect waves-teal btn dashboard-item dashboard-item-50 blue lighten-2 valign-wrapper"><span class="valign">Главное меню</span></a>
 
             <ul class="collection">
                 <li class="collection-item avatar">
