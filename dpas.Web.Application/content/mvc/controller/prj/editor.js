@@ -69,7 +69,7 @@ var View;
                 for (i = 0, icount = ids.length; i < icount; i++) {
                     var elItem = ids[i];
                     var el = $(document.getElementById(elItem.path));
-                    el.elItem = elItem;
+                    //el.elItem = elItem;
                     el.click(function () {
                         alert(that['ids'][$(this).data('id')].path);
                     });

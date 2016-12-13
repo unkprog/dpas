@@ -23,6 +23,8 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dpas.Net.Http", "dpas.Net.H
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dpas.Net.Http.Mvc", "dpas.Net.Http.Mvc\dpas.Net.Http.Mvc.xproj", "{438A85B0-72A0-4BB1-9991-20CDD45A8B9C}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dpas.Service.Project", "dpas.Service.Project\dpas.Service.Project.xproj", "{A4F3D22A-F28F-42EC-87B7-3430DBAFC91E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{438A85B0-72A0-4BB1-9991-20CDD45A8B9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{438A85B0-72A0-4BB1-9991-20CDD45A8B9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{438A85B0-72A0-4BB1-9991-20CDD45A8B9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4F3D22A-F28F-42EC-87B7-3430DBAFC91E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4F3D22A-F28F-42EC-87B7-3430DBAFC91E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4F3D22A-F28F-42EC-87B7-3430DBAFC91E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4F3D22A-F28F-42EC-87B7-3430DBAFC91E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
