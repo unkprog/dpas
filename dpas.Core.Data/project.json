@@ -3,7 +3,6 @@
 
   "dependencies": {
     "dpas.Core": "1.0.0-*",
-    "dpas.Core.Data": "1.0.0-*",
     "NETStandard.Library": "1.6.0"
   },
 

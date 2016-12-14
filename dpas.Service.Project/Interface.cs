@@ -11,12 +11,12 @@ namespace dpas.Service.Project
 
         string Description { get; }
 
-        bool Rename(string Name, string Description);
+        void Rename(string Name, string Description);
 
         IList<IProject> ProjectDependencies { get; }
 
-        void AddPojectDependency(IProject Project);
-        void DeletePojectDependency(IProject Project);
+        void AddProjectDependency(IProject Project);
+        void DeleteProjectDependency(IProject Project);
     }
 
 
