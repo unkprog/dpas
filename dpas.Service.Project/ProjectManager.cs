@@ -2,22 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using dpas.Core;
+using dpas.Core.IO;
 using dpas.Core.Data;
+using System.Xml;
 
 namespace dpas.Service.Project
 {
-    public class ProjectManager : DataObject, IProjectManager
+    public class ProjectManager : DataObject, IProjectManager, IReaderXml, IWriterXml
     {
         List<IProject> _Projects;
-
 
         public ProjectManager(object aOwner) : base(aOwner)
         {
             _Projects = new List<IProject>();
         }
 
-
+        #region IProjectManager
         /// <summary>
         /// Список проектов
         /// </summary>
@@ -38,12 +38,7 @@ namespace dpas.Service.Project
         public IProject Create(string aName, string aDecription)
         {
             IProject result = new Project(this, aName, aDecription);
-            var find = FindProject(result);
-            if(find == null)
-            {
-                _Projects.Add(result);
-                SetState(ObjectState.Modified);
-            }
+            Save(result);
             return result;
         }
 
@@ -71,6 +66,10 @@ namespace dpas.Service.Project
             return _Projects.FirstOrDefault(f => f.Name == aName);
         }
 
+        /// <summary>
+        /// Удаление проекта
+        /// </summary>
+        /// <param name="aProject">Удаляемый проект</param>
         public void Delete(IProject aProject)
         {
             var find = FindProject(aProject);
@@ -82,17 +81,21 @@ namespace dpas.Service.Project
             
         }
 
-        public bool Save(IProject Project)
+        /// <summary>
+        /// Сохранить проект
+        /// </summary>
+        /// <param name="aProject">Сохраняемый проект</param>
+        public void Save(IProject aProject)
         {
-            if (!IsStateNormal)
+            var find = FindProject(aProject);
+            if (find == null)
             {
-                throw new NotImplementedException();
-                return true;
+                _Projects.Add(aProject);
+                SetState(ObjectState.Modified);
             }
-            return false;
         }
 
-
+        #endregion
 
         protected override void Dispose(bool disposing)
         {
@@ -103,5 +106,38 @@ namespace dpas.Service.Project
             }
             base.Dispose(disposing);
         }
+
+        #region IReaderXml
+        public void Read(XmlReader Reader)
+        {
+            _Projects.Clear();
+            while (Reader.Read() && Reader.NodeType != XmlNodeType.EndElement)
+            {
+                if (Reader.NodeType == XmlNodeType.Element && Reader.Name == "Project")
+                {
+                    Save(Create(Reader.GetAttribute("Name"), Reader.GetAttribute("Description")));
+                }
+            }
+        
+        }
+        #endregion
+
+        #region IWriterXml
+        public void Write(XmlWriter Writer)
+        {
+            //Writer.WriteString(Environment.NewLine);
+            Writer.WriteStartElement("Projects");
+            for (int i = 0, icount = _Projects.Count; i < icount; i++)
+            {
+                //Writer.WriteString(string.Concat(Environment.NewLine, "  "));
+                Writer.WriteStartElement("Project");
+                Writer.WriteAttributeString("Name", _Projects[i].Name);
+                Writer.WriteAttributeString("Description", _Projects[i].Description);
+                Writer.WriteEndElement();
+            }
+            //Writer.WriteString(Environment.NewLine);
+            Writer.WriteEndElement();
+        }
+        #endregion
     }
 }

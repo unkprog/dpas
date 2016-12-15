@@ -2,9 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace dpas.Service.Project
 {
+    
+    public interface IRead
+    {
+        void Read();
+    }
+
     public interface IProject
     {
         string Name { get; }
@@ -26,7 +33,7 @@ namespace dpas.Service.Project
 
         IProject Create(string Name, string Decription);
         void Delete(IProject Project);
-        bool Save(IProject Project);
+        void Save(IProject Project);
     }
 
 }
