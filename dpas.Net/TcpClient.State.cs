@@ -28,7 +28,7 @@
         private void SetState(TcpClentState state)
         {
             State = state;
-            if (this.Settings.IsLogging)
+            if (Settings.IsLogging)
                 WriteToLog(string.Concat("State=", State));
         }
 

@@ -61,16 +61,16 @@ namespace dpas.Net.Http
 
             if (!mappingExtMime.TryGetValue(httpFile.FileExt, out contentType))
                 contentType = Mime.Application.Unknown;
-           
 
-            this.Response.Parameters[HttpHeader.ContentType] = contentType;
+
+            Response.Parameters[HttpHeader.ContentType] = contentType;
             using (FileStream fileStream = File.Open(filePath, FileMode.Open))
             {
                 int bufferSize = 4096;
                 byte[] buffer = new byte[bufferSize];
                 int readBytesCount = 0;
                 while ((readBytesCount = fileStream.Read(buffer, 0, bufferSize)) > 0)
-                    this.Response.Stream.Write(buffer, 0, readBytesCount);
+                    Response.Stream.Write(buffer, 0, readBytesCount);
             }
             base.OnExecute();
         }

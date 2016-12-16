@@ -16,15 +16,15 @@ namespace dpas.Net
         /// <returns>True - в случае успешной остановки сервера</returns>
         public async Task<bool> StopAsync()
         {
-            if (await Task.Run(() => this.CheckStop()))
-                return await Task.Run(() => this.Stop());
+            if (await Task.Run(() => CheckStop()))
+                return await Task.Run(() => Stop());
             else
                 return false;
         }
 
         private bool CheckStop()
         {
-            if (this.State != TcpServer.ServerState.Started)
+            if (State != TcpServer.ServerState.Started)
             {
                 WriteToLog("Сервер не запущен...");
                 return false;
@@ -69,7 +69,7 @@ namespace dpas.Net
         }
         protected override PoolSocketAsyncEventArgs CreatePoolSocketAsyncEventArgs()
         {
-            return new PoolSocketAsyncEventArgs(this, this.Settings.MaxConnections, this.OnSocketAsyncEventArgsCompleted
+            return new PoolSocketAsyncEventArgs(this, Settings.MaxConnections, OnSocketAsyncEventArgsCompleted
                 , null //() => { return new TcpSocketAsyncEventArgs(this.Settings.BufferSize); }
                 , null //(e)=> { }
                 );
@@ -77,15 +77,15 @@ namespace dpas.Net
 
         public async Task<bool> StartAsync()
         {
-            if (await Task.Run(() => this.CheckStart()))
-                return await Task.Run(() => this.Start());
+            if (await Task.Run(() => CheckStart()))
+                return await Task.Run(() => Start());
             else
                 return false;
         }
 
         private bool CheckStart()
         {
-            if (!(this.State == TcpServer.ServerState.Unknown || this.State == ServerState.Stopped))
+            if (!(State == TcpServer.ServerState.Unknown || State == ServerState.Stopped))
             {
                 WriteToLog(string.Concat("Сервер находится в статусе ", State, ", запуск невозможен..."));
                 return false;
@@ -98,14 +98,14 @@ namespace dpas.Net
 
         private bool Start()
         {
-            if (!CreateSocket(string.Empty, this.Settings.Port)) return false;
+            if (!CreateSocket(string.Empty, Settings.Port)) return false;
             InitServer();
             try
             {
                 // Биндим слушателя к локальному IP
                 socket.Bind(endpoint);
                 // Запускаем прослушиватель и ждем подключений
-                socket.Listen(this.Settings.MaxConnections);
+                socket.Listen(Settings.MaxConnections);
                 SetState(ServerState.Started);
                 OnStartHandle();
                 LoopProcessAccept();
@@ -125,7 +125,7 @@ namespace dpas.Net
         /// </summary>
         private void LoopProcessAccept()
         {
-            while (this.IsStarted)
+            while (IsStarted)
             {
                 listenEvent.Reset();
 

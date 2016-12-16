@@ -5,13 +5,14 @@ using System.Threading.Tasks;
 using dpas.Core.IO;
 using dpas.Core.Data;
 using System.Xml;
+using System.IO;
 
 namespace dpas.Service.Project
 {
     public class ProjectManager : DataObject, IProjectManager, IReaderXml, IWriterXml
     {
         List<IProject> _Projects;
-
+        private string pathProjects = "Projects";
         public ProjectManager(object aOwner) : base(aOwner)
         {
             _Projects = new List<IProject>();
@@ -87,6 +88,7 @@ namespace dpas.Service.Project
         /// <param name="aProject">Сохраняемый проект</param>
         public void Save(IProject aProject)
         {
+            SaveProject(aProject);
             var find = FindProject(aProject);
             if (find == null)
             {
@@ -95,6 +97,59 @@ namespace dpas.Service.Project
             }
         }
 
+        private void CheckProjectsDirectory()
+        {
+            if (!Directory.Exists(pathProjects))
+                Directory.CreateDirectory(pathProjects);
+        }
+        public void SaveProject(IProject aProject)
+        {
+            CheckProjectsDirectory();
+            string projectFile = string.Concat(pathProjects, @"\\", aProject.Name);
+            ((Project)aProject).Save(projectFile);
+        }
+
+
+        public void Save()
+        {
+            CheckProjectsDirectory();
+
+            for(int i=0, icount=_Projects.Count;i<icount;i++)
+                SaveProject(_Projects[i]);
+
+            string projectsFile = string.Concat(pathProjects, @"\\projects.dps");
+            using (TextWriter textWriter = File.CreateText(projectsFile))
+            {
+                using (XmlWriter xmlWriter = XmlWriter.Create(textWriter, new XmlWriterSettings() { Indent = true, IndentChars = "\t", NewLineChars = System.Environment.NewLine }))
+                {
+                    xmlWriter.WriteStartDocument();
+                    Write(xmlWriter);
+                    xmlWriter.WriteEndDocument();
+                }
+            }
+
+
+        }
+
+        public void Read()
+        {
+            CheckProjectsDirectory();
+
+            string projectsFile = string.Concat(pathProjects, @"\\projects.dps");
+
+            using (XmlReader xmlReader = XmlReader.Create(projectsFile))
+            {
+                while (xmlReader.Read())
+                {
+                    if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name == "Projects")
+                    {
+                        Read(xmlReader);
+                    }
+                }
+            }
+        }
+
+        
         #endregion
 
         protected override void Dispose(bool disposing)

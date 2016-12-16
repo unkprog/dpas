@@ -22,9 +22,9 @@ namespace dpas.Net.Http
 
         public void Execute()
         {
-            this.Response = new HttpResponse(Request);
-            this.OnExecute();
-            this.Response.StreamClose();
+            Response = new HttpResponse(Request);
+            OnExecute();
+            Response.StreamClose();
         }
 
         public virtual void OnExecute()

@@ -28,13 +28,13 @@ namespace dpas.Net
             // Определяем, какой тип операции был завершен и вызываем соответствующий обработчик
             switch (e.LastOperation)
             {
-                case SocketAsyncOperation.Accept    : this.ProcessAccept(ee); break;
-                case SocketAsyncOperation.Connect   : this.ProcessConnect(ee); break;
-                case SocketAsyncOperation.Disconnect: this.ProcessDisconnect(ee); break;
-                case SocketAsyncOperation.Receive   : this.ProcessReceive(ee); break;
-                case SocketAsyncOperation.Send      : this.ProcessSend(ee); break;
+                case SocketAsyncOperation.Accept    : ProcessAccept(ee); break;
+                case SocketAsyncOperation.Connect   : ProcessConnect(ee); break;
+                case SocketAsyncOperation.Disconnect: ProcessDisconnect(ee); break;
+                case SocketAsyncOperation.Receive   : ProcessReceive(ee); break;
+                case SocketAsyncOperation.Send      : ProcessSend(ee); break;
                 default:
-                    this.ProcessOther(ee); break;
+                    ProcessOther(ee); break;
             }
         }
 
@@ -78,7 +78,7 @@ namespace dpas.Net
         protected virtual void ProcessReceive(TcpSocketAsyncEventArgs e)
         {
             // Если количество переданных байтов 0 или принимающий сокет удален, то закроем соединение
-            if (e.BytesTransferred == 0 || this.socket == null)
+            if (e.BytesTransferred == 0 || socket == null)
             {
 #if DEBUG
                 if (isLogging)

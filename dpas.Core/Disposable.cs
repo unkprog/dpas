@@ -27,7 +27,7 @@ namespace dpas.Core
         {
             if (!IsDisposed)
             {
-                this.Dispose(true);
+                Dispose(true);
                 System.GC.SuppressFinalize(this);
             }
         }

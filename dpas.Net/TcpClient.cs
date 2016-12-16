@@ -12,8 +12,8 @@ namespace dpas.Net
         /// <returns>True - в случае успешного отключения сервера</returns>
         public async Task<bool> DisconnectAsync()
         {
-            if (await Task.Run(() => this.CheckDisconnect()))
-                return await Task.Run(() => this.Disconnect());
+            if (await Task.Run(() => CheckDisconnect()))
+                return await Task.Run(() => Disconnect());
             else
                 return false;
         }
@@ -24,7 +24,7 @@ namespace dpas.Net
         /// <returns>True - в случае если подключены к серверу</returns>
         private bool CheckDisconnect()
         {
-            if (this.State != TcpClentState.Connect)
+            if (State != TcpClentState.Connect)
             {
                 WriteToLog("Клиент не подключен к серверу...");
                 return false;
@@ -75,8 +75,8 @@ namespace dpas.Net
         /// <returns>True - в случае успешного завершения</returns>
         public async Task<bool> ConnectAsync()
         {
-            if (await Task.Run(() => this.CheckConnect()))
-                return await Task.Run(() => this.Connect());
+            if (await Task.Run(() => CheckConnect()))
+                return await Task.Run(() => Connect());
             else
                 return false;
         }
@@ -87,7 +87,7 @@ namespace dpas.Net
         /// <returns>True - в случае если не подключены к серверу</returns>
         private bool CheckConnect()
         {
-            if (!(this.State ==  TcpClentState.Unknown || this.State == TcpClentState.Disconnect))
+            if (!(State ==  TcpClentState.Unknown || State == TcpClentState.Disconnect))
             {
                 WriteToLog(string.Concat("Клиент находится в статусе ", State, ", подключение невозможно..."));
                 return false;
@@ -109,7 +109,7 @@ namespace dpas.Net
         /// <returns>True - в случае успешного завершения</returns>
         private bool Connect()
         {
-            if (!CreateSocket(this.Settings.Server, this.Settings.Port)) return false;
+            if (!CreateSocket(Settings.Server, Settings.Port)) return false;
             InitClient();
             try
             {

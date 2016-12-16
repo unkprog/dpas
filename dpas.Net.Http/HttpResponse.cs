@@ -54,12 +54,12 @@ namespace dpas.Net.Http
             {
                 if ((request.SupportCompression & (int)HttpCompress.Gzip) == (int)HttpCompress.Gzip)
                 {
-                    this.Parameters[HttpHeader.ContentEncoding] = "gzip";
+                    Parameters[HttpHeader.ContentEncoding] = "gzip";
                     streamCompress = new GZipStream(memoryStream, CompressionMode.Compress, true);
                 }
                 else if ((request.SupportCompression & (int)HttpCompress.Deflate) == (int)HttpCompress.Deflate)
                 {
-                    this.Parameters[HttpHeader.ContentEncoding] = "deflate";
+                    Parameters[HttpHeader.ContentEncoding] = "deflate";
                     streamCompress = new DeflateStream(memoryStream, CompressionMode.Compress, true);
                 }
             }

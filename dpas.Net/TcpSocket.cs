@@ -91,7 +91,7 @@ namespace dpas.Net
         /// <returns>Пул объектов аргументов для асинхронного сокета</returns>
         protected virtual PoolSocketAsyncEventArgs CreatePoolSocketAsyncEventArgs()
         {
-            return new PoolSocketAsyncEventArgs(this, 10, this.OnSocketAsyncEventArgsCompleted, null, null);
+            return new PoolSocketAsyncEventArgs(this, 10, OnSocketAsyncEventArgsCompleted, null, null);
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace dpas.Net
         /// <returns>True - в случае успешной отправки данных</returns>
         public async Task<bool> SendAsync(byte[] data, Socket socketTo = null)
         {
-            return await Task.Run(() => this.Send(data, socketTo == null ? socket : socketTo));
+            return await Task.Run(() => Send(data, socketTo == null ? socket : socketTo));
         }
 
 

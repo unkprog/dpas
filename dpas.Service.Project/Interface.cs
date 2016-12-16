@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Xml;
+﻿using System.Collections.Generic;
+using dpas.Core.IO;
 
 namespace dpas.Service.Project
 {
@@ -12,7 +9,7 @@ namespace dpas.Service.Project
         void Read();
     }
 
-    public interface IProject
+    public interface IProject : /*IReaderXml,*/ IWriterXml
     {
         string Name { get; }
 

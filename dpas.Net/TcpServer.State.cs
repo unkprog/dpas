@@ -25,7 +25,7 @@
         private void SetState(ServerState state)
         {
             State = state;
-            if (this.Settings.IsLogging)
+            if (Settings.IsLogging)
                 WriteToLog(string.Concat("State=", State));
         }
 
