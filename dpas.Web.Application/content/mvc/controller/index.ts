@@ -17,7 +17,6 @@ export module View {
                 complete: function () { that.NewProject(); }
             });
 
-
             $('#btnNewProject').on("click", function () {
                 $('#modal-prj-name').modal({
                     dismissible: false,
@@ -26,6 +25,12 @@ export module View {
 
                 $('#modal-prj-name').modal('open');
             });
+            $('#btnOpenProject').on("click", function () {
+                navigate("/nav/prj/list");
+            });
+
+
+            
         }
 
         public NewProject() {

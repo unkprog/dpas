@@ -16,8 +16,8 @@ namespace dpas.Web.Application.Controller
                 curPage = state.GetString("curpage");
 
             if (string.IsNullOrEmpty(curPage))
-                curPage = "/prj/editor";
-            //curPage = "/index";
+                //curPage = "/prj/editor";
+            curPage = "/index";
 
             state["curpage"] = curPage;
 

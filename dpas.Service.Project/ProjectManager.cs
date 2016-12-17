@@ -11,9 +11,11 @@ namespace dpas.Service.Project
 {
     public class ProjectManager : DataObject, IProjectManager, IReaderXml, IWriterXml
     {
+        public readonly static ProjectManager Manager = new ProjectManager(null);
+
         List<IProject> _Projects;
         private string pathProjects = "Projects";
-        public ProjectManager(object aOwner) : base(aOwner)
+        internal ProjectManager(object aOwner) : base(aOwner)
         {
             _Projects = new List<IProject>();
         }
@@ -102,6 +104,7 @@ namespace dpas.Service.Project
             if (!Directory.Exists(pathProjects))
                 Directory.CreateDirectory(pathProjects);
         }
+
         public void SaveProject(IProject aProject)
         {
             CheckProjectsDirectory();
@@ -114,7 +117,7 @@ namespace dpas.Service.Project
         {
             CheckProjectsDirectory();
 
-            for(int i=0, icount=_Projects.Count;i<icount;i++)
+            for (int i = 0, icount = _Projects.Count; i < icount; i++)
                 SaveProject(_Projects[i]);
 
             string projectsFile = string.Concat(pathProjects, @"\\projects.dps");
@@ -127,8 +130,6 @@ namespace dpas.Service.Project
                     xmlWriter.WriteEndDocument();
                 }
             }
-
-
         }
 
         public void Read()
@@ -180,17 +181,14 @@ namespace dpas.Service.Project
         #region IWriterXml
         public void Write(XmlWriter Writer)
         {
-            //Writer.WriteString(Environment.NewLine);
             Writer.WriteStartElement("Projects");
             for (int i = 0, icount = _Projects.Count; i < icount; i++)
             {
-                //Writer.WriteString(string.Concat(Environment.NewLine, "  "));
                 Writer.WriteStartElement("Project");
                 Writer.WriteAttributeString("Name", _Projects[i].Name);
                 Writer.WriteAttributeString("Description", _Projects[i].Description);
                 Writer.WriteEndElement();
             }
-            //Writer.WriteString(Environment.NewLine);
             Writer.WriteEndElement();
         }
         #endregion

@@ -21,6 +21,9 @@ var View;
                 });
                 $('#modal-prj-name').modal('open');
             });
+            $('#btnOpenProject').on("click", function () {
+                navigate("/nav/prj/list");
+            });
         };
         Index.prototype.NewProject = function () {
             if ('' + $('#prjName').val() === '') {

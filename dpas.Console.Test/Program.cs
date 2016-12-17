@@ -8,11 +8,12 @@ namespace dpas.Console.Test
     {
         public static void Main(string[] args)
         {
-            ProjectManager mng = new ProjectManager(null);
-            IProject prj = mng.Create("Проект 1", "Проект 1");
-            mng.Create("Проект 2", "Проект 2").AddProjectDependency(prj);
            
-            mng.Save();
+            IProject prj = ProjectManager.Manager.Create("Проект 1", "Проект 1");
+            ProjectManager.Manager.Create("Проект 2", "Проект 2").AddProjectDependency(prj);
+
+            ProjectManager.Manager.Save();
+
 
             //using (XmlReader xmlReader = XmlReader.Create("projects.xml"))
             //{
