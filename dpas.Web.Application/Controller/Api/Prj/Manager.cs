@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using dpas.Net.Http.Mvc;
+using dpas.Service.Project;
+using System.Text;
 
 namespace dpas.Web.Application.Controller.Api.Prj
 {
@@ -31,7 +33,22 @@ namespace dpas.Web.Application.Controller.Api.Prj
         private void List(HttpContext context, ControllerInfo controllerInfo, Dictionary<string, object> state)
         {
             context.Response.ContentType = "application/json";
-            context.Response.WriteAsync(@"{""result"": true}");
+            StringBuilder result = new StringBuilder("[");
+            IProject project;
+            IList<IProject> projects = ProjectManager.Manager.Projects;
+            for (int i = 0, icount = projects.Count; i < icount; i++)
+            {
+                project = projects[i];
+                if(i > 0)
+                    result.Append(",");
+                result.Append("{ \"Name\":");
+                result.Append(string.Concat("\"", project.Name, "\""));
+                result.Append(",\"Description\":");
+                result.Append(string.Concat("\"", project.Description, "\""));
+                result.Append("}");
+            }
+            result.Append("]");
+            context.Response.WriteAsync(result.ToString());
         }
         /// <summary>
         /// Создание нового проекта

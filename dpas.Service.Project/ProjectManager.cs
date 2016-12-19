@@ -17,7 +17,7 @@ namespace dpas.Service.Project
         private string pathProjects = "Projects";
         internal ProjectManager(object aOwner) : base(aOwner)
         {
-            _Projects = new List<IProject>();
+           // _Projects = new List<IProject>();
         }
 
         #region IProjectManager
@@ -28,6 +28,11 @@ namespace dpas.Service.Project
         {
             get
             {
+                if(_Projects == null)
+                {
+                    _Projects = new List<IProject>();
+                    Read();
+                }
                 return _Projects;
             }
         }
@@ -137,14 +142,16 @@ namespace dpas.Service.Project
             CheckProjectsDirectory();
 
             string projectsFile = string.Concat(pathProjects, @"\\projects.dps");
-
-            using (XmlReader xmlReader = XmlReader.Create(projectsFile))
+            if (File.Exists(projectsFile))
             {
-                while (xmlReader.Read())
+                using (XmlReader xmlReader = XmlReader.Create(projectsFile))
                 {
-                    if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name == "Projects")
+                    while (xmlReader.Read())
                     {
-                        Read(xmlReader);
+                        if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name == "Projects")
+                        {
+                            Read(xmlReader);
+                        }
                     }
                 }
             }

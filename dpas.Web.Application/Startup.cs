@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using dpas.Net.Http.Mvc;
 using dpas.Web.Application.Controller;
 using dpas.Web.Application.Controller.Api;
+using dpas.Web.Application.Controller.Api.Prj;
 
 namespace dpas.Web.Application
 {
@@ -67,7 +68,7 @@ namespace dpas.Web.Application
                     if(controllerInfo.Controller == "/auth")
                         new Auth().Exec(context, controllerInfo, state);
                     else if (controllerInfo.Controller == "/prj")
-                        new Auth().Exec(context, controllerInfo, state);
+                        new Manager().Exec(context, controllerInfo, state);
                 }
                 else
                     ReadFile(context, controllerInfo);
