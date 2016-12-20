@@ -6,8 +6,7 @@ var View;
         var List = (function () {
             function List() {
             }
-            List.prototype.Init = function () {
-                var that = this;
+            List.prototype.LoadProjects = function (that) {
                 $.ajax({
                     type: "POST", url: location.protocol + '//' + location.host + '/api/prj/list',
                     async: true,
@@ -20,35 +19,50 @@ var View;
                     }
                 });
             };
+            List.prototype.Init = function () {
+                this.that = this;
+                this.LoadProjects(this.that);
+                var th = this.that;
+                $('#btnRefresh').on("click", function () {
+                    th.LoadProjects(th);
+                });
+            };
             List.prototype.SetList = function (data) {
                 var ids = [];
-                var drawItem = function (curItem) {
-                    var result = '';
-                    result += '<a id="';
-                    result += curItem.Name;
-                    result += '" data-id="';
-                    result += ids.length.toString();
-                    result += '" class="collection-item center">';
-                    result += curItem.Name;
-                    result += '</a>';
-                    return result;
-                };
-                var ids = [];
-                var elsStr = '';
+                //var drawItem = function (curItem) {
+                //    var result = '';
+                //    result += '<a id="';
+                //    result += curItem.Name;
+                //    result += '" data-id="';
+                //    result += ids.length.toString();
+                //    result += '" class="collection-item center">';
+                //    result += curItem.Name;
+                //    result += '</a>';
+                //    return result;
+                //}
+                var elsStr = '', template, ids = [], templateContent = $('#list-projects-item-template').html();
                 var i = 0, icount = data.length;
                 for (; i < icount; i++) {
-                    elsStr += drawItem(data[i]);
-                    ids.push(data[i]);
+                    template = dpas.template.getTemplate({ id: 'list-projects-item-template', template: templateContent });
+                    elsStr += dpas.template.render({ template: template, data: data[i] });
+                    //elsStr += drawItem(data[i]);
+                    ids[data[i].Code] = data[i];
                 }
+                //var elsStr = '';
+                //var i = 0, icount = data.length;
+                //for (; i < icount; i++) {
+                //    elsStr += drawItem(data[i]);
+                //    ids.push(data[i]);
+                //}
                 $("#list-projects").html(elsStr);
                 var that = this;
                 that['ids'] = ids;
-                for (i = 0, icount = ids.length; i < icount; i++) {
-                    var elItem = ids[i];
-                    var el = $(document.getElementById(elItem.Name));
+                for (i = 0; i < icount; i++) {
+                    //var elItem = ids[i];
+                    var el = $(document.getElementById(data[i].Code));
                     //el.elItem = elItem;
                     el.click(function () {
-                        alert(that['ids'][$(this).data('id')].Name);
+                        navigate("/nav/prj/editor?prj=" + $(this).data('id')); //that['ids'][$(this).data('id')].Code);
                     });
                 }
             };

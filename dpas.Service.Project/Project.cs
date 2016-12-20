@@ -13,15 +13,17 @@ namespace dpas.Service.Project
     {
         public Project(object aOwner) : base(aOwner)
         {
-            Init(Guid.NewGuid().ToString(), "Новый проект");
+            string guid = Guid.NewGuid().ToString();
+            Init(guid.Replace("-", string.Empty), guid, "Новый проект");
         }
         public Project(object aOwner, string aName, string aDescription) : base(aOwner)
         {
-            Init(aName, aDescription);
+            Init(Guid.NewGuid().ToString().Replace("-", string.Empty), aName, aDescription);
         }
 
-        private void Init(string aName, string aDescription)
+        private void Init(string aCode, string aName, string aDescription)
         {
+            Code = aCode;
             Name = aName;
             Description = aDescription;
             _ProjectDependencies = new List<IProject>();
@@ -29,7 +31,7 @@ namespace dpas.Service.Project
 
         #region IProject
 
-
+        public string Code { get; internal set; }
         public string Description { get; internal set; }
 
         private IList<IProject> _ProjectDependencies;
@@ -121,10 +123,62 @@ namespace dpas.Service.Project
         }
         #endregion
 
+        private void CheckProjectDirectory(string path)
+        {
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+        }
+
+        #region IReaderXml
+        public void Read(XmlReader Reader)
+        {
+            Code = Reader.GetAttribute("Code");
+            Name = Reader.GetAttribute("Name");
+            Description = Reader.GetAttribute("Description");
+
+            while (Reader.Read() && Reader.NodeType != XmlNodeType.EndElement)
+            {
+                if (Reader.NodeType == XmlNodeType.Element && Reader.Name == "ProjectDependencies")
+                    ReadProjectDependencies(Reader);
+            }
+        }
+
+        public void ReadProjectDependencies(XmlReader Reader)
+        {
+            while (Reader.Read() && Reader.NodeType != XmlNodeType.EndElement)
+            {
+                if (Reader.NodeType == XmlNodeType.Element && Reader.Name == "Project")
+                {
+                    IProject project = new Project(ProjectManager.Manager);
+                    project.Read(Reader);
+                    _ProjectDependencies.Add(project);
+                }
+            }
+        }
+
+        public void Read(string path)
+        {
+            string pathProject = path;
+           
+            if (File.Exists(pathProject))
+            {
+                using (XmlReader xmlReader = XmlReader.Create(pathProject))
+                {
+                    while (xmlReader.Read())
+                    {
+                        if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name == "Project")
+                            Read(xmlReader);
+                    }
+                }
+            }
+        }
+        #endregion
+
         #region IWriterXml
         public void Write(XmlWriter Writer)
         {
             Writer.WriteStartElement("Project");
+            Writer.WriteAttributeString("Code", Code);
             Writer.WriteAttributeString("Name", Name);
             Writer.WriteAttributeString("Description", Description);
 
@@ -132,6 +186,7 @@ namespace dpas.Service.Project
             for (int i = 0, icount = _ProjectDependencies.Count; i < icount; i++)
             {
                 Writer.WriteStartElement("Project");
+                Writer.WriteAttributeString("Code", _ProjectDependencies[i].Code);
                 Writer.WriteAttributeString("Name", _ProjectDependencies[i].Name);
                 Writer.WriteAttributeString("Description", _ProjectDependencies[i].Description);
                 Writer.WriteEndElement();
@@ -141,11 +196,6 @@ namespace dpas.Service.Project
             Writer.WriteEndElement();
         }
 
-        private void CheckProjectDirectory(string path)
-        {
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-        }
         public void Save(string path)
         {
             string pathProject = path;
@@ -165,6 +215,7 @@ namespace dpas.Service.Project
             }
         }
         #endregion
+
 
     }
 }

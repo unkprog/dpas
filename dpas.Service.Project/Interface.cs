@@ -9,27 +9,74 @@ namespace dpas.Service.Project
         void Read();
     }
 
-    public interface IProject : /*IReaderXml,*/ IWriterXml
+    public interface IProject : IReaderXml, IWriterXml
     {
+        /// <summary>
+        /// Код проекта
+        /// </summary>
+        string Code { get; }
+
+        /// <summary>
+        /// Имя проекта
+        /// </summary>
         string Name { get; }
 
+        /// <summary>
+        /// Описание проекта
+        /// </summary>
         string Description { get; }
 
+        /// <summary>
+        /// Переименование проекта
+        /// </summary>
+        /// <param name="Name">Имя</param>
+        /// <param name="Description">Описание</param>
         void Rename(string Name, string Description);
 
+        /// <summary>
+        /// Список проектов, от которых зависит данный проект
+        /// </summary>
         IList<IProject> ProjectDependencies { get; }
 
+        /// <summary>
+        /// Добавление зависимости от проекта
+        /// </summary>
+        /// <param name="Project">Проект</param>
         void AddProjectDependency(IProject Project);
+
+        /// <summary>
+        /// Удаление зависимости
+        /// </summary>
+        /// <param name="Project"></param>
         void DeleteProjectDependency(IProject Project);
     }
 
 
     public interface IProjectManager
     {
+        /// <summary>
+        /// Список проектов
+        /// </summary>
         IList<IProject> Projects { get; }
 
+        /// <summary>
+        /// Создание проекта
+        /// </summary>
+        /// <param name="Name">Имя</param>
+        /// <param name="Decription">Описание</param>
+        /// <returns></returns>
         IProject Create(string Name, string Decription);
+
+        /// <summary>
+        /// Удаление проекта
+        /// </summary>
+        /// <param name="Project">Проект</param>
         void Delete(IProject Project);
+
+        /// <summary>
+        /// Сохранение проекта
+        /// </summary>
+        /// <param name="Project">Проект</param>
         void Save(IProject Project);
     }
 

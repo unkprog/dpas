@@ -32,6 +32,8 @@ namespace dpas.Web.Application.Controller.Api.Prj
         /// </summary>
         private void List(HttpContext context, ControllerInfo controllerInfo, Dictionary<string, object> state)
         {
+            ProjectManager.Manager.Read();
+
             context.Response.ContentType = "application/json";
             StringBuilder result = new StringBuilder("[");
             IProject project;
@@ -41,7 +43,9 @@ namespace dpas.Web.Application.Controller.Api.Prj
                 project = projects[i];
                 if(i > 0)
                     result.Append(",");
-                result.Append("{ \"Name\":");
+                result.Append("{ \"Code\":");
+                result.Append(string.Concat("\"", project.Code, "\""));
+                result.Append(", \"Name\":");
                 result.Append(string.Concat("\"", project.Name, "\""));
                 result.Append(",\"Description\":");
                 result.Append(string.Concat("\"", project.Description, "\""));

@@ -17,7 +17,7 @@ namespace dpas.Service.Project
         private string pathProjects = "Projects";
         internal ProjectManager(object aOwner) : base(aOwner)
         {
-           // _Projects = new List<IProject>();
+            _Projects = new List<IProject>();
         }
 
         #region IProjectManager
@@ -28,11 +28,11 @@ namespace dpas.Service.Project
         {
             get
             {
-                if(_Projects == null)
-                {
-                    _Projects = new List<IProject>();
-                    Read();
-                }
+                //if(_Projects == null)
+                //{
+                //    _Projects = new List<IProject>();
+                //    Read();
+                //}
                 return _Projects;
             }
         }
@@ -178,7 +178,7 @@ namespace dpas.Service.Project
             {
                 if (Reader.NodeType == XmlNodeType.Element && Reader.Name == "Project")
                 {
-                    Save(Create(Reader.GetAttribute("Name"), Reader.GetAttribute("Description")));
+                    Save(new Project(this) { Code = Reader.GetAttribute("Code"), Name = Reader.GetAttribute("Name"), Description = Reader.GetAttribute("Description") });
                 }
             }
         
@@ -192,6 +192,7 @@ namespace dpas.Service.Project
             for (int i = 0, icount = _Projects.Count; i < icount; i++)
             {
                 Writer.WriteStartElement("Project");
+                Writer.WriteAttributeString("Code", _Projects[i].Code);
                 Writer.WriteAttributeString("Name", _Projects[i].Name);
                 Writer.WriteAttributeString("Description", _Projects[i].Description);
                 Writer.WriteEndElement();
