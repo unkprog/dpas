@@ -1,0 +1,134 @@
+﻿<style>
+    #editor-designer-view, #editor-code-view {
+        position: relative;
+        overflow: auto;
+        /*background: yellow;*/
+    }
+
+    #editor-designer-view {
+        padding: 8px;
+    }
+
+    #code-view-textarea {
+        margin: 0 0 0 4px;
+        border: none;
+    }
+
+</style>
+<div class="row">
+    <ul id="editor-tabs" class="tabs">
+        <li class="tab col s6"><a href="#editor-designer-view">Дизайнер</a></li>
+        <li class="tab col s6"><a href="#editor-code-view">Код</a></li>
+    </ul>
+
+    <div id="editor-designer-view">
+        <a id="btnMainMenu" class="waves-effect waves-teal btn-flat btn-large dashboard-item dashboard-item-50 blue lighten-2 valign-wrapper"><span class="valign">Главное меню</span></a>
+        <a id="btnMainMenu" class="waves-effect waves-teal btn dashboard-item dashboard-item-50 blue lighten-2 valign-wrapper"><span class="valign">Главное меню</span></a>
+
+        <ul class="collection">
+            <li class="collection-item avatar">
+                <img src="images/yuna.jpg" alt="" class="circle">
+                <span class="title">Title</span>
+                <p>
+                    First Line <br>
+                    Second Line
+                </p>
+                <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+            </li>
+            <li class="collection-item avatar">
+                <i class="material-icons circle">folder</i>
+                <span class="title">Title</span>
+                <p>
+                    First Line <br>
+                    Second Line
+                </p>
+                <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+            </li>
+            <!--
+            <li class="collection-item avatar">
+                <i class="material-icons circle green">insert_chart</i>
+                <span class="title">Title</span>
+                <p>
+                    First Line <br>
+                    Second Line
+                </p>
+                <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+            </li>
+            <li class="collection-item avatar">
+                <i class="material-icons circle red">play_arrow</i>
+                <span class="title">Title</span>
+                <p>
+                    First Line <br>
+                    Second Line
+                </p>
+                <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+            </li>
+
+            <li class="collection-item avatar">
+                <img src="images/yuna.jpg" alt="" class="circle">
+                <span class="title">Title</span>
+                <p>
+                    First Line <br>
+                    Second Line
+                </p>
+                <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+            </li>
+            <li class="collection-item avatar">
+                <i class="material-icons circle">folder</i>
+                <span class="title">Title</span>
+                <p>
+                    First Line <br>
+                    Second Line
+                </p>
+                <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+            </li>
+            <li class="collection-item avatar">
+                <i class="material-icons circle green">insert_chart</i>
+                <span class="title">Title</span>
+                <p>
+                    First Line <br>
+                    Second Line
+                </p>
+                <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+            </li>
+            <li class="collection-item avatar">
+                <i class="material-icons circle red">play_arrow</i>
+                <span class="title">Title</span>
+                <p>
+                    First Line <br>
+                    Second Line
+                </p>
+                <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+            </li>
+            -->
+        </ul>
+        <div class="fixed-action-btn horizontal">
+            <a class="btn-floating btn-large amber darken-2">
+                <i class="large material-icons">mode_edit</i>
+            </a>
+            <ul>
+                <li><a class="btn-floating blue darken-2"><i class="material-icons">add</i></a></li>
+                <li><a class="btn-floating blue darken-2"><i class="material-icons">remove</i></a></li>
+                <li><a class="btn-floating blue darken-2"><i class="material-icons">content_copy</i></a></li>
+                <li><a class="btn-floating green darken-2"><i class="material-icons">done</i></a></li>
+                <li><a class="btn-floating red"><i class="material-icons">clear</i></a></li>
+            </ul>
+        </div>
+    </div>
+    <div id="editor-code-view">
+        <textarea id="code-view-textarea" class="materialize-textarea">
+            class Record
+            {
+            }
+        </textarea>
+        <div class="fixed-action-btn horizontal">
+            <a class="btn-floating btn-large amber darken-2">
+                <i class="large material-icons">mode_edit</i>
+            </a>
+            <ul>
+                <li><a class="btn-floating green darken-2"><i class="material-icons">done</i></a></li>
+                <li><a class="btn-floating red"><i class="material-icons">clear</i></a></li>
+            </ul>
+        </div>
+    </div>
+</div>

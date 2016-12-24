@@ -5,6 +5,8 @@
     "dpas.Core": "1.0.0-*",
     "dpas.Net": "1.0.0-*",
     "dpas.Net.Http": "1.0.0-*",
+    "dpas.Net.Http.Mvc": "1.0.0-*",
+    "dpas.Service.Project": "1.0.0-*",
     "NETStandard.Library": "1.6.1"
   },
 

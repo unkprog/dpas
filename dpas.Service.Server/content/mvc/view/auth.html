@@ -1,0 +1,26 @@
+﻿<div id="modal-auth" class="modal">
+    <div class="modal-content">
+        <h4>Авторизация</h4>
+        <form class="col s12" action="api/auth" method="post">
+            <div class="row">
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">account_box</i>
+                    <input id="login" name="login" type="text" class="validate">
+                    <label for="login">Пользователь</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">lock</i>
+                    <input id="password" name="password" type="password" class="validate">
+                    <label for="password">Пароль</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-action waves-effect btn-flat" type="submit" name="action">Вход</button>
+            </div>
+        </form>
+    </div>
+    
+    
+</div>

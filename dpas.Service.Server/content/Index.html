@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
+    <title>DPAS</title>
+    <meta name="description" content="Система обработки и анализа данных" />
+
+    <!-- CSS  -->
+    <!--Import Google Icon Font-->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" media="screen,projection" href="css/materialize.min.css" />
+    <link type="text/css" rel="stylesheet" media="screen,projection" href="css/style.css" />
+</head>
+<body>
+
+    <div class="navbar-fixed">
+        <nav>
+            <div class="nav-wrapper">
+                <a href="/nav/index" class="ajax brand-logo center">DPAS</a>
+            </div>
+        </nav>
+    </div>
+    <div class="dpas-loadbar">
+        <div class="dpas-bar"></div>
+        <div class="dpas-bar"></div>
+        <div class="dpas-bar"></div>
+    </div>
+
+    <div id="content" class="dpas-content ajax-content">
+
+    </div>
+
+    <!--footer class="page-footer">
+        <div class="footer-copyright">
+            <div class="container" style="background:transparent;">
+                © 2016 Copyright UnkProg
+            </div>
+        </div>
+    </footer-->
+
+    <div id="modal-error" class="modal">
+        <div class="modal-content">
+            <h4>Ошибка</h4>
+            <div id="modal-error-content" class="row">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button id="modal-error-ok" class="modal-action waves-effect btn-flat">OK</button>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="js/materialize.min.js"></script>
+    <script type="text/javascript" src="js/dpas.template.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+</body>
+</html>

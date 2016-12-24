@@ -101,31 +101,6 @@ namespace dpas.Web.Application
         }
        
 
-        private static void Page(HttpContext context, ControllerInfo controllerInfo, string curPage)
-        {
-            string pathFile = string.Concat(Directory.GetCurrentDirectory(), "/content/mvc/view/", curPage, ".html");
-            // System.Environment
-            if (!File.Exists(pathFile)) return;
-
-            context.Response.ContentType = "text/html";
-            using (StreamReader sr = File.OpenText(pathFile))
-            {
-                string htmlLine = String.Empty;
-                while ((htmlLine = sr.ReadLine()) != null)
-                {
-                    context.Response.WriteAsync(htmlLine);
-                    context.Response.WriteAsync(Environment.NewLine);
-                }
-            }
-
-            pathFile = string.Concat(Directory.GetCurrentDirectory(), "/content/mvc/controller/", curPage, ".js");
-
-            if (!File.Exists(pathFile)) return;
-            context.Response.WriteAsync(string.Concat("<script type=", '"', "text/javascript", '"', "src=", '"', "mvc/controller/", curPage, ".js", '"', "></script>", Environment.NewLine));
-            context.Response.WriteAsync(Environment.NewLine);
-
-            //context.Response.Write(GACode);
-        }
 
         private static void ReadFile(HttpContext context, ControllerInfo controllerInfo)
         {
