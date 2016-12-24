@@ -40,10 +40,13 @@ namespace dpas.Net.Http
         public HttpResponse(HttpRequest request) : this()
         {
             Header.Protocol = request.Header.Protocol;
-            foreach (var param in request.Parameters.AllKeys)
-            {
-                Parameters.Add(param, request.Parameters[param]);
-            }
+            Parameters.Add("Server", "DPAS");
+            Parameters.Add("Connection", "close");
+           // string accEnc = result.Parameters["Accept-Encoding"];
+            //foreach (var param in request.Parameters.AllKeys)
+            //{
+            //    Parameters.Add(param, request.Parameters[param]);
+            //}
             //Parameters[HttpHeader.Connection] = "closed";
             InitStream(request);
         }
@@ -64,9 +67,9 @@ namespace dpas.Net.Http
                 }
             }
             if (streamCompress != null)
-                streamWriter = new StreamWriter(streamCompress, Encoding.UTF8, 4096, true);
+                streamWriter = new StreamWriter(streamCompress, Encoding.UTF8/*.ASCII*/, 4096, true);
             else
-                streamWriter = new StreamWriter(memoryStream, Encoding.UTF8, 4096, true);
+                streamWriter = new StreamWriter(memoryStream, Encoding.UTF8/*.ASCII*/, 4096, true);
         }
 
         public HttpHeaderBase      Header        { get; internal set; }
@@ -121,15 +124,15 @@ namespace dpas.Net.Http
             result.Append((int)StatusCode);
             result.Append(" ");
             result.Append(StatusCode.ToString());
-            result.Append("\r\n");
+            result.Append(Environment.NewLine);//"\r\n");
             foreach (var param in Parameters.AllKeys)
             {
                 result.Append(param);
                 result.Append(": ");
                 result.Append(Parameters[param]);
-                result.Append("\r\n");
+                result.Append(Environment.NewLine);// "\r\n");
             }
-            result.Append("\r\n");
+            result.Append(Environment.NewLine);//"\r\n");
             return result.ToString();
         }
     }

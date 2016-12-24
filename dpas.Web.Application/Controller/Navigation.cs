@@ -28,7 +28,7 @@ namespace dpas.Web.Application.Controller
 
         private void Page(HttpContext context, ControllerInfo controllerInfo, string curPage)
         {
-            string pathFile = string.Concat(System.IO.Directory.GetCurrentDirectory(), "/content/mvc/view", curPage, ".html");
+            string pathFile = string.Concat(Directory.GetCurrentDirectory(), "/content/mvc/view", curPage, ".html");
             // System.Environment
             if (!File.Exists(pathFile)) return;
 
@@ -43,7 +43,7 @@ namespace dpas.Web.Application.Controller
                 }
             }
 
-            pathFile = string.Concat(System.IO.Directory.GetCurrentDirectory(), "/content/mvc/controller", curPage, ".js");
+            pathFile = string.Concat(Directory.GetCurrentDirectory(), "/content/mvc/controller", curPage, ".js");
 
             if (!File.Exists(pathFile)) return;
             //context.Response.WriteAsync(string.Concat("<script type=", '"', "text/javascript", '"', "src=", '"', "mvc/controller", curPage, ".js", '"', "></script>", Environment.NewLine));

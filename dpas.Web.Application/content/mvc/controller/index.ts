@@ -41,7 +41,7 @@ export module View {
             var data = { prjName: $('#prjName').val(), prjComment: $('#prjComment').val() };
            
             $.ajax({
-                type: "POST", url: location.protocol + '//' + location.host + '/api/prj',
+                type: "POST", url: location.protocol + '//' + location.host + '/api/prj/create',
                 async: true,
                 data: data,
                 dataType: "json",

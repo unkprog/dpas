@@ -5,10 +5,11 @@ using System.Text;
 using dpas.Net;
 using dpas.Net.Http;
 using System.Net.Sockets;
+using static dpas.Service.DpasTcpServer;
 
 namespace dpas.Service.Protocol
 {
-    public partial class HttpProtocol : Server.IProtocol
+    public partial class HttpProtocol : IProtocol
     {
         public HttpProtocol()
         {
@@ -17,7 +18,7 @@ namespace dpas.Service.Protocol
 
         public int BufferSize { get; set; }
 
-        void Server.IProtocol.Handle(TcpSocket.TcpSocketAsyncEventArgs e, byte[] data)
+        void IProtocol.Handle(TcpSocket.TcpSocketAsyncEventArgs e, byte[] data)
         {
             // HttpParser request = new 
             HttpRequest request = HttpParser.ParseRequest(data);
@@ -46,7 +47,7 @@ namespace dpas.Service.Protocol
             using (MemoryStream ms = new MemoryStream())
             {
                 response.Parameters.Add(HttpHeader.ContentLength, response.ContentLength.ToString());
-                using (var sw = new StreamWriter(ms, Encoding.UTF8, 10, true))
+                using (var sw = new StreamWriter(ms, Encoding.ASCII/*.UTF8*/, 4096, true))
                 {
                     sw.Write(response.ToString());
                 }
@@ -60,7 +61,7 @@ namespace dpas.Service.Protocol
                 var sendTask = e.Socket.Send(responseData);
             }
 
-            if (!response.Header.ShouldKeepAlive)
+            //if (!response.Header.ShouldKeepAlive)
             {
                 e.CloseSocket();
                 e.Socket.Dispose();

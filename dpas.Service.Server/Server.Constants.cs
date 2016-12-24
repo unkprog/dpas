@@ -10,7 +10,7 @@ namespace dpas.Service
         internal static string settingsDirectory = serverDirectory + "\\Settings";
         internal static string settingsFile      = settingsDirectory + "\\server.cfg";
 
-        static byte[] DPAS = Encoding.UTF8.GetBytes("DPAS");
+       
 
 
         internal static void CreateDirectories()

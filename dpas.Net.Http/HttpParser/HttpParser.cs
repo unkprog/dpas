@@ -73,7 +73,7 @@ namespace dpas.Net.Http
             string accEnc = result.Parameters["Accept-Encoding"];
             if (!string.IsNullOrEmpty(accEnc))
             {
-                result.SupportCompression += accEnc.Contains("gzip")    ? (int)HttpCompress.Gzip    : 0;
+                result.SupportCompression += accEnc.Contains("gzip") ? (int)HttpCompress.Gzip : 0;
                 result.SupportCompression += accEnc.Contains("deflate") ? (int)HttpCompress.Deflate : 0;
             }
             return result;

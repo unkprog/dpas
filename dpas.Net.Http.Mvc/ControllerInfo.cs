@@ -9,8 +9,10 @@
         public string QueryString { get; private set; }
         public string Path { get; private set; }
 
+        public string Content { get; private set; }
+
         public string CurrrentPage { get; private set; }
-        public ControllerInfo(string url)
+        public ControllerInfo(string url, string content)
         {
             string curUrl = url;
             Url = curUrl;
@@ -18,7 +20,7 @@
             Controller = string.Empty;
             Action = string.Empty;
             QueryString = string.Empty;
-
+            Content = content;
             if (string.IsNullOrEmpty(curUrl)) return;
 
             int index = curUrl.IndexOf('/');

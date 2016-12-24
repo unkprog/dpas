@@ -11,6 +11,9 @@ using dpas.Net.Http.Mvc;
 using dpas.Web.Application.Controller;
 using dpas.Web.Application.Controller.Api;
 using dpas.Web.Application.Controller.Api.Prj;
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Net;
 
 namespace dpas.Web.Application
 {
@@ -39,6 +42,22 @@ namespace dpas.Web.Application
             });
         }
 
+        private static string GetContent(HttpContext context)
+        {
+            StringBuilder sb = new StringBuilder();
+            if (context.Request.ContentLength > 0)
+            {
+                long cl = (long)context.Request.ContentLength;
+                int buffSize = 4096, offset = 0, readBytes;
+                byte[] buffer = new byte[buffSize];
+                while((readBytes=context.Request.Body.Read(buffer, offset, buffSize)) > 0)
+                {
+                    sb.Append(Encoding.UTF8.GetString(buffer, 0, readBytes));//.ASCII.GetString(buffer, 0, readBytes));
+                }
+
+            }
+            return WebUtility.UrlDecode(sb.ToString());
+        }
         public static Task Handle(HttpContext context)
         {
 
@@ -51,7 +70,8 @@ namespace dpas.Web.Application
                     context.Response.Cookies.Append("dpas", dpasKey);
                 }
 
-                ControllerInfo controllerInfo = new ControllerInfo(string.Concat(context.Request.Path.Value, context.Request.QueryString));
+               
+                ControllerInfo controllerInfo = new ControllerInfo(string.Concat(context.Request.Path.Value, context.Request.QueryString), GetContent(context));
                 Dictionary<string, object> state = ControllerState.GetState(dpasKey);
 
                 bool isAjax = context.Request.Query.ContainsKey("ajax");
@@ -83,7 +103,7 @@ namespace dpas.Web.Application
 
         private static void Page(HttpContext context, ControllerInfo controllerInfo, string curPage)
         {
-            string pathFile = string.Concat(System.IO.Directory.GetCurrentDirectory(), "/content/mvc/view/", curPage, ".html");
+            string pathFile = string.Concat(Directory.GetCurrentDirectory(), "/content/mvc/view/", curPage, ".html");
             // System.Environment
             if (!File.Exists(pathFile)) return;
 
@@ -98,7 +118,7 @@ namespace dpas.Web.Application
                 }
             }
 
-            pathFile = string.Concat(System.IO.Directory.GetCurrentDirectory(), "/content/mvc/controller/", curPage, ".js");
+            pathFile = string.Concat(Directory.GetCurrentDirectory(), "/content/mvc/controller/", curPage, ".js");
 
             if (!File.Exists(pathFile)) return;
             context.Response.WriteAsync(string.Concat("<script type=", '"', "text/javascript", '"', "src=", '"', "mvc/controller/", curPage, ".js", '"', "></script>", Environment.NewLine));
@@ -110,7 +130,7 @@ namespace dpas.Web.Application
         private static void ReadFile(HttpContext context, ControllerInfo controllerInfo)
         {
             string path = controllerInfo.Path;
-            string pathFile = string.Concat(System.IO.Directory.GetCurrentDirectory(), "/content", path == "/" ? "/Index.html" : path);
+            string pathFile = string.Concat(Directory.GetCurrentDirectory(), "/content", path == "/" ? "/Index.html" : path);
             // System.Environment
             if (!File.Exists(pathFile)) return;
 

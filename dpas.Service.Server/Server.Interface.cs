@@ -40,10 +40,10 @@ namespace dpas.Service
         void IServer.Start()
         {
             if (server == null)
-                server = new TcpServer();
+                server = new DpasTcpServer();
             CreateDirectories();
             server.Settings.Read(settingsFile);
-            server.OnReceive += Server_OnReceive;
+            //server.OnReceive += Server_OnReceive;
             var startTask = server.StartAsync();
         }
 
@@ -51,7 +51,7 @@ namespace dpas.Service
         {
             if (server != null)
             {
-                server.OnReceive -= Server_OnReceive;
+                //server.OnReceive -= Server_OnReceive;
                 var stopTask = server.StopAsync();
             }
         }

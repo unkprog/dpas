@@ -8,9 +8,9 @@ namespace dpas.Web.Application
         public static void Main(string[] args)
         {
             var host = new WebHostBuilder()
-                .UseKestrel()
-                .UseContentRoot(Directory.GetCurrentDirectory())
-                .UseIISIntegration()
+                .UseServer(new DPASServer()) //.UseKestrel()
+                //.UseContentRoot(Directory.GetCurrentDirectory())
+                //.UseIISIntegration()
                 .UseStartup<Startup>()
                 .Build();
 

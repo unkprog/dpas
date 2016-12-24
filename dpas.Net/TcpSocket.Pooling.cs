@@ -10,6 +10,7 @@ namespace dpas.Net
     {
         public class TcpSocketAsyncEventArgs : SocketAsyncEventArgs
         {
+            public bool IsClosed { get; internal set; }
             public TcpSocketAsyncEventArgs() : base()
             {
                 data = new List<byte[]>();
@@ -27,6 +28,7 @@ namespace dpas.Net
             // TODO: Здесь сделать оптимизацию по использованию памяти!!!
             public bool Read()
             {
+                IsClosed = false;
                 int bytecount = BytesTransferred;
                 byte[] buffer = new byte[bytecount];
                 data.Add(buffer);
@@ -71,6 +73,7 @@ namespace dpas.Net
 
             public void CloseSocket()
             {
+                IsClosed = true;
                 if (Socket!= null && Socket.Connected)
                 {
                     try

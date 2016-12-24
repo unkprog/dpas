@@ -105,7 +105,7 @@ namespace dpas.Console.TcpSockets
                 return;
             }
             string message = string.IsNullOrEmpty(userparams) ? "Test message to send server." : userparams;
-            byte[] data = System.Text.Encoding.UTF8.GetBytes(message);
+            byte[] data = System.Text.Encoding.UTF8.GetBytes(message);//.ASCII.GetBytes(message);
             var task = client.SendAsync(data);
             System.Console.WriteLine("Command end: Send to server");
         }

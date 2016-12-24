@@ -6,10 +6,10 @@ namespace dpas.Service
 {
     public partial class Server : Disposable, IServer
     {
-        private TcpServer server;
+        private DpasTcpServer server;
         public Server()
         {
-            server = new TcpServer();
+            server = new DpasTcpServer();
         }
 
         protected override void Dispose(bool disposing)

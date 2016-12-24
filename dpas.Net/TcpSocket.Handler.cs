@@ -101,7 +101,8 @@ namespace dpas.Net
             if (e.Socket.Available == 0)
                 OnReceiveHandle(e);
             // и продолжаем читать дальше
-            if (!e.Socket.ReceiveAsync(e))
+            if (!e.IsClosed)
+                if(!e.Socket.ReceiveAsync(e))
                 ProcessReceive(e);
         }
 

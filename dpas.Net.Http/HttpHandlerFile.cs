@@ -12,7 +12,7 @@ namespace dpas.Net.Http
             Initialize();
         }
 
-        private static string pathSources = System.IO.Directory.GetCurrentDirectory().Replace('\\', '/');// Environment.CurrentDirectory.Replace('\\','/');
+        private static string pathSources = string.Concat(System.IO.Directory.GetCurrentDirectory(), "/content").Replace('\\', '/');// Environment.CurrentDirectory.Replace('\\','/');
 
         public static void SetPathSources(string path)
         {
