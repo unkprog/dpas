@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.IO;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using dpas.Net.Http.Mvc;
-using dpas.Web.Application.Controller;
-using dpas.Web.Application.Controller.Api;
-using dpas.Web.Application.Controller.Api.Prj;
 using System.Text;
-using System.Text.Encodings.Web;
 using System.Net;
 
 namespace dpas.Web.Application
@@ -63,35 +58,35 @@ namespace dpas.Web.Application
 
             Task result = new Task(() =>
             {
-                string dpasKey = context.Request.Cookies["dpas"];
-                if (string.IsNullOrEmpty(dpasKey))
-                {
-                    dpasKey = Guid.NewGuid().ToString();
-                    context.Response.Cookies.Append("dpas", dpasKey);
-                }
+                //string dpasKey = context.Request.Cookies["dpas"];
+                //if (string.IsNullOrEmpty(dpasKey))
+                //{
+                //    dpasKey = Guid.NewGuid().ToString();
+                //    context.Response.Cookies.Append("dpas", dpasKey);
+                //}
 
                
-                ControllerInfo controllerInfo = new ControllerInfo(string.Concat(context.Request.Path.Value, context.Request.QueryString), GetContent(context));
-                Dictionary<string, object> state = ControllerState.GetState(dpasKey);
+                //ControllerInfo controllerInfo = new ControllerInfo(string.Concat(context.Request.Path.Value, context.Request.QueryString), GetContent(context));
+                //Dictionary<string, object> state = ControllerState.GetState(dpasKey);
 
-                bool isAjax = context.Request.Query.ContainsKey("ajax");
+                //bool isAjax = context.Request.Query.ContainsKey("ajax");
 
-                if (isAjax)
-                {
-                    if (controllerInfo.Prefix == "/nav")
-                        new Navigation().Exec(context, controllerInfo, state);
+                //if (isAjax)
+                //{
+                //    if (controllerInfo.Prefix == "/nav")
+                //        new Navigation().Exec(context, controllerInfo, state);
                     
-                }
+                //}
                 
-                else if (controllerInfo.Prefix == "/api")
-                {
-                    if(controllerInfo.Controller == "/auth")
-                        new Auth().Exec(context, controllerInfo, state);
-                    else if (controllerInfo.Controller == "/prj")
-                        new Manager().Exec(context, controllerInfo, state);
-                }
-                else
-                    ReadFile(context, controllerInfo);
+                //else if (controllerInfo.Prefix == "/api")
+                //{
+                //    if(controllerInfo.Controller == "/auth")
+                //        new Auth().Exec(context, controllerInfo, state);
+                //    else if (controllerInfo.Controller == "/prj")
+                //        new Manager().Exec(context, controllerInfo, state);
+                //}
+                //else
+                //    ReadFile(context, controllerInfo);
             });
 
             result.Start();

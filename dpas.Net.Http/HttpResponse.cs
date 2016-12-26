@@ -8,7 +8,30 @@ using System.Text;
 
 namespace dpas.Net.Http
 {
-    public class HttpResponse : Disposable
+    public interface IHttpResponse : IDisposable
+    {
+        HttpHeaderBase Header { get; }
+        HttpStatusCode StatusCode { get; set; }
+        NameValueCollection Parameters { get; }
+        StreamWriter StreamText { get; }
+
+        Stream Stream { get; }
+
+
+        /// <summary>
+        /// Тип содержимого
+        /// </summary>
+        string ContentType { get; set; }
+
+        long ContentLength { get; }
+        byte[] ContentData { get; }
+
+        void StreamContentWriteTo(Stream stream);
+
+        void Write(string data);
+        void StreamClose();
+    }
+    public class HttpResponse : Disposable, IHttpResponse
     {
         public HttpResponse()
         {
@@ -37,7 +60,7 @@ namespace dpas.Net.Http
         private Stream streamCompress = null;
 
 
-        public HttpResponse(HttpRequest request) : this()
+        public HttpResponse(IHttpRequest request) : this()
         {
             Header.Protocol = request.Header.Protocol;
             Parameters.Add("Server", "DPAS");
@@ -51,7 +74,7 @@ namespace dpas.Net.Http
             InitStream(request);
         }
 
-        private void InitStream(HttpRequest request)
+        private void InitStream(IHttpRequest request)
         {
             if (request != null)
             {
@@ -93,6 +116,15 @@ namespace dpas.Net.Http
             }
         }
 
+        /// <summary>
+        /// Тип содержимого
+        /// </summary>
+        public string ContentType
+        {
+            get { return Parameters["Content-type"]; }
+            set { Parameters.Set("Content-type", value); }
+        }
+
         public long                ContentLength { get { return memoryStream.Length; } }
         public byte[]              ContentData   { get { return memoryStream.ToArray(); } }
 
@@ -100,6 +132,12 @@ namespace dpas.Net.Http
         {
             if (memoryStream != null)
                 memoryStream.WriteTo(stream);
+        }
+
+        public void Write(string data)
+        {
+            byte[] _data = Encoding.UTF8.GetBytes(data);
+            Stream.Write(_data, 0, _data.Length);
         }
 
         public void StreamClose()

@@ -1,13 +1,9 @@
-﻿using System;
-using System.IO;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
-using dpas.Net.Http.Mvc;
-using dpas.Core.Extensions;
 
-namespace dpas.Web.Application.Controller.Api
+namespace dpas.Net.Http.Mvc.Api
 {
-    public class Auth : dpas.Net.Http.Mvc.IController
+    public class Auth : IController
     {
         public virtual void Exec(HttpContext context, ControllerInfo controllerInfo, Dictionary<string, object> state)
         {
@@ -21,7 +17,7 @@ namespace dpas.Web.Application.Controller.Api
             {
                 context.Response.ContentType = "application/json";// application / json; charset = UTF - 8
                                                                   //context.Response.Headers.Add("charset", "UTF-8");
-                context.Response.WriteAsync(@"{""result"": true}");
+                context.Response.Write(@"{""result"": true}");
             }
         }
 
@@ -33,7 +29,7 @@ namespace dpas.Web.Application.Controller.Api
             state["IsAuthentificated"] = true;
             context.Response.ContentType = "application/json";// application / json; charset = UTF - 8
             //context.Response.Headers.Add("charset", "UTF-8");
-            context.Response.WriteAsync(@"{""result"": true}");
+            context.Response.Write(@"{""result"": true}");
         }
 
         /// <summary>
@@ -44,7 +40,7 @@ namespace dpas.Web.Application.Controller.Api
             state["IsAuthentificated"] = false;
             context.Response.ContentType = "application/json";// application / json; charset = UTF - 8
             //context.Response.Headers.Add("charset", "UTF-8");
-            context.Response.WriteAsync(@"{""result"": true}");
+            context.Response.Write(@"{""result"": true}");
         }
     }
 }

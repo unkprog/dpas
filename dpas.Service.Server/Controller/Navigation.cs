@@ -2,10 +2,9 @@
 using System.IO;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
-using dpas.Net.Http.Mvc;
 using dpas.Core.Extensions;
 
-namespace dpas.Web.Application.Controller
+namespace dpas.Net.Http.Mvc
 {
     public class Navigation : IController
     {
@@ -38,8 +37,8 @@ namespace dpas.Web.Application.Controller
                 string htmlLine = String.Empty;
                 while ((htmlLine = sr.ReadLine()) != null)
                 {
-                    context.Response.WriteAsync(htmlLine);
-                    context.Response.WriteAsync(Environment.NewLine);
+                    context.Response.Write(htmlLine);
+                    context.Response.Write(Environment.NewLine);
                 }
             }
 
@@ -48,17 +47,17 @@ namespace dpas.Web.Application.Controller
             if (!File.Exists(pathFile)) return;
             //context.Response.WriteAsync(string.Concat("<script type=", '"', "text/javascript", '"', "src=", '"', "mvc/controller", curPage, ".js", '"', "></script>", Environment.NewLine));
             //context.Response.WriteAsync(Environment.NewLine);
-            context.Response.WriteAsync(string.Concat("<script type=", '"', "text/javascript", '"', ">", Environment.NewLine));
+            context.Response.Write(string.Concat("<script type=", '"', "text/javascript", '"', ">", Environment.NewLine));
             using (StreamReader sr = File.OpenText(pathFile))
             {
                 string htmlLine = String.Empty;
                 while ((htmlLine = sr.ReadLine()) != null)
                 {
-                    context.Response.WriteAsync(htmlLine);
-                    context.Response.WriteAsync(Environment.NewLine);
+                    context.Response.Write(htmlLine);
+                    context.Response.Write(Environment.NewLine);
                 }
             }
-            context.Response.WriteAsync(string.Concat("</script>", Environment.NewLine));
+            context.Response.Write(string.Concat("</script>", Environment.NewLine));
 
             //context.Response.Write(GACode);
         }

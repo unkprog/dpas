@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
 using dpas.Net.Http.Mvc;
 using dpas.Service.Project;
 using System.Text;
 
-namespace dpas.Web.Application.Controller.Api.Prj
+namespace dpas.Net.Http.Mvc.Api.Prj
 {
-    public class Manager : dpas.Net.Http.Mvc.IController
+    public class Manager : IController
     {
         public virtual void Exec(HttpContext context, ControllerInfo controllerInfo, Dictionary<string, object> state)
         {
@@ -23,7 +22,7 @@ namespace dpas.Web.Application.Controller.Api.Prj
             {
                 context.Response.ContentType = "application/json";// application / json; charset = UTF - 8
                                                                   //context.Response.Headers.Add("charset", "UTF-8");
-                context.Response.WriteAsync(@"{""result"": true}");
+                context.Response.Write(@"{""result"": true}");
             }
         }
 
@@ -52,7 +51,7 @@ namespace dpas.Web.Application.Controller.Api.Prj
                 result.Append("}");
             }
             result.Append("]");
-            context.Response.WriteAsync(result.ToString());
+            context.Response.Write(result.ToString());
         }
         /// <summary>
         /// Создание нового проекта
@@ -60,7 +59,7 @@ namespace dpas.Web.Application.Controller.Api.Prj
         private void Create(HttpContext context, ControllerInfo controllerInfo, Dictionary<string, object> state)
         {
             context.Response.ContentType = "application/json";
-            context.Response.WriteAsync(@"{""result"": true}");
+            context.Response.Write(@"{""result"": true}");
         }
         /// <summary>
         /// Удаление проекта
@@ -68,7 +67,7 @@ namespace dpas.Web.Application.Controller.Api.Prj
         private void Delete(HttpContext context, ControllerInfo controllerInfo, Dictionary<string, object> state)
         {
             context.Response.ContentType = "application/json";
-            context.Response.WriteAsync(@"{""result"": true}");
+            context.Response.Write(@"{""result"": true}");
         }
 
         /// <summary>
@@ -77,7 +76,7 @@ namespace dpas.Web.Application.Controller.Api.Prj
         private void Rename(HttpContext context, ControllerInfo controllerInfo, Dictionary<string, object> state)
         {
             context.Response.ContentType = "application/json";
-            context.Response.WriteAsync(@"{""result"": true}");
+            context.Response.Write(@"{""result"": true}");
         }
     }
 }

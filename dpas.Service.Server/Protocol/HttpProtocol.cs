@@ -20,19 +20,24 @@ namespace dpas.Service.Protocol
 
         void IProtocol.Handle(TcpSocket.TcpSocketAsyncEventArgs e, byte[] data)
         {
+           
             // HttpParser request = new 
             HttpRequest request = HttpParser.ParseRequest(data);
+            HttpContext context = new HttpContext(request);
             HttpResponse response = null;
             try
             {
+                //ControllerInfo controllerInfo = new ControllerInfo(string.Concat(context.Request.Path.Value, context.Request.QueryString), GetContent(context));
+                //Dictionary<string, object> state = ControllerState.GetState(dpasKey);
+
                 //throw new Exception("Ооопс...");
-                response = RequestHandle(request);
+                RequestHandle(context);
             }
             catch (Exception ex)
             {
                 response = RequestError(request, ex, HttpStatusCode.InternalServerError);
             }
-            SendResponse(e, request, response);
+            SendResponse(e, context);
         }
 
         /// <summary>
@@ -40,19 +45,19 @@ namespace dpas.Service.Protocol
         /// </summary>
         /// <param name="socket">Сокет</param>
         /// <param name="response">Ответ</param>
-        private void SendResponse(TcpSocket.TcpSocketAsyncEventArgs e, HttpRequest request, HttpResponse response)
+        private void SendResponse(TcpSocket.TcpSocketAsyncEventArgs e, IHttpContext context)
         {
             byte[] responseData = null;
 
             using (MemoryStream ms = new MemoryStream())
             {
-                response.Parameters.Add(HttpHeader.ContentLength, response.ContentLength.ToString());
+                context.Response.Parameters.Add(HttpHeader.ContentLength, context.Response.ContentLength.ToString());
                 using (var sw = new StreamWriter(ms, Encoding.ASCII/*.UTF8*/, 4096, true))
                 {
-                    sw.Write(response.ToString());
+                    sw.Write(context.Response.ToString());
                 }
-                if (response.ContentLength > 0)
-                    response.StreamContentWriteTo(ms);
+                if (context.Response.ContentLength > 0)
+                    context.Response.StreamContentWriteTo(ms);
                 responseData = ms.ToArray();
             }
 
@@ -67,21 +72,19 @@ namespace dpas.Service.Protocol
                 e.Socket.Dispose();
             }
 
-            response.Dispose();
+            context.Dispose();
         }
 
 
         /// <summary>
         /// Обработка запросов
         /// </summary>
-        /// <param name="request">Запрос</param>
-        /// <returns>Ответ</returns>
-        private static HttpResponse RequestHandle(HttpRequest request)
+        /// <param name="context">Контекст выполнения запросаЗапрос</param>
+        private static void RequestHandle(IHttpContext context)
         {
-            IHttpHandler handler = GetHttpHandler(request);
-            if (handler == null) throw new Exception(string.Concat("Не найден обработчик: ", request.Path));
+            IHttpHandler handler = GetHttpHandler(context);
+            if (handler == null) throw new Exception(string.Concat("Не найден обработчик: ", context.Request.Path));
             handler.Execute();
-            return handler.Response;
         }
 
         /// <summary>

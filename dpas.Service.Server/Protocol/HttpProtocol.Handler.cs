@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using dpas.Net.Http;
-
+using dpas.Net.Http.Mvc;
 
 namespace dpas.Service.Protocol
 {
@@ -10,14 +10,19 @@ namespace dpas.Service.Protocol
         /// <summary>
         /// Словарь для хранения обработчиков запроса
         /// </summary>
-        private static Dictionary<string, Func<HttpRequest, IHttpHandler>> httpHandlers = new Dictionary<string, Func<HttpRequest, IHttpHandler>>();
+        private static Dictionary<string, Func<IHttpContext, IHttpHandler>> httpHandlers = new Dictionary<string, Func<IHttpContext, IHttpHandler>>();
+        /// <summary>
+        /// Словарь для хранения обработчиков MVC запроса
+        /// </summary>
+        private static Dictionary<string, Func<HttpRequest, IController>> mvcHandlers = new Dictionary<string, Func<HttpRequest, IController>>();
+
 
         /// <summary>
         /// Привязка пути (адреса) к обработчику
         /// </summary>
         /// <param name="path">Путь(адрес)</param>
         /// <param name="handler">Обработчик</param>
-        public void MapPath(string path, Func<HttpRequest, IHttpHandler> handler)
+        public void MapPath(string path, Func<IHttpContext, IHttpHandler> handler)
         {
             if (httpHandlers.ContainsKey(path))
                 httpHandlers[path] = handler;
@@ -28,16 +33,16 @@ namespace dpas.Service.Protocol
         /// <summary>
         /// Получение обработчика запроса
         /// </summary>
-        /// <param name="request">Входящий запрос</param>
+        /// <param name="context">Контекст выполнения запроса</param>
         /// <returns>Обработчик входящего запроса</returns>
-        private static IHttpHandler GetHttpHandler(HttpRequest request)
+        private static IHttpHandler GetHttpHandler(IHttpContext context)
         {
             IHttpHandler result = null;
-            Func<HttpRequest, IHttpHandler> createHandler = null;
-            if (httpHandlers.TryGetValue(request.Path, out createHandler))
-                result = createHandler(request);
+            Func<IHttpContext, IHttpHandler> createHandler = null;
+            if (httpHandlers.TryGetValue(context.Request.Path, out createHandler))
+                result = createHandler(context);
             else
-                result = new HttpHandlerFile(request);
+                result = new HttpHandlerFile(context);
             return result;
         }
     }

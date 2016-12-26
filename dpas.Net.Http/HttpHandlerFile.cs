@@ -7,7 +7,7 @@ namespace dpas.Net.Http
 {
     public class HttpHandlerFile : HttpHandler
     {
-        public HttpHandlerFile(HttpRequest request) : base(request)
+        public HttpHandlerFile(IHttpContext context) : base(context)
         {
             Initialize();
         }
@@ -40,19 +40,19 @@ namespace dpas.Net.Http
         public override void OnExecute()
         {
             string filePath = string.Empty;// Request.Path + "/" + Request.File.ToString();
-            string contentType = Request.Parameters[HttpHeader.ContentType];
-            if (Request.Path == "/" || string.IsNullOrEmpty(Request.Path))
+            string contentType = Context.Request.Parameters[HttpHeader.ContentType];
+            if (Context.Request.Path == "/" || string.IsNullOrEmpty(Context.Request.Path))
                 filePath = string.Concat(pathSources, "/index.html");
             else
-                filePath = string.Concat(pathSources, Request.Path, "/", Request.File);
+                filePath = string.Concat(pathSources, Context.Request.Path, "/", Context.Request.File);
 
             //BaseLog.WriteToLog(string.Format(filePath));
 
             if (!File.Exists(filePath))
             {
-                Response.StatusCode = HttpStatusCode.NotFound;
-                Response.Parameters.Add(HttpHeader.ContentType, string.Concat(Mime.Text.Html, "; charset=utf-8"));
-                Response.StreamText.Write(string.Concat("<html><body><h1>", ((int)Response.StatusCode).ToString(), " ", ((HttpStatusCode)Response.StatusCode).ToString(), "</h1><div>Не найден файл</div><div></div></body></html>"));
+                Context.Response.StatusCode = HttpStatusCode.NotFound;
+                Context.Response.Parameters.Add(HttpHeader.ContentType, string.Concat(Mime.Text.Html, "; charset=utf-8"));
+                Context.Response.StreamText.Write(string.Concat("<html><body><h1>", ((int)Context.Response.StatusCode).ToString(), " ", (Context.Response.StatusCode).ToString(), "</h1><div>Не найден файл</div><div></div></body></html>"));
 
                 return;
             }
@@ -63,14 +63,14 @@ namespace dpas.Net.Http
                 contentType = Mime.Application.Unknown;
 
 
-            Response.Parameters[HttpHeader.ContentType] = contentType;
+            Context.Response.Parameters[HttpHeader.ContentType] = contentType;
             using (FileStream fileStream = File.Open(filePath, FileMode.Open))
             {
                 int bufferSize = 4096;
                 byte[] buffer = new byte[bufferSize];
                 int readBytesCount = 0;
                 while ((readBytesCount = fileStream.Read(buffer, 0, bufferSize)) > 0)
-                    Response.Stream.Write(buffer, 0, readBytesCount);
+                    Context.Response.Stream.Write(buffer, 0, readBytesCount);
             }
             base.OnExecute();
         }

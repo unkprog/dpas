@@ -10,7 +10,22 @@ namespace dpas.Net.Http
         Gzip = 1,
         Deflate = 2
     }
-    public class HttpRequest 
+
+    public interface IHttpRequest
+    {
+        HttpHeader Header { get; }
+        NameValueCollection Parameters { get; }
+        string Path { get; }
+        HttpFile File { get; }
+        NameValueCollection QueryString { get; }
+
+        int SupportCompression { get; }
+
+        string Content { get; }
+
+    }
+
+    public class HttpRequest : IHttpRequest
     {
         public HttpRequest()
         {
