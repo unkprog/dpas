@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
-
-namespace dpas.Net.Http.Mvc
+﻿namespace dpas.Net.Http.Mvc
 {
     public interface IController
     {
-        void Exec(HttpContext context, ControllerInfo controllerInfo, Dictionary<string, object> state);
+        void Exec(HttpContext context, ControllerInfo controllerInfo);
     }
 
     public class Controller : IController
     {
 
-        public virtual void Exec(HttpContext context, ControllerInfo controllerInfo, Dictionary<string, object> state)
+        public virtual void Exec(HttpContext context, ControllerInfo controllerInfo)
         {
 
         }

@@ -8,17 +8,17 @@ namespace dpas.Net.Http.Mvc
 {
     public class Navigation : IController
     {
-        public virtual void Exec(HttpContext context, ControllerInfo controllerInfo, Dictionary<string, object> state)
+        public virtual void Exec(HttpContext context, ControllerInfo controllerInfo)
         {
             string curPage = controllerInfo.CurrrentPage;
             if (curPage == "/curpage")
-                curPage = state.GetString("curpage");
+                curPage = context.State.GetString("curpage");
 
             if (string.IsNullOrEmpty(curPage))
                 //curPage = "/prj/editor";
             curPage = "/index";
 
-            state["curpage"] = curPage;
+            context.State["curpage"] = curPage;
 
             //if (!state.GetBool("IsAuthentificated"))
             //    curPage = "/auth";

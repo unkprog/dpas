@@ -58,7 +58,7 @@ namespace dpas.Web.Application
 
             Task result = new Task(() =>
             {
-                //string dpasKey = context.Request.Cookies["dpas"];
+                string dpasKey = context.Request.Cookies["dpas"];
                 //if (string.IsNullOrEmpty(dpasKey))
                 //{
                 //    dpasKey = Guid.NewGuid().ToString();

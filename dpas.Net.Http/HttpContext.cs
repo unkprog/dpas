@@ -1,5 +1,6 @@
 ﻿using System;
 using dpas.Core;
+using System.Collections.Generic;
 
 namespace dpas.Net.Http
 {
@@ -13,6 +14,8 @@ namespace dpas.Net.Http
         /// Исходящий ответ
         /// </summary>
         IHttpResponse Response { get; }
+
+        Dictionary<string, object> State { get; }
     }
     public class HttpContext : Disposable, IHttpContext
     {
@@ -29,6 +32,14 @@ namespace dpas.Net.Http
         /// Исходящий ответ
         /// </summary>
         public IHttpResponse Response { get; internal set; }
+
+        public Dictionary<string, object> State
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
 
         protected override void Dispose(bool aDisposing)
         {
