@@ -5,7 +5,7 @@ namespace dpas.Net.Http.Mvc.Api.Prj
 {
     public class Editor : IController
     {
-        public virtual void Exec(HttpContext context, ControllerInfo controllerInfo)
+        public virtual void Exec(ControllerContext context)
         {
             context.State["IsAuthentificated"] = true;
 

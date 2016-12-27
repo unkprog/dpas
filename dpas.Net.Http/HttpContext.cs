@@ -24,6 +24,12 @@ namespace dpas.Net.Http
             Request = aRequest;
             Response = new HttpResponse(Request);
         }
+        public HttpContext(byte[] data)
+        {
+            Request = HttpParser.ParseRequest(data);
+            Response = new HttpResponse(Request);
+        }
+        
         /// <summary>
         /// Входящий запрос
         /// </summary>

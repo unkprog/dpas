@@ -8,16 +8,16 @@ namespace dpas.Net.Http.Mvc.Api.Prj
 {
     public class Manager : IController
     {
-        public virtual void Exec(HttpContext context, ControllerInfo controllerInfo)
+        public virtual void Exec(ControllerContext context)
         {
-            if (controllerInfo.Action == "/list")
-                List(context, controllerInfo);
-            else if (controllerInfo.Action == "/create")
-                Create(context, controllerInfo);
-            else if (controllerInfo.Action == "/delete")
-                Delete(context, controllerInfo);
-            else if (controllerInfo.Action == "/rename")
-                Rename(context, controllerInfo);
+            if (context.ControllerInfo.Action == "/list")
+                List(context);
+            else if (context.ControllerInfo.Action == "/create")
+                Create(context);
+            else if (context.ControllerInfo.Action == "/delete")
+                Delete(context);
+            else if (context.ControllerInfo.Action == "/rename")
+                Rename(context);
             else
             {
                 context.Response.ContentType = "application/json";// application / json; charset = UTF - 8
@@ -29,7 +29,7 @@ namespace dpas.Net.Http.Mvc.Api.Prj
         /// <summary>
         /// Получение списка проектов
         /// </summary>
-        private void List(HttpContext context, ControllerInfo controllerInfo)
+        private void List(ControllerContext context)
         {
             ProjectManager.Manager.Read();
 
@@ -56,7 +56,7 @@ namespace dpas.Net.Http.Mvc.Api.Prj
         /// <summary>
         /// Создание нового проекта
         /// </summary>
-        private void Create(HttpContext context, ControllerInfo controllerInfo)
+        private void Create(ControllerContext context)
         {
             context.Response.ContentType = "application/json";
             context.Response.Write(@"{""result"": true}");
@@ -64,7 +64,7 @@ namespace dpas.Net.Http.Mvc.Api.Prj
         /// <summary>
         /// Удаление проекта
         /// </summary>
-        private void Delete(HttpContext context, ControllerInfo controllerInfo)
+        private void Delete(ControllerContext context)
         {
             context.Response.ContentType = "application/json";
             context.Response.Write(@"{""result"": true}");
@@ -73,7 +73,7 @@ namespace dpas.Net.Http.Mvc.Api.Prj
         /// <summary>
         /// Переименование проекта
         /// </summary>
-        private void Rename(HttpContext context, ControllerInfo controllerInfo)
+        private void Rename(ControllerContext context)
         {
             context.Response.ContentType = "application/json";
             context.Response.Write(@"{""result"": true}");

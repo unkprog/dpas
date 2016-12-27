@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Collections.Specialized;
+using System.Collections.Generic;
 
 namespace dpas.Net.Http
 {
@@ -15,9 +16,10 @@ namespace dpas.Net.Http
     {
         HttpHeader Header { get; }
         NameValueCollection Parameters { get; }
+        string Url { get; }
         string Path { get; }
         HttpFile File { get; }
-        NameValueCollection QueryString { get; }
+        Dictionary<string, string> QueryString { get; }
 
         int SupportCompression { get; }
 
@@ -31,18 +33,18 @@ namespace dpas.Net.Http
         {
             Header      = new HttpHeader();
             Parameters  = new NameValueCollection();
-            QueryString = new NameValueCollection();
+            QueryString = new Dictionary<string, string>();
             File        = new HttpFile();
         }
         public HttpHeader          Header      { get; internal set; }
         public NameValueCollection Parameters  { get; internal set; }
         public string              Path        { get; internal set; }
         public HttpFile            File        { get; internal set; }
-        public NameValueCollection QueryString { get; internal set; }
+        public Dictionary<string, string>  QueryString { get; internal set; }
 
         public int                 SupportCompression { get; internal set; }
 
-
+        public string Url { get { return string.Concat(Path, QueryString); } }
         public string              Content    { get; set; }
 
         public override string ToString()

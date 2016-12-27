@@ -8,9 +8,9 @@ namespace dpas.Net.Http.Mvc
 {
     public class Navigation : IController
     {
-        public virtual void Exec(HttpContext context, ControllerInfo controllerInfo)
+        public virtual void Exec(ControllerContext context)
         {
-            string curPage = controllerInfo.CurrrentPage;
+            string curPage = context.ControllerInfo.CurrentPage;
             if (curPage == "/curpage")
                 curPage = context.State.GetString("curpage");
 
@@ -22,10 +22,10 @@ namespace dpas.Net.Http.Mvc
 
             //if (!state.GetBool("IsAuthentificated"))
             //    curPage = "/auth";
-            Page(context, controllerInfo, curPage);
+            Page(context, curPage);
         }
 
-        private void Page(HttpContext context, ControllerInfo controllerInfo, string curPage)
+        private void Page(HttpContext context, string curPage)
         {
             string pathFile = string.Concat(Directory.GetCurrentDirectory(), "/content/mvc/view", curPage, ".html");
             // System.Environment

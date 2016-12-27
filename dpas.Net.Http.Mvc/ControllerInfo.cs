@@ -11,7 +11,11 @@
 
         public string Content { get; private set; }
 
-        public string CurrrentPage { get; private set; }
+        public string CurrentPage { get; private set; }
+
+        public ControllerInfo(IHttpContext context) : this(context.Request.Url, context.Request.Content)
+        {
+        }
         public ControllerInfo(string url, string content)
         {
             string curUrl = url;
@@ -57,8 +61,8 @@
                     Action = curUrl;
             }
 
-            CurrrentPage = string.Concat(Controller, Action);
-            Path = string.Concat(Prefix, CurrrentPage);
+            CurrentPage = string.Concat(Controller, Action);
+            Path = string.Concat(Prefix, CurrentPage);
         }
 
 
