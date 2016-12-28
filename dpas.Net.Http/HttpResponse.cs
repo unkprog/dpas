@@ -9,12 +9,10 @@ using System.Text;
 
 namespace dpas.Net.Http
 {
-    public interface IHttpResponse : IDisposable
+    public interface IHttpResponse : IHttpRequestResponse
     {
         HttpHeaderBase Header { get; }
         HttpStatusCode StatusCode { get; set; }
-        IDictionary<string, string> Parameters { get; }
-        IDictionary<string, string> Cookies    { get; }
         StreamWriter StreamText { get; }
 
         Stream Stream { get; }
@@ -33,13 +31,11 @@ namespace dpas.Net.Http
         void Write(string data);
         void StreamClose();
     }
-    public class HttpResponse : Disposable, IHttpResponse
+    public class HttpResponse : HttpRequestResponse, IHttpResponse
     {
         public HttpResponse()
         {
             Header       = new HttpHeaderBase();
-            Parameters   = new Dictionary<string,string>();
-            Cookies       = new Dictionary<string, string>();
             memoryStream = new MemoryStream();
             StatusCode = HttpStatusCode.OK;
         }
@@ -99,8 +95,6 @@ namespace dpas.Net.Http
 
         public HttpHeaderBase      Header        { get; internal set; }
         public HttpStatusCode      StatusCode    { get; set; }
-        public IDictionary<string, string> Parameters { get; internal set; }
-        public IDictionary<string, string> Cookies     { get; internal set; }
         public StreamWriter StreamText
         {
             get
@@ -169,26 +163,16 @@ namespace dpas.Net.Http
 
             if (Cookies.Count > 0)
             {
-                result.Append(HttpHeader.SetCookie);
-                result.Append(": ");
-                foreach (var cookie in Cookies)
-                {
-                    result.Append(cookie.Key);
-                    result.Append("=");
-                    result.Append(cookie.Value);
-                    result.Append("; ");
-                }
+                result.Append(Cookies);
                 result.Append(Environment.NewLine);
             }
 
-            foreach (var param in Parameters)
+            if (Parameters.Count > 0)
             {
-                result.Append(param.Key);
-                result.Append(": ");
-                result.Append(param.Value);
+                result.Append(Parameters);
                 result.Append(Environment.NewLine);
             }
-            result.Append(Environment.NewLine);
+
             return result.ToString();
         }
     }

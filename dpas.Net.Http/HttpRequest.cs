@@ -12,12 +12,10 @@ namespace dpas.Net.Http
         Deflate = 2
     }
 
-    public interface IHttpRequest
+    public interface IHttpRequest : IHttpRequestResponse
     {
         HttpHeader Header { get; }
-        IDictionary<string, string> Parameters  { get; }
-        IDictionary<string, string> QueryString { get; }
-        IDictionary<string, string> Cookies     { get; }
+        IHttpQueryString QueryString { get; }
 
         string Url { get; }
         string Path { get; }
@@ -29,41 +27,37 @@ namespace dpas.Net.Http
 
     }
 
-    public class HttpRequest : IHttpRequest
+    public class HttpRequest : HttpRequestResponse, IHttpRequest
     {
-        public HttpRequest()
+        public HttpRequest() : base()
         {
             Header      = new HttpHeader();
-            Parameters  = new Dictionary<string, string>();
-            QueryString = new Dictionary<string, string>();
-            Cookies     = new Dictionary<string, string>();
+            Parameters  = new HttpParameters();
+            QueryString = new HttpQueryString();
+            Cookies     = new HttpCookies();
             File        = new HttpFile();
         }
-        public HttpHeader          Header      { get; internal set; }
-        public IDictionary<string, string>  Parameters  { get; internal set; }
-        public IDictionary<string, string>  QueryString { get; internal set; }
-        public IDictionary<string, string>  Cookies     { get; internal set; }
-        public string              Path        { get; internal set; }
-        public HttpFile            File        { get; internal set; }
-        public int                 SupportCompression   { get; internal set; }
-
-        public string              Url        { get { return string.Concat(Path, QueryString); } }
-        public string              Content    { get; set; }
+        public HttpHeader       Header      { get; internal set; }
+        public IHttpQueryString QueryString { get; internal set; }
+        public string           Path        { get; internal set; }
+        public HttpFile         File        { get; internal set; }
+        public int              SupportCompression   { get; internal set; }
+        public string           Url        { get { return string.Concat(Header.Source, QueryString); } }
+        public string           Content    { get; set; }
 
         public override string ToString()
         {
             StringBuilder result = new StringBuilder();
             result.Append(Header);
-            foreach (var param in Parameters) //.AllKeys)
+            if (Parameters.Count > 0)
             {
-                result.Append(param.Key);
-                result.Append(": ");
-                result.Append(param.Value);
-                result.Append("\r\n");
+                result.Append(Parameters);
+                result.Append(Environment.NewLine);
             }
             if (!string.IsNullOrEmpty(Content))
             {
-                result.Append("\r\n\r\n");
+                result.Append(Environment.NewLine);
+                result.Append(Environment.NewLine);
                 result.Append(Content);
             }
             return result.ToString();
