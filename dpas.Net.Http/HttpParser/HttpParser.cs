@@ -24,6 +24,7 @@ namespace dpas.Net.Http
                 current.Clear();
                 paramNum++;
             };
+
             Action setParam = () =>
             {
                 string paramValue = current.ToString();
@@ -33,6 +34,7 @@ namespace dpas.Net.Http
                     nextParam();
                 }
             };
+
             Action<byte> append = (bt) =>
             {
                 newLineNum = 0;
@@ -81,8 +83,8 @@ namespace dpas.Net.Http
         {
             switch (paramNum)
             {
-                case HttpHeader_Method  : request.Header.Method   = param; break;
-                case HttpHeader_Path    : request.Header.Source   = param; parsePath(request); break;
+                case HttpHeader_Method: request.Header.Method = param; break;
+                case HttpHeader_Path: request.Header.Source = param; parsePath(request); break;
                 case HttpHeader_Protocol: request.Header.Protocol = param; break;
                 default:
                     setRequestParam(request, param);
@@ -99,7 +101,7 @@ namespace dpas.Net.Http
                 {
                     if (values.Length > 0)
                         parseSourceString(request, values[0]);
-                        
+
                     if (values.Length > 1)
                         parseQueryString(request, values[1]);
                 }
@@ -129,9 +131,8 @@ namespace dpas.Net.Http
             if (!string.IsNullOrEmpty(queryString))
             {
                 string[] values = queryString.Split('&');
-                if (values != null)
-                    for (int i = 0, icount = values.Length; i < icount; i++)
-                        parseQueryStringValue(request, values[i]);
+                for (int i = 0, icount = values.Length; i < icount; i++)
+                    parseQueryStringValue(request, values[i]);
             }
         }
 
@@ -140,10 +141,7 @@ namespace dpas.Net.Http
             if (!string.IsNullOrEmpty(value))
             {
                 string[] values = value.Split('=');
-                if (values != null)
-                {
-                    request.QueryString.Add(values[0], values.Length > 1 ? values[1] : string.Empty);
-                }
+                request.QueryString.Add(values[0], values.Length > 1 ? values[1] : string.Empty);
             }
         }
 
@@ -153,9 +151,33 @@ namespace dpas.Net.Http
             {
                 string[] paramNameValue = param.Split(':');
                 string value = string.Empty;
-                for (int i = 1, icount = paramNameValue.Length; i < icount; i++)
-                    value = string.Concat(value, i > 1 ? ":" : string.Empty, paramNameValue[i].Trim());
-                request.Parameters.Add(paramNameValue[0], value);
+                if (paramNameValue[0] == HttpHeader.SetCookie)
+                    setRequestCookie(request, paramNameValue[1]);
+                else
+                {
+                    for (int i = 1, icount = paramNameValue.Length; i < icount; i++)
+                        value = string.Concat(value, i > 1 ? ":" : string.Empty, paramNameValue[i].Trim());
+                    request.Parameters.Add(paramNameValue[0], value);
+                }
+            }
+        }
+
+        private static void setRequestCookie(HttpRequest request, string cookieString)
+        {
+            if (!string.IsNullOrEmpty(cookieString))
+            {
+                string[] values = cookieString.Split(';');
+                for (int i = 0, icount = values.Length; i < icount; i++)
+                    parseCookieStringValue(request, values[i]);
+            }
+        }
+
+        private static void parseCookieStringValue(HttpRequest request, string value)
+        {
+            if (!string.IsNullOrEmpty(value))
+            {
+                string[] values = value.Split('=');
+                request.Cookies.Add(values[0], values.Length > 1 ? values[1] : string.Empty);
             }
         }
     }

@@ -27,6 +27,15 @@ namespace dpas.Service.Protocol
             ControllerContext context = new ControllerContext(data);
             try
             {
+                string dpasKey;
+                if (!context.Request.Cookies.TryGetValue("dpas", out dpasKey))
+                {
+                    dpasKey = Guid.NewGuid().ToString();
+                    context.Response.Cookies.Add("dpas", dpasKey);
+                }
+
+                context.SetState(dpasKey);
+
                 if (!RequestMvcHandle(context))
                     RequestHandle(context);
             }

@@ -27,4 +27,12 @@ namespace dpas.Net.Http
             return state.GetValue(key);
         }
     }
+
+    public partial class HttpContext 
+    {
+        public void SetState(string key)
+        {
+            this.State = HttpState.GetState(key);
+        }
+    }
 }

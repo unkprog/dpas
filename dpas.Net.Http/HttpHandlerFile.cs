@@ -40,7 +40,9 @@ namespace dpas.Net.Http
         public override void OnExecute()
         {
             string filePath = string.Empty;// Request.Path + "/" + Request.File.ToString();
-            string contentType = Context.Request.Parameters[HttpHeader.ContentType];
+            string contentType;
+            if (!Context.Request.Parameters.TryGetValue(HttpHeader.ContentType, out contentType))
+                contentType = string.Empty;
             if (Context.Request.Path == "/" || string.IsNullOrEmpty(Context.Request.Path))
                 filePath = string.Concat(pathSources, "/index.html");
             else

@@ -15,11 +15,13 @@ namespace dpas.Net.Http
     public interface IHttpRequest
     {
         HttpHeader Header { get; }
-        NameValueCollection Parameters { get; }
+        IDictionary<string, string> Parameters  { get; }
+        IDictionary<string, string> QueryString { get; }
+        IDictionary<string, string> Cookies     { get; }
+
         string Url { get; }
         string Path { get; }
         HttpFile File { get; }
-        Dictionary<string, string> QueryString { get; }
 
         int SupportCompression { get; }
 
@@ -32,30 +34,31 @@ namespace dpas.Net.Http
         public HttpRequest()
         {
             Header      = new HttpHeader();
-            Parameters  = new NameValueCollection();
+            Parameters  = new Dictionary<string, string>();
             QueryString = new Dictionary<string, string>();
+            Cookies     = new Dictionary<string, string>();
             File        = new HttpFile();
         }
         public HttpHeader          Header      { get; internal set; }
-        public NameValueCollection Parameters  { get; internal set; }
+        public IDictionary<string, string>  Parameters  { get; internal set; }
+        public IDictionary<string, string>  QueryString { get; internal set; }
+        public IDictionary<string, string>  Cookies     { get; internal set; }
         public string              Path        { get; internal set; }
         public HttpFile            File        { get; internal set; }
-        public Dictionary<string, string>  QueryString { get; internal set; }
+        public int                 SupportCompression   { get; internal set; }
 
-        public int                 SupportCompression { get; internal set; }
-
-        public string Url { get { return string.Concat(Path, QueryString); } }
+        public string              Url        { get { return string.Concat(Path, QueryString); } }
         public string              Content    { get; set; }
 
         public override string ToString()
         {
             StringBuilder result = new StringBuilder();
             result.Append(Header);
-            foreach (var param in Parameters.AllKeys)
+            foreach (var param in Parameters) //.AllKeys)
             {
-                result.Append(param);
+                result.Append(param.Key);
                 result.Append(": ");
-                result.Append(Parameters[param]);
+                result.Append(param.Value);
                 result.Append("\r\n");
             }
             if (!string.IsNullOrEmpty(Content))

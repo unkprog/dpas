@@ -12,7 +12,7 @@ namespace dpas.Net.Http
         public const string ContentType     = "Content-type";
         public const string ContentLength   = "Content-Length";
         public const string Connection      = "Connection";
-
+        public const string SetCookie       = "Set-Cookie";
         public string Method { get; internal set; }
         public string Source { get; internal set; }
 

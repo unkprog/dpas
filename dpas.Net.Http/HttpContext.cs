@@ -17,7 +17,7 @@ namespace dpas.Net.Http
 
         Dictionary<string, object> State { get; }
     }
-    public class HttpContext : Disposable, IHttpContext
+    public partial class HttpContext : Disposable, IHttpContext
     {
         public HttpContext(IHttpRequest aRequest)
         {
@@ -39,13 +39,10 @@ namespace dpas.Net.Http
         /// </summary>
         public IHttpResponse Response { get; internal set; }
 
-        public Dictionary<string, object> State
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        /// <summary>
+        /// Состояния для объектов
+        /// </summary>
+        public Dictionary<string, object> State { get; internal set; }
 
         protected override void Dispose(bool aDisposing)
         {

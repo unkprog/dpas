@@ -1,5 +1,6 @@
 ﻿using dpas.Core;
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.IO.Compression;
@@ -12,7 +13,8 @@ namespace dpas.Net.Http
     {
         HttpHeaderBase Header { get; }
         HttpStatusCode StatusCode { get; set; }
-        NameValueCollection Parameters { get; }
+        IDictionary<string, string> Parameters { get; }
+        IDictionary<string, string> Cookies    { get; }
         StreamWriter StreamText { get; }
 
         Stream Stream { get; }
@@ -35,11 +37,11 @@ namespace dpas.Net.Http
     {
         public HttpResponse()
         {
-            Header     = new HttpHeaderBase();
-            Parameters = new NameValueCollection();
-            StatusCode = HttpStatusCode.OK;
+            Header       = new HttpHeaderBase();
+            Parameters   = new Dictionary<string,string>();
+            Cookies       = new Dictionary<string, string>();
             memoryStream = new MemoryStream();
-            
+            StatusCode = HttpStatusCode.OK;
         }
 
         protected override void Dispose(bool disposing)
@@ -97,7 +99,8 @@ namespace dpas.Net.Http
 
         public HttpHeaderBase      Header        { get; internal set; }
         public HttpStatusCode      StatusCode    { get; set; }
-        public NameValueCollection Parameters    { get; internal set; }
+        public IDictionary<string, string> Parameters { get; internal set; }
+        public IDictionary<string, string> Cookies     { get; internal set; }
         public StreamWriter StreamText
         {
             get
@@ -121,8 +124,8 @@ namespace dpas.Net.Http
         /// </summary>
         public string ContentType
         {
-            get { return Parameters["Content-type"]; }
-            set { Parameters.Set("Content-type", value); }
+            get { return Parameters[HttpHeader.ContentType]; }
+            set { Parameters[HttpHeader.ContentType] = value; }
         }
 
         public long                ContentLength { get { return memoryStream.Length; } }
@@ -162,15 +165,30 @@ namespace dpas.Net.Http
             result.Append((int)StatusCode);
             result.Append(" ");
             result.Append(StatusCode.ToString());
-            result.Append(Environment.NewLine);//"\r\n");
-            foreach (var param in Parameters.AllKeys)
+            result.Append(Environment.NewLine);
+
+            if (Cookies.Count > 0)
             {
-                result.Append(param);
+                result.Append(HttpHeader.SetCookie);
                 result.Append(": ");
-                result.Append(Parameters[param]);
-                result.Append(Environment.NewLine);// "\r\n");
+                foreach (var cookie in Cookies)
+                {
+                    result.Append(cookie.Key);
+                    result.Append("=");
+                    result.Append(cookie.Value);
+                    result.Append("; ");
+                }
+                result.Append(Environment.NewLine);
             }
-            result.Append(Environment.NewLine);//"\r\n");
+
+            foreach (var param in Parameters)
+            {
+                result.Append(param.Key);
+                result.Append(": ");
+                result.Append(param.Value);
+                result.Append(Environment.NewLine);
+            }
+            result.Append(Environment.NewLine);
             return result.ToString();
         }
     }
