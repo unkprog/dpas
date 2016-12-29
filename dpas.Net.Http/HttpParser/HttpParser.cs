@@ -69,8 +69,8 @@ namespace dpas.Net.Http
             }
             result.Content = current.ToString();
 
-            string accEnc = result.Parameters["Accept-Encoding"];
-            if (!string.IsNullOrEmpty(accEnc))
+            string accEnc;
+            if (result.Parameters.TryGetValue(HttpHeader.AcceptEncoding, out accEnc) && !string.IsNullOrEmpty(accEnc))
             {
                 result.SupportCompression += accEnc.Contains("gzip") ? (int)HttpCompress.Gzip : 0;
                 result.SupportCompression += accEnc.Contains("deflate") ? (int)HttpCompress.Deflate : 0;
@@ -151,7 +151,7 @@ namespace dpas.Net.Http
             {
                 string[] paramNameValue = param.Split(':');
                 string value = string.Empty;
-                if (paramNameValue[0] == HttpHeader.SetCookie)
+                if (paramNameValue[0] == HttpHeader.Cookie)
                     setRequestCookie(request, paramNameValue[1]);
                 else
                 {
@@ -177,7 +177,9 @@ namespace dpas.Net.Http
             if (!string.IsNullOrEmpty(value))
             {
                 string[] values = value.Split('=');
-                request.Cookies.Add(values[0], values.Length > 1 ? values[1] : string.Empty);
+                string key = values[0].Trim();
+                if (!request.Cookies.ContainsKey(key))
+                    request.Cookies.Add(key, values.Length > 1 ? values[1] : string.Empty);
             }
         }
     }

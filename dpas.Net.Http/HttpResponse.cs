@@ -76,16 +76,16 @@ namespace dpas.Net.Http
         {
             if (request != null)
             {
-                if ((request.SupportCompression & (int)HttpCompress.Gzip) == (int)HttpCompress.Gzip)
-                {
-                    Parameters[HttpHeader.ContentEncoding] = "gzip";
-                    streamCompress = new GZipStream(memoryStream, CompressionMode.Compress, true);
-                }
-                else if ((request.SupportCompression & (int)HttpCompress.Deflate) == (int)HttpCompress.Deflate)
-                {
-                    Parameters[HttpHeader.ContentEncoding] = "deflate";
-                    streamCompress = new DeflateStream(memoryStream, CompressionMode.Compress, true);
-                }
+                //if ((request.SupportCompression & (int)HttpCompress.Gzip) == (int)HttpCompress.Gzip)
+                //{
+                //    Parameters[HttpHeader.ContentEncoding] = "gzip";
+                //    streamCompress = new GZipStream(memoryStream, CompressionMode.Compress, true);
+                //}
+                //else if ((request.SupportCompression & (int)HttpCompress.Deflate) == (int)HttpCompress.Deflate)
+                //{
+                //    Parameters[HttpHeader.ContentEncoding] = "deflate";
+                //    streamCompress = new DeflateStream(memoryStream, CompressionMode.Compress, true);
+                //}
             }
             if (streamCompress != null)
                 streamWriter = new StreamWriter(streamCompress, Encoding.UTF8/*.ASCII*/, 4096, true);

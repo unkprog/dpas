@@ -8,11 +8,14 @@ namespace dpas.Net.Http
 {
     public class HttpHeader : HttpHeaderBase
     {
+        public const string AcceptEncoding  = "Accept-Encoding";
         public const string ContentEncoding = "Content-Encoding";
         public const string ContentType     = "Content-type";
         public const string ContentLength   = "Content-Length";
         public const string Connection      = "Connection";
         public const string SetCookie       = "Set-Cookie";
+        public const string Cookie          = "Cookie";
+        
         public string Method { get; internal set; }
         public string Source { get; internal set; }
 

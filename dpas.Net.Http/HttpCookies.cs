@@ -13,14 +13,17 @@ namespace dpas.Net.Http
         public override string ToString()
         {
             StringBuilder result = new StringBuilder();
+            bool isNotOne = false;
             result.Append(HttpHeader.SetCookie);
             result.Append(": ");
             foreach (var param in this)
             {
+                if(isNotOne)
+                    result.Append("; ");
                 result.Append(param.Key);
-                result.Append(": ");
+                result.Append("=");
                 result.Append(param.Value);
-                result.Append("; ");
+               
             }
             return result.ToString();
         }
