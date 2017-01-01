@@ -29,6 +29,8 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dpas.Core.Data", "dpas.Core
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dpas.Console.Test", "dpas.Console.Test\dpas.Console.Test.xproj", "{B059D015-E713-4F0E-833B-E6897C3EE29F}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dpas.Json", "dpas.Json\dpas.Json.xproj", "{89AA90A9-7ED1-4B7E-B6A4-F0AF610B3CB0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{B059D015-E713-4F0E-833B-E6897C3EE29F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B059D015-E713-4F0E-833B-E6897C3EE29F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B059D015-E713-4F0E-833B-E6897C3EE29F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89AA90A9-7ED1-4B7E-B6A4-F0AF610B3CB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89AA90A9-7ED1-4B7E-B6A4-F0AF610B3CB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89AA90A9-7ED1-4B7E-B6A4-F0AF610B3CB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89AA90A9-7ED1-4B7E-B6A4-F0AF610B3CB0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
