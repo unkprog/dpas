@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using dpas.Net.Http.Mvc;
 using dpas.Service.Project;
 using System.Text;
+using System.Net;
 
 namespace dpas.Net.Http.Mvc.Api.Prj
 {
@@ -58,6 +59,8 @@ namespace dpas.Net.Http.Mvc.Api.Prj
         /// </summary>
         private void Create(ControllerContext context)
         {
+            var data = WebUtility.UrlDecode(context.Request.Content);
+            IHttpFormParameters parameters = HttpParser.ParseFormParameters(data);
             context.Response.ContentType = "application/json";
             context.Response.Write(@"{""result"": true}");
         }

@@ -1,23 +1,23 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.Text;
 
 namespace dpas.Net.Http
 {
-    public interface IHttpQueryString : IDictionary<string, string>
+    public interface IHttpFormParameters : IDictionary<string, string>
     {
 
     }
-    public class HttpQueryString : Dictionary<string, string>, IHttpQueryString
+    public class HttpFormParameters : Dictionary<string, string>, IHttpFormParameters
     {
         public override string ToString()
         {
-            if (this.Count == 0) return string.Empty;
             StringBuilder result = new StringBuilder();
-            result.Append('?');
             bool isNotOneParam = false;
             foreach (var param in this)
             {
-                if (isNotOneParam)
+                if(isNotOneParam)
                     result.Append('&');
                 result.Append(param.Key);
                 result.Append('=');

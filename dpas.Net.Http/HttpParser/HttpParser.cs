@@ -3,14 +3,8 @@ using System.Text;
 
 namespace dpas.Net.Http
 {
-    public partial class HttpParser
+    public static partial class HttpParser
     {
-        public HttpParser()
-        {
-
-        }
-
-
         public static HttpRequest ParseRequest(byte[] data)
         {
             HttpRequest result = new HttpRequest();
@@ -103,7 +97,7 @@ namespace dpas.Net.Http
                         parseSourceString(request, values[0]);
 
                     if (values.Length > 1)
-                        parseQueryString(request, values[1]);
+                        request.QueryString = parseQueryString(values[1]);
                 }
             }
         }
@@ -126,22 +120,24 @@ namespace dpas.Net.Http
         }
 
 
-        private static void parseQueryString(HttpRequest request, string queryString)
+        public static IHttpQueryString parseQueryString(string queryString)
         {
+            IHttpQueryString result = new HttpQueryString();
             if (!string.IsNullOrEmpty(queryString))
             {
                 string[] values = queryString.Split('&');
                 for (int i = 0, icount = values.Length; i < icount; i++)
-                    parseQueryStringValue(request, values[i]);
+                    parseQueryStringValue(result, values[i]);
             }
+            return result;
         }
 
-        private static void parseQueryStringValue(HttpRequest request, string value)
+        private static void parseQueryStringValue(IHttpQueryString queryString, string value)
         {
             if (!string.IsNullOrEmpty(value))
             {
                 string[] values = value.Split('=');
-                request.QueryString.Add(values[0], values.Length > 1 ? values[1] : string.Empty);
+                queryString.Add(values[0], values.Length > 1 ? values[1] : string.Empty);
             }
         }
 
@@ -152,7 +148,7 @@ namespace dpas.Net.Http
                 string[] paramNameValue = param.Split(':');
                 string value = string.Empty;
                 if (paramNameValue[0] == HttpHeader.Cookie)
-                    setRequestCookie(request, paramNameValue[1]);
+                    request.Cookies = ParseCookie(paramNameValue[1]);
                 else
                 {
                     for (int i = 1, icount = paramNameValue.Length; i < icount; i++)
@@ -162,24 +158,49 @@ namespace dpas.Net.Http
             }
         }
 
-        private static void setRequestCookie(HttpRequest request, string cookieString)
+        public static IHttpCookies ParseCookie(string cookieString)
         {
+            IHttpCookies result = new HttpCookies();
             if (!string.IsNullOrEmpty(cookieString))
             {
                 string[] values = cookieString.Split(';');
                 for (int i = 0, icount = values.Length; i < icount; i++)
-                    parseCookieStringValue(request, values[i]);
+                    parseCookieStringValue(result, values[i]);
             }
+            return result;
         }
 
-        private static void parseCookieStringValue(HttpRequest request, string value)
+        private static void parseCookieStringValue(IHttpCookies cookies, string value)
         {
             if (!string.IsNullOrEmpty(value))
             {
                 string[] values = value.Split('=');
                 string key = values[0].Trim();
-                if (!request.Cookies.ContainsKey(key))
-                    request.Cookies.Add(key, values.Length > 1 ? values[1] : string.Empty);
+                if (!cookies.ContainsKey(key))
+                    cookies.Add(key, values.Length > 1 ? values[1] : string.Empty);
+            }
+        }
+
+        public static IHttpFormParameters ParseFormParameters(string formParametersString)
+        {
+            IHttpFormParameters result = new HttpFormParameters();
+            if (!string.IsNullOrEmpty(formParametersString))
+            {
+                string[] values = formParametersString.Split('&');
+                for (int i = 0, icount = values.Length; i < icount; i++)
+                    parseFormParametersStringValue(result, values[i]);
+            }
+            return result;
+        }
+
+        private static void parseFormParametersStringValue(IHttpFormParameters formParameters, string value)
+        {
+            if (!string.IsNullOrEmpty(value))
+            {
+                string[] values = value.Split('=');
+                string key = values[0].Trim();
+                if (!formParameters.ContainsKey(key))
+                    formParameters.Add(key, values.Length > 1 ? values[1] : string.Empty);
             }
         }
     }
