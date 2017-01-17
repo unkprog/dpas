@@ -1,19 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using dpas.Core.Extensions;
 
 namespace dpas.Net.Http
 {
-    public class HttpState
+    public interface IHttpState : IDictionary<string, object>
     {
-        internal static Dictionary<string, Dictionary<string, object>> dictionaryState = new Dictionary<string, Dictionary<string, object>>();
+        void SetValue(string key, object value);
+    }
+
+    public class HttpState : Dictionary<string, object>, IHttpState
+    {
+        internal static Dictionary<string, IHttpState> dictionaryState = new Dictionary<string, IHttpState>();
         internal static object lockObject = new object();
 
-        public static Dictionary<string, object> GetState(string key)
+        public static IHttpState GetState(string key)
         {
-            Dictionary<string, object> result;
+            IHttpState result;
             if (!dictionaryState.TryGetValue(key, out result))
             {
-                result = new Dictionary<string, object>();
+                result = new HttpState();
                 lock (lockObject)
                 {
                     dictionaryState.Add(key, result);
@@ -22,9 +28,17 @@ namespace dpas.Net.Http
             return result;
         }
 
-        public static object GetStateValue(Dictionary<string, object> state, string key)
+        public static object GetStateValue(IHttpState state, string key)
         {
             return state.GetValue(key);
+        }
+
+        public void SetValue(string key, object value)
+        {
+            if (ContainsKey(key))
+                this[key] = value;
+            else
+                Add(key, value);
         }
     }
 

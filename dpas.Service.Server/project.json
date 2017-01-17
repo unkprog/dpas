@@ -3,6 +3,7 @@
 
   "dependencies": {
     "dpas.Core": "1.0.0-*",
+    "dpas.Json": "1.0.0-*",
     "dpas.Net": "1.0.0-*",
     "dpas.Net.Http": "1.0.0-*",
     "dpas.Net.Http.Mvc": "1.0.0-*",

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using dpas.Core.IO;
 using dpas.Core.Data;
 using System.Xml;
@@ -46,7 +45,26 @@ namespace dpas.Service.Project
         public IProject Create(string aName, string aDecription)
         {
             IProject result = new Project(this, aName, aDecription);
-            Save(result);
+            Save(result, true);
+            return result;
+        }
+
+        /// <summary>
+        /// Переименование проекта
+        /// </summary>
+        /// <param name="OldName">Старое имя</param>
+        /// <param name="Name">Имя</param>
+        /// <param name="Decription">Описание</param>
+        /// <returns>Переименованный проект</returns>
+        public IProject Rename(string OldName, string Name, string Decription)
+        {
+            IProject result = FindProject(OldName);
+            if (result == null)
+                throw new Exception(string.Concat("Проект <", OldName, "> не найден"));
+            var proj = result as Project;
+            proj.Name = Name;
+            proj.Description = Decription;
+            SetState(ObjectState.Modified);
             return result;
         }
 
@@ -69,7 +87,7 @@ namespace dpas.Service.Project
         /// </summary>
         /// <param name="aName">Имя проекта</param>
         /// <returns>Найденная ссылка на проект</returns>
-        private IProject FindProject(string aName)
+        public IProject FindProject(string aName)
         {
             return _Projects.FirstOrDefault(f => f.Name == aName);
         }
@@ -95,13 +113,21 @@ namespace dpas.Service.Project
         /// <param name="aProject">Сохраняемый проект</param>
         public void Save(IProject aProject)
         {
-            SaveProject(aProject);
+            Save(aProject, false);
+        }
+
+        public void Save(IProject aProject, bool aNew)
+        {
             var find = FindProject(aProject);
             if (find == null)
             {
                 _Projects.Add(aProject);
                 SetState(ObjectState.Modified);
             }
+            else
+                if (aNew)
+                    throw new ArgumentNullException(string.Concat("Проект ", find.Name, " уже существует."));
+            SaveProject(aProject);
         }
 
         private void CheckProjectsDirectory()

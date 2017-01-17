@@ -3,8 +3,8 @@
     public partial class HttpParser
     {
         private const byte _space   = (byte)' ';
-        private const byte _enter   = (byte)13;
-        private const byte _newline = (byte)10;
+        private const byte _enter   = 13;
+        private const byte _newline = 10;
         private const byte _paramDelimiter = (byte)':';
 
 

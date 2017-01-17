@@ -8,60 +8,77 @@ namespace dpas.Net.Http
         public static HttpRequest ParseRequest(byte[] data)
         {
             HttpRequest result = new HttpRequest();
-            int i = 0, icount = data == null ? 0 : data.Length;
+            int i = 0, icount = data == null ? 0 : data.Length, startIndex = 0;
             byte b, prevb = 0;
             int paramNum = 0, newLineNum = 0;
             StringBuilder current = new StringBuilder();
 
-            Action nextParam = () =>
-            {
-                current.Clear();
-                paramNum++;
-            };
+            //Action nextParam = () =>
+            //{
+            //    //current.Clear();
+            //    paramNum++;
+            //};
 
-            Action setParam = () =>
+            Action<int, int> setParam = (index, count) =>
             {
-                string paramValue = current.ToString();
-                if (!string.IsNullOrEmpty(paramValue))
+                if (count > 0)
                 {
-                    setRequestParam(result, paramNum, current.ToString());
-                    nextParam();
+                    string paramValue = Encoding.UTF8.GetString(data, startIndex, count);
+                    if (!string.IsNullOrEmpty(paramValue))
+                    {
+                        setRequestParam(result, paramNum, paramValue);
+                        paramNum++; //nextParam();
+                    }
                 }
+                startIndex = index;
             };
 
-            Action<byte> append = (bt) =>
-            {
-                newLineNum = 0;
-                current.Append((char)bt);
-            };
+            //Action<byte> append = (bt) =>
+            //{
+            //    newLineNum = 0;
+            //    current.Append((char)bt);
+            //};
 
-            while (i < icount)
+            while (i < icount && newLineNum < 2)
             {
                 b = data[i];
-                if (newLineNum < 2)
+                //if (newLineNum < 2)
+                //{
+                if (b == _space && paramNum < 3)
                 {
-                    if (b == _space && paramNum < 3)
-                    {
-                        setParam();
-                    }
-                    else if (b == _enter)
-                    {
-                        prevb = b;
-                    }
-                    else if (b == _newline)
-                    {
-                        if (prevb == _enter)
-                        {
-                            setParam();
-                            newLineNum++;
-                        }
-                    }
-                    else append(b);
+                    setParam(i + 1, i - startIndex);
                 }
-                else append(b);
+                else if (b == _enter)
+                {
+                    prevb = b;
+                }
+                else if (b == _newline)
+                {
+                    if (prevb == _enter)
+                    {
+                        //i++;
+                        setParam(i + 1, i - startIndex - 1);
+                        newLineNum++;
+                    }
+                }
+                else
+                    newLineNum = 0;
+                //else
+                //{
+                //    endIndex++;
+                //    //append(b);
+                //}
+                //}
+                //else
+                //{
+                //    endIndex++;
+                //    //append(b);
+                //}
                 i++;
             }
-            result.Content = current.ToString();
+            int countBytes = icount - startIndex;
+            result.Content = countBytes > 0 ? Encoding.UTF8.GetString(data, startIndex, countBytes) : string.Empty;
+            //current.ToString();
 
             string accEnc;
             if (result.Parameters.TryGetValue(HttpHeader.AcceptEncoding, out accEnc) && !string.IsNullOrEmpty(accEnc))

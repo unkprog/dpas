@@ -64,8 +64,17 @@ namespace dpas.Service.Project
         /// </summary>
         /// <param name="Name">Имя</param>
         /// <param name="Decription">Описание</param>
-        /// <returns></returns>
+        /// <returns>Новый проект</returns>
         IProject Create(string Name, string Decription);
+
+        /// <summary>
+        /// Переименование проекта
+        /// </summary>
+        /// <param name="OldName">Старое имя</param>
+        /// <param name="Name">Имя</param>
+        /// <param name="Decription">Описание</param>
+        /// <returns>Переименованный проект</returns>
+        IProject Rename(string OldName, string Name, string Decription);
 
         /// <summary>
         /// Удаление проекта
@@ -78,6 +87,8 @@ namespace dpas.Service.Project
         /// </summary>
         /// <param name="Project">Проект</param>
         void Save(IProject Project);
+
+        IProject FindProject(string aName);
     }
 
 }

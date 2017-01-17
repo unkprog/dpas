@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using dpas.Net.Http.Mvc;
 using dpas.Service.Project;
 using System.Text;
 using System.Net;
+using dpas.Core.Extensions;
 
 namespace dpas.Net.Http.Mvc.Api.Prj
 {
@@ -59,18 +59,47 @@ namespace dpas.Net.Http.Mvc.Api.Prj
         /// </summary>
         private void Create(ControllerContext context)
         {
-            var data = WebUtility.UrlDecode(context.Request.Content);
-            IHttpFormParameters parameters = HttpParser.ParseFormParameters(data);
-            context.Response.ContentType = "application/json";
-            context.Response.Write(@"{""result"": true}");
+            try
+            {
+                string data = WebUtility.UrlDecode(context.Request.Content);
+                object parameters = Json.Parse(data);
+                //IHttpFormParameters parameters = HttpParser.ParseFormParameters(data);
+
+                //IProject newProject = ProjectManager.Manager.Create(parameters.GetString("prjName"), parameters.GetString("prjDescription"));
+                context.Response.ContentType = "application/json";
+                var result = new { result = true };//, project = newProject };
+                var strResult = Json.Serialize(result);
+                //context.State.SetValue("prjCurrent", newProject.Code);
+                context.Response.Write(strResult);
+            }
+            catch(Exception ex)
+            {
+                context.Response.Write(Json.Serialize(new { result = false, error = ex.Message }));
+            }
         }
         /// <summary>
         /// Удаление проекта
         /// </summary>
         private void Delete(ControllerContext context)
         {
-            context.Response.ContentType = "application/json";
-            context.Response.Write(@"{""result"": true}");
+            try
+            {
+                var data = WebUtility.UrlDecode(context.Request.Content);
+                IHttpFormParameters parameters = HttpParser.ParseFormParameters(data);
+
+                IProject findProject = ProjectManager.Manager.FindProject(parameters.GetString("prjName"));
+                if (findProject != null)
+                {
+                    ProjectManager.Manager.Delete(findProject);
+                    context.Response.ContentType = "application/json";
+                    var result = new { result = true, project = findProject };
+                    var strResult = Json.Serialize(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                context.Response.Write(Json.Serialize(new { result = false, error = ex.Message }));
+            }
         }
 
         /// <summary>
@@ -78,8 +107,24 @@ namespace dpas.Net.Http.Mvc.Api.Prj
         /// </summary>
         private void Rename(ControllerContext context)
         {
-            context.Response.ContentType = "application/json";
-            context.Response.Write(@"{""result"": true}");
+            try
+            {
+                var data = WebUtility.UrlDecode(context.Request.Content);
+                IHttpFormParameters parameters = HttpParser.ParseFormParameters(data);
+
+                IProject findProject = ProjectManager.Manager.Rename(parameters.GetString("prjOldName"), parameters.GetString("prjName"), parameters.GetString("prjDescription"));
+                if (findProject != null)
+                {
+                    ProjectManager.Manager.Delete(findProject);
+                    context.Response.ContentType = "application/json";
+                    var result = new { result = true, project = findProject };
+                    var strResult = Json.Serialize(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                context.Response.Write(Json.Serialize(new { result = false, error = ex.Message }));
+            }
         }
     }
 }

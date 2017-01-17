@@ -7,17 +7,22 @@ var View;
             function List() {
             }
             List.prototype.LoadProjects = function (that) {
-                $.ajax({
-                    type: "POST", url: location.protocol + '//' + location.host + '/api/prj/list',
-                    async: true,
-                    dataType: "json",
+                dpas.app.postJson({
+                    url: '/api/prj/list', data: {},
                     success: function (result) {
                         that.SetList(result);
-                    },
-                    error: function (xhr, ajaxOptions, thrownError) {
-                        showError(thrownError);
                     }
                 });
+                //$.ajax({
+                //    type: "POST", url: location.protocol + '//' + location.host + '/api/prj/list',
+                //    dataType: "json",
+                //    success: function (result) {
+                //        that.SetList(result);
+                //    },
+                //    error: function (xhr, ajaxOptions, thrownError) {
+                //        showError(thrownError);
+                //    }
+                //});
             };
             List.prototype.Init = function () {
                 this.that = this;
@@ -29,17 +34,6 @@ var View;
             };
             List.prototype.SetList = function (data) {
                 var ids = [];
-                //var drawItem = function (curItem) {
-                //    var result = '';
-                //    result += '<a id="';
-                //    result += curItem.Name;
-                //    result += '" data-id="';
-                //    result += ids.length.toString();
-                //    result += '" class="collection-item center">';
-                //    result += curItem.Name;
-                //    result += '</a>';
-                //    return result;
-                //}
                 var elsStr = '', template, ids = [], templateContent = $('#list-projects-item-template').html();
                 var i = 0, icount = data.length;
                 for (; i < icount; i++) {
@@ -48,21 +42,13 @@ var View;
                     //elsStr += drawItem(data[i]);
                     ids[data[i].Code] = data[i];
                 }
-                //var elsStr = '';
-                //var i = 0, icount = data.length;
-                //for (; i < icount; i++) {
-                //    elsStr += drawItem(data[i]);
-                //    ids.push(data[i]);
-                //}
                 $("#list-projects").html(elsStr);
                 var that = this;
                 that['ids'] = ids;
                 for (i = 0; i < icount; i++) {
-                    //var elItem = ids[i];
                     var el = $(document.getElementById(data[i].Code));
-                    //el.elItem = elItem;
                     el.click(function () {
-                        navigate("/nav/prj/editor?prj=" + $(this).data('id')); //that['ids'][$(this).data('id')].Code);
+                        navigate("/nav/prj/editor?prj=" + $(this).data('id'));
                     });
                 }
             };

@@ -1,6 +1,8 @@
 ﻿declare var $: any;
 declare var navigateClear, navigate: any;
 declare var showError: any;
+declare var dpas: any;
+
 export module View {
     export class Index {
         
@@ -38,20 +40,33 @@ export module View {
                 return;
             }
             navigateClear();
-            var data = { prjName: $('#prjName').val(), prjComment: $('#prjComment').val() };
-           
-            $.ajax({
-                type: "POST", url: location.protocol + '//' + location.host + '/api/prj/create',
-                async: true,
-                data: data,
-                dataType: "json",
+            var data = { prjName: $('#prjName').val(), prjDescription: $('#prjDescription').val() };
+
+            dpas.app.postJson({
+                url: '/api/prj/create', data: data,
                 success: function (result) {
-                    navigate("/nav/prj/editor");
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
-                    showError(thrownError);
+                    if (result.resut == true)
+                        navigate("/nav/prj/editor");
+                    else
+                        showError(result.error);
                 }
             });
+
+            //$.ajax({
+            //    type: "POST", url: location.protocol + '//' + location.host + '/api/prj/create',
+            //    async: true,
+            //    data: data,
+            //    dataType: "json",
+            //    success: function (result) {
+            //        if (result.resut == true)
+            //            navigate("/nav/prj/editor");
+            //        else
+            //            showError(result.error);
+            //    },
+            //    error: function (xhr, ajaxOptions, thrownError) {
+            //        showError(thrownError);
+            //    }
+            //});
         }
     }
 

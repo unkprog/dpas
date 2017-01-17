@@ -23,6 +23,7 @@
         };
 
         this.loadHtml = function (url, callback) {
+            
             $.ajax({
                 url: url,
                 type: "GET",
@@ -32,6 +33,40 @@
                         callback(html);
                 },
                 error: alertError
+            });
+        };
+
+        this.postJson = function (options) {
+            loading.show();
+
+            $.ajax({
+                type: "POST", url: location.protocol + '//' + location.host + options.url, async: true, dataType: 'json', data: JSON.stringify(options.data), //contentType: 'application/json; charset=utf-8',
+                success: function (result) {
+                    if (options.success)
+                        options.success(result);
+                    loading.hide();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    showError(thrownError);
+                    loading.hide();
+                }
+            });
+        };
+
+        this.loadData = function (options) {
+            loading.show();
+
+            $.ajax({
+                type: options.type, url: options.url, async: true, dataType: options.dataType,
+                success: function (result) {
+                    if (options.success)
+                        options.success(result);
+                    loading.hide();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    showError(thrownError);
+                    loading.hide();
+                }
             });
         };
 
