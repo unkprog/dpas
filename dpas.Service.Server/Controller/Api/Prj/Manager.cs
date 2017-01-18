@@ -21,9 +21,8 @@ namespace dpas.Net.Http.Mvc.Api.Prj
                 Rename(context);
             else
             {
-                context.Response.ContentType = "application/json";// application / json; charset = UTF - 8
-                                                                  //context.Response.Headers.Add("charset", "UTF-8");
-                context.Response.Write(@"{""result"": true}");
+                context.Response.ContentType = "application/json";
+                Json.Serialize(new { result = false, error = string.Concat("Команда <", context.ControllerInfo.Action, "> не поддерживается.") });
             }
         }
 
@@ -49,16 +48,25 @@ namespace dpas.Net.Http.Mvc.Api.Prj
             context.Response.Write(result.ToString());
         }
 
-        private void ProjectToJson(StringBuilder sbJson, IProject project)
+        private void ProjectToJson(StringBuilder resultJson, IProject project)
         {
-            sbJson.Append("{\"Code\":");
-            sbJson.Append(string.Concat("\"", project.Code, "\""));
-            sbJson.Append(",\"Name\":");
-            sbJson.Append(string.Concat("\"", project.Name, "\""));
-            sbJson.Append(",\"Description\":");
-            sbJson.Append(string.Concat("\"", project.Description, "\""));
-            sbJson.Append("}");
+            resultJson.Append("\"project\":{\"Code\":");
+            resultJson.Append(string.Concat("\"", project.Code, "\""));
+            resultJson.Append(",\"Name\":");
+            resultJson.Append(string.Concat("\"", project.Name, "\""));
+            resultJson.Append(",\"Description\":");
+            resultJson.Append(string.Concat("\"", project.Description, "\""));
+            resultJson.Append("}");
         }
+
+        private StringBuilder ResultProjectToJson(bool result, IProject project)
+        {
+            StringBuilder resultJson = new StringBuilder(string.Concat("{\"result\":", result.ToString().ToLower(), ","));
+            ProjectToJson(resultJson, project);
+            resultJson.Append("}");
+            return resultJson;
+        }
+
         /// <summary>
         /// Создание нового проекта
         /// </summary>
@@ -72,9 +80,7 @@ namespace dpas.Net.Http.Mvc.Api.Prj
                 IProject project = ProjectManager.Manager.Create(parameters.GetString("prjName"), parameters.GetString("prjDescription"));
                 ProjectManager.Manager.Save();
                 context.Response.ContentType = "application/json";
-                StringBuilder result = new StringBuilder("{\"result\": true, \"project\": ");
-                ProjectToJson(result, project);
-                result.Append("}");
+                StringBuilder result = ResultProjectToJson(true, project);
                 //context.State.SetValue("prjCurrent", newProject.Code);
                 context.Response.Write(result.ToString());
             }
@@ -93,13 +99,14 @@ namespace dpas.Net.Http.Mvc.Api.Prj
                 var data = WebUtility.UrlDecode(context.Request.Content);
                 IHttpFormParameters parameters = HttpParser.ParseFormParameters(data);
 
-                IProject findProject = ProjectManager.Manager.FindProject(parameters.GetString("prjName"));
-                if (findProject != null)
+                IProject project = ProjectManager.Manager.FindProject(parameters.GetString("prjName"));
+                if (project != null)
                 {
-                    ProjectManager.Manager.Delete(findProject);
+                    ProjectManager.Manager.Delete(project);
+                    ProjectManager.Manager.Save();
                     context.Response.ContentType = "application/json";
-                    var result = new { result = true, project = findProject };
-                    var strResult = Json.Serialize(result);
+                    StringBuilder result = ResultProjectToJson(true, project);
+                    context.Response.Write(result.ToString());
                 }
             }
             catch (Exception ex)
@@ -117,15 +124,17 @@ namespace dpas.Net.Http.Mvc.Api.Prj
             {
                 var data = WebUtility.UrlDecode(context.Request.Content);
                 IHttpFormParameters parameters = HttpParser.ParseFormParameters(data);
-
-                IProject findProject = ProjectManager.Manager.Rename(parameters.GetString("prjOldName"), parameters.GetString("prjName"), parameters.GetString("prjDescription"));
-                if (findProject != null)
+                string prjOldName = parameters.GetString("prjOldName");
+                IProject project = ProjectManager.Manager.Rename(parameters.GetString("prjOldName"), parameters.GetString("prjName"), parameters.GetString("prjDescription"));
+                if (project != null)
                 {
-                    ProjectManager.Manager.Delete(findProject);
+                    ProjectManager.Manager.Delete(project);
                     context.Response.ContentType = "application/json";
-                    var result = new { result = true, project = findProject };
-                    var strResult = Json.Serialize(result);
+                    StringBuilder result = ResultProjectToJson(true, project);
+                    context.Response.Write(result.ToString());
                 }
+                else
+                    context.Response.Write(Json.Serialize(new { result = false, error = string.Concat("Проект ", prjOldName, " не найден.") }));
             }
             catch (Exception ex)
             {
