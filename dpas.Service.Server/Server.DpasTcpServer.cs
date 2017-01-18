@@ -30,7 +30,7 @@ namespace dpas.Service
             /// </summary>
             /// <param name="e">Аргумент события сокета</param>
             /// <param name="data">Данные</param>
-            void Handle(TcpSocket.TcpSocketAsyncEventArgs e, byte[] data);
+            void Handle(TcpSocketAsyncEventArgs e, byte[] data);
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace dpas.Service
         /// </summary>
         IProtocol dpasProtocol, httpProtocol;
 
-        private void HandleDpasProtocol(TcpSocket.TcpSocketAsyncEventArgs e, byte[] data)
+        private void HandleDpasProtocol(TcpSocketAsyncEventArgs e, byte[] data)
         {
             if (dpasProtocol == null)
                 dpasProtocol = new DpasProtocol() { BufferSize = this.Settings.BufferSize };
@@ -46,7 +46,7 @@ namespace dpas.Service
         }
 
 
-        private void HandleHttpProtocol(TcpSocket.TcpSocketAsyncEventArgs e, byte[] data)
+        private void HandleHttpProtocol(TcpSocketAsyncEventArgs e, byte[] data)
         {
             if (httpProtocol == null)
                 httpProtocol = new HttpProtocol() { BufferSize = Settings.BufferSize };

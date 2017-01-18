@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Linq;
 using System.Net;
 using System.IO;
 using System.Text;
 using dpas.Net;
 using dpas.Net.Http;
-using System.Net.Sockets;
-using static dpas.Service.DpasTcpServer;
 using dpas.Net.Http.Mvc;
 using dpas.Net.Http.Mvc.Api;
 using dpas.Net.Http.Mvc.Api.Prj;
+
+using static dpas.Service.DpasTcpServer;
 
 namespace dpas.Service.Protocol
 {
