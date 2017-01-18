@@ -8,7 +8,7 @@ namespace dpas.Net.Http.Mvc
 {
     public class Navigation : IController
     {
-        public virtual void Exec(ControllerContext context)
+        public virtual void Exec(IControllerContext context)
         {
             string curPage = context.ControllerInfo.CurrentPage;
             if (curPage == "/curpage")
@@ -25,7 +25,7 @@ namespace dpas.Net.Http.Mvc
             Page(context, curPage);
         }
 
-        private void Page(HttpContext context, string curPage)
+        private void Page(IHttpContext context, string curPage)
         {
             string pathFile = string.Concat(Directory.GetCurrentDirectory(), "/content/mvc/view", curPage, ".html");
             // System.Environment

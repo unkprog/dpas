@@ -17,6 +17,7 @@ namespace dpas.Service.Project
         internal ProjectManager(object aOwner) : base(aOwner)
         {
             _Projects = new List<IProject>();
+            Read();
         }
 
         #region IProjectManager
@@ -181,6 +182,7 @@ namespace dpas.Service.Project
                     }
                 }
             }
+            SetState(ObjectState.Normal);
         }
 
         

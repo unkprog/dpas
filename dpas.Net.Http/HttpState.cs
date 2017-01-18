@@ -42,6 +42,11 @@ namespace dpas.Net.Http
         }
     }
 
+    public partial interface IHttpContext
+    {
+        void SetState(string key);
+    }
+
     public partial class HttpContext 
     {
         public void SetState(string key)

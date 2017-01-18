@@ -34,8 +34,8 @@ var View;
             dpas.app.postJson({
                 url: '/api/prj/create', data: data,
                 success: function (result) {
-                    if (result.resut == true)
-                        navigate("/nav/prj/editor");
+                    if (result.result == true)
+                        navigate("/nav/prj/editor?prj=" + result.project.Code);
                     else
                         showError(result.error);
                 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace dpas.Net.Http
 {
-    public interface IHttpContext : IDisposable
+    public partial interface IHttpContext : IDisposable
     {
         /// <summary>
         /// Входящий запрос

@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace dpas.Net.Http.Mvc
+﻿namespace dpas.Net.Http.Mvc
 {
 
-    public class ControllerContext : HttpContext
+    public interface IControllerContext : IHttpContext
+    {
+        IControllerInfo ControllerInfo { get; }
+    }
+
+    public class ControllerContext : HttpContext, IControllerContext
     {
         public ControllerContext(IHttpRequest aRequest) : base(aRequest)
         {
@@ -17,6 +17,6 @@ namespace dpas.Net.Http.Mvc
         {
             ControllerInfo = new ControllerInfo(this);
         }
-        public ControllerInfo ControllerInfo { get; private set; }
+        public IControllerInfo ControllerInfo { get; private set; }
     }
 }

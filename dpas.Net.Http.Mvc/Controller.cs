@@ -2,13 +2,13 @@
 {
     public interface IController
     {
-        void Exec(ControllerContext context);
+        void Exec(IControllerContext context);
     }
 
     public class Controller : IController
     {
 
-        public virtual void Exec(ControllerContext context)
+        public virtual void Exec(IControllerContext context)
         {
 
         }

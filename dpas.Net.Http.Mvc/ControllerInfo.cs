@@ -1,6 +1,19 @@
 ﻿namespace dpas.Net.Http.Mvc
 {
-    public class ControllerInfo
+    public interface IControllerInfo
+    {
+        string Url { get; }
+        string Prefix { get; }
+        string Controller { get; }
+        string Action { get; }
+        string QueryString { get; }
+        string Path { get; }
+
+        string Content { get; }
+        string CurrentPage { get; }
+    }
+
+    public class ControllerInfo : IControllerInfo
     {
         public string Url { get; private set; }
         public string Prefix { get; private set; }

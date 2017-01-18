@@ -4,7 +4,7 @@ namespace dpas.Net.Http.Mvc.Api
 {
     public class Auth : IController
     {
-        public virtual void Exec(ControllerContext context)
+        public virtual void Exec(IControllerContext context)
         {
             context.State["IsAuthentificated"] = true;
 
@@ -23,7 +23,7 @@ namespace dpas.Net.Http.Mvc.Api
         /// <summary>
         /// Вход в DPAS
         /// </summary>
-        private void Login(ControllerContext context)
+        private void Login(IControllerContext context)
         {
             context.State["IsAuthentificated"] = true;
             context.Response.ContentType = "application/json";// application / json; charset = UTF - 8
@@ -34,7 +34,7 @@ namespace dpas.Net.Http.Mvc.Api
         /// <summary>
         /// Выход из DPAS
         /// </summary>
-        private void Exit(ControllerContext context)
+        private void Exit(IControllerContext context)
         {
             context.State["IsAuthentificated"] = false;
             context.Response.ContentType = "application/json";// application / json; charset = UTF - 8
