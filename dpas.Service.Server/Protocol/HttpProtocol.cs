@@ -17,10 +17,11 @@ namespace dpas.Service.Protocol
     {
         public HttpProtocol()
         {
-            BufferSize = 1024;
+            _BufferSize = 1024;
         }
 
-        public int BufferSize { get; set; }
+        private int _BufferSize;
+        public int BufferSize { get { return _BufferSize; } set { if (_BufferSize != value) _BufferSize = value; } }
 
         void IProtocol.Handle(TcpSocket.TcpSocketAsyncEventArgs e, byte[] data)
         {
@@ -55,14 +56,17 @@ namespace dpas.Service.Protocol
         {
             byte[] responseData = null;
 
+            long contentLength = context.Response.ContentLength;
+
             using (MemoryStream ms = new MemoryStream())
             {
-                context.Response.Parameters.Add(HttpHeader.ContentLength, context.Response.ContentLength.ToString());
-                using (var sw = new StreamWriter(ms, Encoding.ASCII/*.UTF8*/, 4096, true))
+                if (contentLength > 0)
+                    context.Response.Parameters.Add(HttpHeader.ContentLength, contentLength.ToString());
+                using (var sw = new StreamWriter(ms, Encoding.ASCII/*.UTF8*/, _BufferSize, true))
                 {
                     sw.Write(context.Response.ToString());
                 }
-                if (context.Response.ContentLength > 0)
+                if (contentLength > 0)
                     context.Response.StreamContentWriteTo(ms);
                 responseData = ms.ToArray();
             }
@@ -83,31 +87,29 @@ namespace dpas.Service.Protocol
 
         private static bool RequestMvcHandle(ControllerContext context)
         {
-           // bool isAjax = context.Request.QueryString.ContainsKey("ajax");
             bool result = false;
-           // if (isAjax)
-           // {
-                if (context.ControllerInfo.Prefix == "/nav")
-                {
-                    new Navigation().Exec(context);
-                    result = true;
-                }
-           // }
+            if (context.ControllerInfo.Prefix == "/nav")
+            {
+                new Navigation().Exec(context);
+                result = true;
+            }
 
             else if (context.ControllerInfo.Prefix == "/api")
             {
-                if (context.ControllerInfo.Controller == "/auth") {
+                if (context.ControllerInfo.Controller == "/auth")
+                {
                     new Auth().Exec(context);
                     result = true;
                 }
                 else if (context.ControllerInfo.Controller == "/prj")
-                { 
+                {
                     new Manager().Exec(context);
                     result = true;
                 }
             }
             return result;
         }
+
         /// <summary>
         /// Обработка запросов
         /// </summary>

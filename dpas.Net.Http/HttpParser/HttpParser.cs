@@ -13,12 +13,6 @@ namespace dpas.Net.Http
             int paramNum = 0, newLineNum = 0;
             StringBuilder current = new StringBuilder();
 
-            //Action nextParam = () =>
-            //{
-            //    //current.Clear();
-            //    paramNum++;
-            //};
-
             Action<int, int> setParam = (index, count) =>
             {
                 if (count > 0)
@@ -27,23 +21,15 @@ namespace dpas.Net.Http
                     if (!string.IsNullOrEmpty(paramValue))
                     {
                         setRequestParam(result, paramNum, paramValue);
-                        paramNum++; //nextParam();
+                        paramNum++; 
                     }
                 }
                 startIndex = index;
             };
 
-            //Action<byte> append = (bt) =>
-            //{
-            //    newLineNum = 0;
-            //    current.Append((char)bt);
-            //};
-
             while (i < icount && newLineNum < 2)
             {
                 b = data[i];
-                //if (newLineNum < 2)
-                //{
                 if (b == _space && paramNum < 3)
                 {
                     setParam(i + 1, i - startIndex);
@@ -56,29 +42,19 @@ namespace dpas.Net.Http
                 {
                     if (prevb == _enter)
                     {
-                        //i++;
                         setParam(i + 1, i - startIndex - 1);
                         newLineNum++;
                     }
                 }
-                else
+                else  // Тут странность - если нет фигурных скобок, то неправильно работает else !?!?!
+                {
                     newLineNum = 0;
-                //else
-                //{
-                //    endIndex++;
-                //    //append(b);
-                //}
-                //}
-                //else
-                //{
-                //    endIndex++;
-                //    //append(b);
-                //}
+                }
                 i++;
             }
-            int countBytes = icount - startIndex;
-            result.Content = countBytes > 0 ? Encoding.UTF8.GetString(data, startIndex, countBytes) : string.Empty;
-            //current.ToString();
+
+            icount = icount - startIndex;
+            result.Content = icount > 0 ? Encoding.UTF8.GetString(data, startIndex, icount) : string.Empty;
 
             string accEnc;
             if (result.Parameters.TryGetValue(HttpHeader.AcceptEncoding, out accEnc) && !string.IsNullOrEmpty(accEnc))
