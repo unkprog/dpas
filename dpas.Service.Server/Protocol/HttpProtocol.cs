@@ -84,25 +84,34 @@ namespace dpas.Service.Protocol
             context.Dispose();
         }
 
+
+        private static Navigation navigation = null;
+        private static Auth auth = null;
+        private static Manager manager = null;
         private static bool RequestMvcHandle(IControllerContext context)
         {
             bool result = false;
             if (context.ControllerInfo.Prefix == "/nav")
             {
-                new Navigation().Exec(context);
+                if (navigation == null)
+                    navigation = new Navigation();
+                navigation.Exec(context);
                 result = true;
             }
-
             else if (context.ControllerInfo.Prefix == "/api")
             {
                 if (context.ControllerInfo.Controller == "/auth")
                 {
-                    new Auth().Exec(context);
+                    if (auth == null)
+                        auth = new Auth();
+                    auth.Exec(context);
                     result = true;
                 }
                 else if (context.ControllerInfo.Controller == "/prj")
                 {
-                    new Manager().Exec(context);
+                    if (manager == null)
+                        manager = new Manager();
+                    manager.Exec(context);
                     result = true;
                 }
             }

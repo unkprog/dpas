@@ -8,6 +8,8 @@ export module View {
 
             public Init() {
                 var that = this;
+               
+
                 $("#btnMainMenu").on("click", function (event) {
                     navigate("/nav/index");
                 });
@@ -18,6 +20,7 @@ export module View {
 
                 that.ApplyLayout();
                 that.SetupTree();
+
                 $(window).resize(function () {
                     that.ApplyLayout();
                 });
@@ -91,16 +94,16 @@ export module View {
 
 
             ApplyLayout() {
-                var h = window.innerHeight - $('.navbar-fixed').height();
+                var h = window.innerHeight - $('.navbar-fixed').height() - 22;
                 $('#editor-menu').height(h);
-                $('#editor-menu-tree').height(h - 70);
+                $('#editor-menu-tree').height(h - 80);
                 $('#editor-content').height(h);
                 h = h - $('#editor-tabs').height();
                 $('#editor-designer-view').height(h);
                 $('#editor-code-view').height(h);
                 $('#code-view-textarea').height(h);
 
-                var w = window.innerWidth - $('#editor-menu').width();
+                var w = window.innerWidth - $('#editor-menu').width() - 17;
                 $('#editor-content').width(w);
                 $('#code-view-textarea').width(w - 4);
             }

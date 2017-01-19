@@ -3,14 +3,14 @@
 (function () {
     var dpas = window.dpas = window.dpas || {};
     dpas.Application = function () {
-
+        var that = this;
         function alertError(num) {
             //ошибки запроса
             var arr = ['Ваш браузер не поддерживает Ajax', 'Не удалось выполнить запрос', 'Адрес не существует', 'Время ожидания истекло']; //['Your browser does not support Ajax', 'Request failed', 'Address does not exist', 'The waiting time left'];
             alert(arr[num]);
         }
 
-        this.loadScript = function (url, callback) {
+        that.loadScript = function (url, callback) {
             $.ajax({
                 url: url,
                 dataType: "script",
@@ -22,7 +22,7 @@
             });
         };
 
-        this.loadHtml = function (url, callback) {
+        that.loadHtml = function (url, callback) {
             
             $.ajax({
                 url: url,
@@ -36,11 +36,11 @@
             });
         };
 
-        this.postJson = function (options) {
+        that.callJson = function (options) {
             loading.show();
 
             $.ajax({
-                type: "POST", url: location.protocol + '//' + location.host + options.url, async: true, dataType: 'json', data: JSON.stringify(options.data), //contentType: 'application/json; charset=utf-8',
+                type: options.type, url: location.protocol + '//' + location.host + options.url, async: true, dataType: 'json', data: JSON.stringify(options.data), //contentType: 'application/json; charset=utf-8',
                 success: function (result) {
                     if (options.success)
                         options.success(result);
@@ -53,7 +53,18 @@
             });
         };
 
-        this.loadData = function (options) {
+        that.postJson = function (options) {
+            options.type = "POST";
+            that.callJson(options);
+        };
+
+
+        that.getJson = function (options) {
+            options.type = "GET";
+            that.callJson(options);
+        };
+
+        that.loadData = function (options) {
             loading.show();
 
             $.ajax({
@@ -70,8 +81,8 @@
             });
         };
 
-        this.getData = function (url, callback) {
-            this.getDataParams(url, undefined, callback);
+        that.getData = function (url, callback) {
+            that.getDataParams(url, undefined, callback);
             //var location = '' + (window.history.location || window.location);
             //var params = this.getParams(location);
             //$.ajax({
@@ -84,12 +95,12 @@
             //});
         };
 
-        this.getDataParams = function (url, data, callback) {
+        that.getDataParams = function (url, data, callback) {
             var locationPath = '' + (window.history.location || window.location);
             var params = data;
             if (!params) {
                 locationPath = '' + (window.history.location || window.location);
-                params = this.getParams(locationPath);
+                params = that.getParams(locationPath);
             }
 
             $.ajax({
@@ -102,7 +113,7 @@
             });
         };
 
-        this.getParams = function (url) {
+        that.getParams = function (url) {
             var result = {};
             var sUrl = '' + url;
             var indexQs = sUrl ? sUrl.indexOf('?') : 0;

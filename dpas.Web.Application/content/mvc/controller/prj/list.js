@@ -8,7 +8,7 @@ var View;
             }
             List.prototype.LoadProjects = function (that) {
                 dpas.app.postJson({
-                    url: '/api/prj/list', data: {},
+                    url: '/api/prj/list',
                     success: function (result) {
                         that.SetList(result);
                     }
@@ -48,7 +48,13 @@ var View;
                 for (i = 0; i < icount; i++) {
                     var el = $(document.getElementById(data[i].Code));
                     el.click(function () {
-                        navigate("/nav/prj/editor?prj=" + $(this).data('id'));
+                        var data = { prjCode: $(this).data('id') };
+                        dpas.app.postJson({
+                            url: '/api/prj/current', data: data,
+                            success: function (result) {
+                                navigate("/nav/prj/editor");
+                            }
+                        });
                     });
                 }
             };

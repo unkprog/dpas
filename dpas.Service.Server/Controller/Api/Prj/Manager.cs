@@ -1,28 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
-using dpas.Service.Project;
 using System.Text;
 using System.Net;
 using dpas.Core.Extensions;
+using dpas.Service.Project;
 
 namespace dpas.Net.Http.Mvc.Api.Prj
 {
-    public class Manager : IController
+    public partial class Manager : IController
     {
         public virtual void Exec(IControllerContext context)
         {
-            if (context.ControllerInfo.Action == "/list")
-                List(context);
-            else if (context.ControllerInfo.Action == "/create")
-                Create(context);
-            else if (context.ControllerInfo.Action == "/delete")
-                Delete(context);
-            else if (context.ControllerInfo.Action == "/rename")
-                Rename(context);
-            else
+            try
             {
                 context.Response.ContentType = "application/json";
-                Json.Serialize(new { result = false, error = string.Concat("Команда <", context.ControllerInfo.Action, "> не поддерживается.") });
+
+                if (context.ControllerInfo.Action == "/list")
+                    List(context);
+                else if (context.ControllerInfo.Action == "/current")
+                    Current(context);
+                else if (context.ControllerInfo.Action == "/create")
+                    Create(context);
+                else if (context.ControllerInfo.Action == "/delete")
+                    Delete(context);
+                else if (context.ControllerInfo.Action == "/rename")
+                    Rename(context);
+                else
+                {
+                    context.Response.ContentType = "application/json";
+                    Json.Serialize(new { result = false, error = string.Concat("Команда <", context.ControllerInfo.Action, "> не поддерживается.") });
+                }
+            }
+            catch (Exception ex)
+            {
+                context.Response.Write(Json.Serialize(new { result = false, error = ex.Message }));
             }
         }
 
@@ -33,7 +44,6 @@ namespace dpas.Net.Http.Mvc.Api.Prj
         {
             ProjectManager.Manager.Read();
 
-            context.Response.ContentType = "application/json";
             StringBuilder result = new StringBuilder("[");
             IProject project;
             IList<IProject> projects = ProjectManager.Manager.Projects;
@@ -46,6 +56,18 @@ namespace dpas.Net.Http.Mvc.Api.Prj
             }
             result.Append("]");
             context.Response.Write(result.ToString());
+        }
+
+        private void Current(IControllerContext context)
+        {
+            string data = WebUtility.UrlDecode(context.Request.Content);
+            Dictionary<string, object> parameters = (Dictionary<string, object>)Json.Parse(data);
+            string prjCode = parameters.GetString("prjCode");
+            if (string.IsNullOrEmpty(prjCode))
+                prjCode = context.State.GetString("prjCurrent");
+            else
+                context.State.SetValue("prjCurrent", prjCode);
+            context.Response.Write(Json.Serialize(new { result = true }));
         }
 
         private void ProjectToJson(StringBuilder resultJson, IProject project, bool appendProperty = true)
@@ -74,46 +96,29 @@ namespace dpas.Net.Http.Mvc.Api.Prj
         /// </summary>
         private void Create(IControllerContext context)
         {
-            try
-            {
                 string data = WebUtility.UrlDecode(context.Request.Content);
                 Dictionary<string, object> parameters = (Dictionary<string, object>)Json.Parse(data);
                 
                 IProject project = ProjectManager.Manager.Create(parameters.GetString("prjName"), parameters.GetString("prjDescription"));
                 ProjectManager.Manager.Save();
-                context.Response.ContentType = "application/json";
                 StringBuilder result = ResultProjectToJson(true, project);
-                //context.State.SetValue("prjCurrent", newProject.Code);
                 context.Response.Write(result.ToString());
-            }
-            catch(Exception ex)
-            {
-                context.Response.Write(Json.Serialize(new { result = false, error = ex.Message }));
-            }
         }
         /// <summary>
         /// Удаление проекта
         /// </summary>
         private void Delete(IControllerContext context)
         {
-            try
-            {
-                var data = WebUtility.UrlDecode(context.Request.Content);
-                IHttpFormParameters parameters = HttpParser.ParseFormParameters(data);
+            var data = WebUtility.UrlDecode(context.Request.Content);
+            IHttpFormParameters parameters = HttpParser.ParseFormParameters(data);
 
-                IProject project = ProjectManager.Manager.FindProject(parameters.GetString("prjName"));
-                if (project != null)
-                {
-                    ProjectManager.Manager.Delete(project);
-                    ProjectManager.Manager.Save();
-                    context.Response.ContentType = "application/json";
-                    StringBuilder result = ResultProjectToJson(true, project);
-                    context.Response.Write(result.ToString());
-                }
-            }
-            catch (Exception ex)
+            IProject project = ProjectManager.Manager.FindProject(parameters.GetString("prjName"));
+            if (project != null)
             {
-                context.Response.Write(Json.Serialize(new { result = false, error = ex.Message }));
+                ProjectManager.Manager.Delete(project);
+                ProjectManager.Manager.Save();
+                StringBuilder result = ResultProjectToJson(true, project);
+                context.Response.Write(result.ToString());
             }
         }
 
@@ -122,26 +127,18 @@ namespace dpas.Net.Http.Mvc.Api.Prj
         /// </summary>
         private void Rename(IControllerContext context)
         {
-            try
+            var data = WebUtility.UrlDecode(context.Request.Content);
+            IHttpFormParameters parameters = HttpParser.ParseFormParameters(data);
+            string prjOldName = parameters.GetString("prjOldName");
+            IProject project = ProjectManager.Manager.Rename(parameters.GetString("prjOldName"), parameters.GetString("prjName"), parameters.GetString("prjDescription"));
+            if (project != null)
             {
-                var data = WebUtility.UrlDecode(context.Request.Content);
-                IHttpFormParameters parameters = HttpParser.ParseFormParameters(data);
-                string prjOldName = parameters.GetString("prjOldName");
-                IProject project = ProjectManager.Manager.Rename(parameters.GetString("prjOldName"), parameters.GetString("prjName"), parameters.GetString("prjDescription"));
-                if (project != null)
-                {
-                    ProjectManager.Manager.Delete(project);
-                    context.Response.ContentType = "application/json";
-                    StringBuilder result = ResultProjectToJson(true, project);
-                    context.Response.Write(result.ToString());
-                }
-                else
-                    context.Response.Write(Json.Serialize(new { result = false, error = string.Concat("Проект ", prjOldName, " не найден.") }));
+                ProjectManager.Manager.Delete(project);
+                StringBuilder result = ResultProjectToJson(true, project);
+                context.Response.Write(result.ToString());
             }
-            catch (Exception ex)
-            {
-                context.Response.Write(Json.Serialize(new { result = false, error = ex.Message }));
-            }
+            else
+                context.Response.Write(Json.Serialize(new { result = false, error = string.Concat("Проект ", prjOldName, " не найден.") }));
         }
     }
 }
