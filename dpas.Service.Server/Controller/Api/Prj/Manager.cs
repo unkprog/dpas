@@ -42,15 +42,17 @@ namespace dpas.Net.Http.Mvc.Api.Prj
                 project = projects[i];
                 if(i > 0)
                     result.Append(",");
-                ProjectToJson(result, project);
+                ProjectToJson(result, project, false);
             }
             result.Append("]");
             context.Response.Write(result.ToString());
         }
 
-        private void ProjectToJson(StringBuilder resultJson, IProject project)
+        private void ProjectToJson(StringBuilder resultJson, IProject project, bool appendProperty = true)
         {
-            resultJson.Append("\"project\":{\"Code\":");
+            if(appendProperty)
+                resultJson.Append("\"project\":");
+            resultJson.Append("{\"Code\":");
             resultJson.Append(string.Concat("\"", project.Code, "\""));
             resultJson.Append(",\"Name\":");
             resultJson.Append(string.Concat("\"", project.Name, "\""));

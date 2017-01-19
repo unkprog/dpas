@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Projects>
 	<Project Code="54cc93c6948d4e02a13cbc6f050e4a04" Name="Базовый" Description="Проект с системными и базовыми классами" />
+	<Project Code="1b0097fd9329477b90a804660cdbf9b7" Name="Тестовый" Description="Тестовый проект" />
 </Projects>

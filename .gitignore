@@ -250,8 +250,5 @@ paket-files/
 # JetBrains Rider
 .idea/
 *.sln.iml
-/dpas.Web.Application/Projects/Базовый 1211/Базовый 1211.dpj
-/dpas.Web.Application/Projects/Базовый 121/Базовый 121.dpj
-/dpas.Web.Application/Projects/Базовый 12/Базовый 12.dpj
-/dpas.Web.Application/Projects/Базовый 1/Базовый 1.dpj
-/dpas.Web.Application/Projects/Базовый/Базовый.dpj
+*.dpj
+*.dps
