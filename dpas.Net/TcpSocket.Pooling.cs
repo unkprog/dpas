@@ -93,6 +93,7 @@ namespace dpas.Net
         public sealed class PoolSocketAsyncEventArgs : Disposable
         {
             private TcpSocket owner;
+            private object                             syncObject = new object();
             private Stack<TcpSocketAsyncEventArgs>     stackSocketAsyncEventArgs;
             private EventHandler<SocketAsyncEventArgs> onSocketAsyncEventArgsCompleted;
             private Func<TcpSocketAsyncEventArgs>      newSocketAsyncEventArgs;
@@ -148,7 +149,7 @@ namespace dpas.Net
                 TcpSocketAsyncEventArgs result = null;
                 //We are locking the stack, but we could probably use a ConcurrentStack if
                 // we wanted to be fancy
-                lock (stackSocketAsyncEventArgs)
+                lock (syncObject)
                 {
                     if (stackSocketAsyncEventArgs.Count > 0)
                     {
@@ -156,7 +157,7 @@ namespace dpas.Net
                         result.Clear();
                         Interlocked.Increment(ref countEventsLock);
                     }
-                    else if (newSocketAsyncEventArgs != null)
+                    if (newSocketAsyncEventArgs != null)
                     {
                         result = newSocketAsyncEventArgs();
                         Interlocked.Increment(ref countEventsLock);

@@ -70,6 +70,16 @@ namespace dpas.Net
         /// <param name="e">Параметр с текущим состоянием сокета</param>
         protected virtual void ProcessDisconnect(TcpSocketAsyncEventArgs e) { }
 
+        protected void CloseProcessReceive(TcpSocketAsyncEventArgs e)
+        {
+#if DEBUG
+            if (isLogging)
+                WriteToLog("ProcessReceive: Connection closed.");
+#endif
+            e.CloseSocket();
+            e.Socket.Dispose();
+            poolEventArgs.Push(e);
+        }
 
         /// <summary>
         /// Обработка события чтения данных из сокета
@@ -80,13 +90,7 @@ namespace dpas.Net
             // Если количество переданных байтов 0 или принимающий сокет удален, то закроем соединение
             if (e.BytesTransferred == 0 || socket == null)
             {
-#if DEBUG
-                if (isLogging)
-                    WriteToLog("ProcessReceive: Connection closed.");
-#endif
-                e.CloseSocket();
-                e.Socket.Dispose();
-                poolEventArgs.Push(e);
+                CloseProcessReceive(e);
                 return;
             }
 
@@ -102,8 +106,8 @@ namespace dpas.Net
                 OnReceiveHandle(e);
             // и продолжаем читать дальше
             if (!e.IsClosed)
-                if(!e.Socket.ReceiveAsync(e))
-                ProcessReceive(e);
+                if (!e.Socket.ReceiveAsync(e))
+                    ProcessReceive(e);
         }
 
         /// <summary>

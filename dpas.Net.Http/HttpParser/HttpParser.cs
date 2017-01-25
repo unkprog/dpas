@@ -7,6 +7,7 @@ namespace dpas.Net.Http
     {
         public static HttpRequest ParseRequest(byte[] data)
         {
+    
             HttpRequest result = new HttpRequest();
             int i = 0, icount = data == null ? 0 : data.Length, startIndex = 0;
             byte b, prevb = 0;
@@ -27,6 +28,7 @@ namespace dpas.Net.Http
                 startIndex = index;
             };
 
+            //System.Diagnostics.Debug.WriteLine(string.Concat("DATA LENGTH = ", icount));
             while (i < icount && newLineNum < 2)
             {
                 b = data[i];
@@ -40,6 +42,9 @@ namespace dpas.Net.Http
                 }
                 else if (b == _newline)
                 {
+
+                    //string paramValue = Encoding.UTF8.GetString(data, startIndex, i - startIndex);
+                    //System.Diagnostics.Debug.WriteLine(string.Concat("if (b == _newline): ", paramValue));
                     if (prevb == _enter)
                     {
                         setParam(i + 1, i - startIndex - 1);
@@ -54,17 +59,55 @@ namespace dpas.Net.Http
             }
 
             icount = icount - startIndex;
-            result.Content = icount > 0 ? Encoding.UTF8.GetString(data, startIndex, icount) : string.Empty;
-
+            if (icount > 0)
+            {
+                result.Content = Encoding.UTF8.GetString(data, startIndex, icount);
+                //System.Diagnostics.Debug.WriteLine(string.Concat("result.Content: len=", icount));
+            }
+            else
+            {
+                result.Content = string.Empty;
+                //System.Diagnostics.Debug.WriteLine(string.Concat("result.Content: empty", icount));
+            }
             string accEnc;
             if (result.Parameters.TryGetValue(HttpHeader.AcceptEncoding, out accEnc) && !string.IsNullOrEmpty(accEnc))
             {
                 result.SupportCompression += accEnc.Contains("gzip") ? (int)HttpCompress.Gzip : 0;
                 result.SupportCompression += accEnc.Contains("deflate") ? (int)HttpCompress.Deflate : 0;
             }
+            DumpData(data);
+
             return result;
         }
 
+        private static void DumpData(byte[] data)
+        {
+            string inputData = Encoding.UTF8.GetString(data);
+            System.Diagnostics.Debug.WriteLine(inputData);
+
+            int i, icount = data.Length, divider = 20;
+
+            int last = icount % divider, rows = (icount - last) / divider;
+            StringBuilder sb = new StringBuilder(string.Concat("DumpData request: ", icount, Environment.NewLine));
+            string row;
+            for (int j = 0; j < rows; j++)
+            {
+                row = string.Empty;
+                for (i = 0; i < divider; i++)
+                {
+                    row = string.Format("{0}{1:X2} ", row, data[j * 10 + i]);
+                }
+                sb.Append(string.Concat(row, Environment.NewLine));
+            }
+            row = string.Empty;
+            for (i = 0; i < last; i++)
+            {
+                row = string.Format("{0}{1:X2} ", row, data[rows * divider + i]);
+            }
+            sb.Append(string.Concat(row, Environment.NewLine));
+
+            System.Diagnostics.Debug.WriteLine(sb.ToString());
+        }
 
         private static void setRequestParam(HttpRequest request, int paramNum, string param)
         {

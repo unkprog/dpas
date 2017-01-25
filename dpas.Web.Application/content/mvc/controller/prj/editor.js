@@ -7,20 +7,19 @@ var View;
             function Editor() {
             }
             Editor.prototype.Init = function () {
-                var that = this;
                 $("#btnMainMenu").on("click", function (event) {
                     navigate("/nav/index");
                 });
                 $("#editor-menu-tree-view").treemenu({ delay: 300 }); //.openActive();
                 $('ul.tabs').tabs();
-                that.ApplyLayout();
-                that.SetupTree();
                 $(window).resize(function () {
-                    that.ApplyLayout();
+                    this.ApplyLayout();
                 });
+                this.ApplyLayout();
+                this.TreeProjectLoad();
             };
-            Editor.prototype.SetupTree = function () {
-                var dataTree = [{
+            Editor.prototype.TreeProjectLoad = function () {
+                var dataTreeProject = [{
                         'id': 1, 'name': 'Проект', 'path': 'Проект', 'type': 0,
                         'children': [{
                                 'id': 2, 'name': 'Справочники', 'path': 'Проект/Справочники', 'type': 1,
@@ -32,6 +31,9 @@ var View;
                                 'children': [{ 'id': 6, 'name': 'Журнал1', 'path': 'Проект/Данные/Журнал1', 'type': 4 }, { 'id': 7, 'name': 'Журнал2', 'path': 'Проект/Данные/Журнал2', 'type': 4 }]
                             }]
                     }];
+                this.SetupTreeProject(dataTreeProject);
+            };
+            Editor.prototype.SetupTreeProject = function (dataTreeProject) {
                 var ids = [];
                 var drawItemTree = function (curItem) {
                     var isReference = false || curItem.type === 0 || curItem.type === 3 || curItem.type === 4;
@@ -59,9 +61,9 @@ var View;
                     return result;
                 };
                 var elsStr = '';
-                var i = 0, icount = dataTree.length;
+                var i = 0, icount = dataTreeProject.length;
                 for (; i < icount; i++) {
-                    elsStr += drawItemTree(dataTree[i]);
+                    elsStr += drawItemTree(dataTreeProject[i]);
                 }
                 $("#editor-menu-tree-view").html(elsStr).treemenu({ delay: 300 });
                 var that = this;

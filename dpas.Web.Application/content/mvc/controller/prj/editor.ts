@@ -2,14 +2,16 @@
 declare var navigate: any;
 declare var treefilter: any;
 
+
 export module View {
     export module Prj {
         export class Editor {
 
-            public Init() {
-                var that = this;
-               
+            constructor() {
+            }
 
+            public Init() {
+              
                 $("#btnMainMenu").on("click", function (event) {
                     navigate("/nav/index");
                 });
@@ -17,18 +19,16 @@ export module View {
                 $("#editor-menu-tree-view").treemenu({ delay: 300 }); //.openActive();
                 $('ul.tabs').tabs();
 
-
-                that.ApplyLayout();
-                that.SetupTree();
-
                 $(window).resize(function () {
-                    that.ApplyLayout();
+                    this.ApplyLayout();
                 });
-                
+
+                this.ApplyLayout();
+                this.TreeProjectLoad();
             }
 
-            SetupTree() {
-                var dataTree = [{
+            TreeProjectLoad() {
+                var dataTreeProject = [{
                     'id': 1, 'name': 'Проект', 'path': 'Проект', 'type': 0,
                     'children': [{
                         'id': 2, 'name': 'Справочники', 'path': 'Проект/Справочники', 'type': 1
@@ -40,7 +40,10 @@ export module View {
                             'children': [{ 'id': 6, 'name': 'Журнал1', 'path': 'Проект/Данные/Журнал1', 'type': 4 }, { 'id': 7, 'name': 'Журнал2', 'path': 'Проект/Данные/Журнал2', 'type': 4 }]
                         }]
                 }];
+                this.SetupTreeProject(dataTreeProject);
+            }
 
+            SetupTreeProject(dataTreeProject) {
                 var ids = [];
                 var drawItemTree = function (curItem) {
                     var isReference = false || curItem.type === 0 || curItem.type === 3 || curItem.type === 4;
@@ -71,9 +74,9 @@ export module View {
                 }
 
                 var elsStr = '';
-                var i = 0, icount = dataTree.length;
+                var i = 0, icount = dataTreeProject.length;
                 for (; i < icount; i++) {
-                    elsStr += drawItemTree(dataTree[i]);
+                    elsStr += drawItemTree(dataTreeProject[i]);
                 }
 
                 $("#editor-menu-tree-view").html(elsStr).treemenu({ delay: 300 });

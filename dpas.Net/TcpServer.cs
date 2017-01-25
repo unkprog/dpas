@@ -102,6 +102,7 @@ namespace dpas.Net
             InitServer();
             try
             {
+               
                 // Биндим слушателя к локальному IP
                 socket.Bind(endpoint);
                 // Запускаем прослушиватель и ждем подключений
@@ -114,6 +115,7 @@ namespace dpas.Net
             catch (Exception ex)
             {
                 SetException(ex, "TcpServer.Start():");
+                System.Diagnostics.Debug.Write(ex.Message + Environment.NewLine + ex.StackTrace);
                 return false;
             }
         }
@@ -130,8 +132,22 @@ namespace dpas.Net
                 listenEvent.Reset();
 
                 TcpSocketAsyncEventArgs e = poolEventArgs.Pop();
-                if (!socket.AcceptAsync(e))
-                    ProcessAccept(e);
+                
+                try
+                {
+                    if (e != null)
+                    {
+                        if (!socket.AcceptAsync(e))
+                            ProcessAccept(e);
+                    }
+                    else
+                        System.Diagnostics.Debug.Write("socket.AcceptAsync(e): e == null !!!");
+
+                }
+                catch(Exception ex)
+                {
+                    System.Diagnostics.Debug.Write(ex.Message);
+                }
 
                 listenEvent.WaitOne();
             }

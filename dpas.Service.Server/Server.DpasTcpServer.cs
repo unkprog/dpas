@@ -14,7 +14,11 @@ namespace dpas.Service
             if (data[0] == DPAS[0] && data[1] == DPAS[1] && data[2] == DPAS[2] && data[3] == DPAS[3])
                 HandleDpasProtocol(e, data);
             else
+            {
                 HandleHttpProtocol(e, data);
+                // Для Http закрываем соединение, как только произведем обработку
+                CloseProcessReceive(e);
+            }
         }
 
 

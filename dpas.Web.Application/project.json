@@ -8,8 +8,8 @@
     "Microsoft.NETCore.App": "1.1.0",
     "dpas.Net.Http.Mvc": "1.0.0-*",
     "dpas.Service.Project": "1.0.0-*",
-    "NETStandard.Library": "1.6.1",
-    "dpas.Service.Server": "1.0.0-*"
+    "dpas.Service.Server": "1.0.0-*",
+    "NETStandard.Library": "1.6.1"
   },
 
   "tools": {

@@ -35,6 +35,7 @@ namespace dpas.Net
         public virtual void WriteToLog(string data)
         {
             BaseLog.WriteToLog(data);
+            System.Diagnostics.Debug.WriteLine(data);
         }
 
         // An IPEndPoint contains all of the information about a server or client
