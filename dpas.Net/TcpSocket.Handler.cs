@@ -15,10 +15,10 @@ namespace dpas.Net
         {
             TcpSocketAsyncEventArgs ee = (TcpSocketAsyncEventArgs)e;
 
-#if DEBUG
-            if (isLogging)
-                WriteToLog("OnSocketAsyncEventArgsCompleted(Tobject sender, SocketAsyncEventArgs e): LastOperation = " + e.LastOperation + @", SocketError = " + e.SocketError);
-#endif
+//#if DEBUG
+//            if (isLogging)
+//                WriteToLog("OnSocketAsyncEventArgsCompleted(Tobject sender, SocketAsyncEventArgs e): LastOperation = " + e.LastOperation + @", SocketError = " + e.SocketError);
+//#endif
             if (e.SocketError != SocketError.Success)
             {
                 SetError(string.Concat("LastOperation =", e.LastOperation, ", SocketError=", e.SocketError), "TcpSocket.OnSocketAsyncEventArgsCompleted(object sender, SocketAsyncEventArgs e):");
@@ -45,6 +45,7 @@ namespace dpas.Net
         protected virtual void ProcessError(TcpSocketAsyncEventArgs e)
         {
             // В случае ошибки всегда возвращаем в пул объект события
+            CloseConnection(e);
             poolEventArgs.Push(e);
 #if DEBUG
             if (isLogging)
@@ -70,7 +71,7 @@ namespace dpas.Net
         /// <param name="e">Параметр с текущим состоянием сокета</param>
         protected virtual void ProcessDisconnect(TcpSocketAsyncEventArgs e) { }
 
-        protected void CloseProcessReceive(TcpSocketAsyncEventArgs e)
+        public void CloseConnection(TcpSocketAsyncEventArgs e)
         {
 #if DEBUG
             if (isLogging)
@@ -90,7 +91,9 @@ namespace dpas.Net
             // Если количество переданных байтов 0 или принимающий сокет удален, то закроем соединение
             if (e.BytesTransferred == 0 || socket == null)
             {
-                CloseProcessReceive(e);
+                if (isLogging)
+                    WriteToLog(string.Concat("ProcessReceive -> e.BytesTransferred == 0 || socket == null"));
+                CloseConnection(e);
                 return;
             }
 
@@ -98,12 +101,21 @@ namespace dpas.Net
 
 #if DEBUG
             if (isLogging)
-                WriteToLog(string.Concat("ProcessReceive ", e.BytesTransferred, " bytes"));
+                WriteToLog(string.Concat("ProcessReceive Num=", e.Num, ", Available=", e.Socket.Available, ", BytesTransferred=", e.BytesTransferred, ", Offset=", e.Offset, ", Count=", e.Count));
 #endif
 
             // Прочитаны все данные, можем их теперь обработать
             if (e.Socket.Available == 0)
+            {
+                if (isLogging)
+                {
+                    WriteToLog(string.Concat("ProcessReceive END:  Num=", e.Num, ", Available=", e.Socket.Available, ", BytesTransferred=", e.BytesTransferred, ", Offset=", e.Offset, ", Count=", e.Count));
+                }
+                //e.IsClear = true;
                 OnReceiveHandle(e);
+                //if (e.IsClear)
+                e.Clear();
+            }
             // и продолжаем читать дальше
             if (!e.IsClosed)
                 if (!e.Socket.ReceiveAsync(e))

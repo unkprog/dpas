@@ -10,12 +10,16 @@ namespace dpas.Net
     {
         public class TcpSocketAsyncEventArgs : SocketAsyncEventArgs
         {
+            public int  Num { get; internal set; }
+
+            public bool IsClear  { get; set; }
             public bool IsClosed { get; internal set; }
             public TcpSocketAsyncEventArgs() : base()
             {
                 data = new List<byte[]>();
             }
 
+            
             public TcpSocketAsyncEventArgs(int bufferSize) : this()
             {
                 SetBuffer(new byte[bufferSize], 0, bufferSize);
@@ -58,6 +62,7 @@ namespace dpas.Net
 
             public new void Dispose()
             {
+                CloseSocket();
                 AcceptSocket = null;
                 Clear();
                 data = null;
@@ -73,8 +78,8 @@ namespace dpas.Net
 
             public void CloseSocket()
             {
-                IsClosed = true;
-                if (Socket!= null && Socket.Connected)
+              
+                if (Socket != null && Socket.Connected)
                 {
                     try
                     {
@@ -82,7 +87,14 @@ namespace dpas.Net
                     }
                     catch (Exception) { }
                 }
+                IsClosed = true;
             }
+
+            //public override string ToString()
+            //{
+            //    string result = string.Concat(;
+            //    return result;
+            //}
         }
 
         /// <summary>
@@ -100,7 +112,7 @@ namespace dpas.Net
             private Action<TcpSocketAsyncEventArgs>    disposeSocketAsyncEventArgs;
             internal bool isLogging = false;
             internal string loggingTag = "PoolSocketAsyncEventArgs";
-
+            internal int count = 0;
             /// <summary>
             /// Конструктор
             /// </summary>
@@ -132,6 +144,8 @@ namespace dpas.Net
             private TcpSocketAsyncEventArgs NewSocketAsyncEventArgs()
             {
                 TcpSocketAsyncEventArgs e = (newSocketAsyncEventArgs != null ? newSocketAsyncEventArgs() : new TcpSocketAsyncEventArgs());
+                count++;
+                e.Num = count;
                 e.Completed += onSocketAsyncEventArgsCompleted;
                 return e;
             }

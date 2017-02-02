@@ -1,12 +1,11 @@
-﻿using dpas.Core.IO.Debug;
-using dpas.Net;
+﻿using dpas.Net;
 
 namespace dpas.Console.TcpSockets
 {
     public class ServerAndClient
     {
        
-
+        
         public static void RunCommandLine(string[] args)
         {
             new ServerAndClient().Run();
@@ -47,7 +46,7 @@ namespace dpas.Console.TcpSockets
             System.Console.WriteLine("Command begin: Start server");
             if (server == null)
             {
-                server = new TcpServer();
+                server = new TcpServer(null);
                 server.Settings.IsLogging = true;
                 server.OnReceive += (o, e) =>
                 {
@@ -78,7 +77,7 @@ namespace dpas.Console.TcpSockets
             System.Console.WriteLine("Command begin: Connect to server");
             if (client == null)
             {
-                client = new TcpClient();
+                client = new TcpClient(null);
                 client.Settings.IsLogging = true;
             }
             var task = client.ConnectAsync();

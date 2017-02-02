@@ -29,7 +29,7 @@
                 WriteToLog(string.Concat("State=", State));
         }
 
-        public override void WriteToLog(string data)
+        public void WriteToLog(string data)
         {
             string logData = socket == null ? string.Empty : string.Concat("(", socket.AddressFamily, ", ", endpoint, ")");
             logData = string.Concat("TcpServer ", logData, ": ", data);

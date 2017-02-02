@@ -1,15 +1,15 @@
-﻿using System;
-using dpas.Core;
-using dpas.Net;
+﻿using dpas.Core;
+using Microsoft.Extensions.Logging;
 
 namespace dpas.Service
 {
     public partial class Server : Disposable, IServer
     {
         private DpasTcpServer server;
-        public Server()
+        
+        public Server(ILoggerFactory loggerFactory)
         {
-            server = new DpasTcpServer();
+            server = new DpasTcpServer(loggerFactory);
         }
 
         protected override void Dispose(bool disposing)

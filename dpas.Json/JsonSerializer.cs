@@ -25,10 +25,10 @@ namespace dpas
             private bool _useEscapedUnicode = false;
             private bool _useFastGuid = false;
             private bool _useDateTimeMilliseconds = false;
-            private bool _useInlineCircularReferences = false;
-            private bool _useGlobalTypes = false;
+            //private bool _useInlineCircularReferences = false;
+            //private bool _useGlobalTypes = false;
 
-            private int _useMaxRecursionDepth = 20;
+            private int _useMaxRecursionDepth = 200;
 
             static Type tString      = typeof(string);
             static Type tChar        = typeof(char);
@@ -49,6 +49,7 @@ namespace dpas
             static Type tByteArray   = typeof(byte[]);
             static Type tGuid        = typeof(Guid);
             static Type tObject      = typeof(object);
+            static Type tObjectArray = typeof(object[]);
             private void WriteValue(object obj)
             {
                 if (obj == null)
@@ -89,7 +90,7 @@ namespace dpas
                 }
                 else if (t == tDateTime) WriteDateTime((DateTime)obj);
                 else if (t == tByteArray) WriteBytes((byte[])obj);
-                else if (t is IEnumerable) WriteArray((IEnumerable)obj);
+                else if (t == tObjectArray || obj is IEnumerable) WriteArray((IEnumerable)obj);
                 else if (obj is IDictionary) WriteDictionary((IDictionary)obj);
                 else
                     WriteObject(obj);
@@ -232,7 +233,7 @@ namespace dpas
                 _output.Append('\"');
             }
 
-            bool _TypesWritten = false;
+            //bool _TypesWritten = false;
             int _current_depth = 0;
            
             private Dictionary<object, int> _cirсularobj = new Dictionary<object, int>();
@@ -244,7 +245,7 @@ namespace dpas
 
                 _output.Append('{');
 
-                _TypesWritten = true;
+                //_TypesWritten = true;
                 _current_depth++;
                 if (_current_depth > _useMaxRecursionDepth)
                     throw new Exception("Serializer encountered maximum depth of " + _useMaxRecursionDepth);
@@ -257,10 +258,8 @@ namespace dpas
                 IEnumerable<PropertyInfo> properties = t.GetRuntimeProperties();
                 foreach (var propertie in properties)
                 {
-
                     if (append)
                         _output.Append(',');
-
                     WritePair(propertie.Name, propertie.GetValue(obj));
                     append = true;
                 }

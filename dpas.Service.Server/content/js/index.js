@@ -50,10 +50,10 @@ $(document).ready(function () {
     loading.show();
     content = $("#content");
 
-    $.ajax({
-        url: "/mvc/dpas.application.js",
-        dataType: "script",
-        success: function (script, textStatus, jqXHR) {
+    //$.ajax({
+    //    url: "/mvc/dpas.application.js",
+    //    dataType: "script",
+    //    success: function (script, textStatus, jqXHR) {
 
            
             ////////nav_desktop = $("#nav-desktop");
@@ -131,8 +131,8 @@ $(document).ready(function () {
             })(window.addEventListener ? ['addEventListener', ''] : ['attachEvent', 'on']);
 
             navigate("/nav/curpage", el[0]);
-        }
-    });
+      //  }
+   // });
 
 
 

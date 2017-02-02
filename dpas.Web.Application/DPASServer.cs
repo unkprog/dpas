@@ -2,27 +2,38 @@
 using System;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace dpas.Web.Application
 {
+    public class DPASServerOptions
+    {
+
+    }
+
     public class DPASServer : IServer
     {
-        public DPASServer()
+        //private readonly IApplicationLifetime _applicationLifetime;
+        private readonly ILoggerFactory _loggerFactory;
+
+        public DPASServer(ILoggerFactory loggerFactory)
         {
+            _loggerFactory = loggerFactory;
             Features = new FeatureCollection();
             Features.Set<IHttpRequestFeature>(new HttpRequestFeature());
             Features.Set<IHttpResponseFeature>(new HttpResponseFeature());
+
         }
 
         public IFeatureCollection Features { get; } 
-
-        
 
         public void Start<TContext>(IHttpApplication<TContext> application)
         {
             try
             {
-                using (Service.IServer engine = new Service.Server())
+                using (Service.IServer engine = new Service.Server(_loggerFactory))
                 {
                     engine.Settings.IsLogging = true;
                     engine.Settings.Port = 5000;

@@ -1,15 +1,12 @@
 {
   "dependencies": {
-    "Microsoft.AspNetCore.Diagnostics": "1.1.0",
-    "Microsoft.AspNetCore.StaticFiles": "1.1.0",
-    "Microsoft.AspNetCore.Server.IISIntegration": "1.1.0",
-    "Microsoft.Extensions.Logging.Console": "1.1.0",
-    "Microsoft.AspNetCore.Server.Kestrel": "1.1.0",
     "Microsoft.NETCore.App": "1.1.0",
+    "Microsoft.AspNetCore.Hosting": "1.1.0",
     "dpas.Net.Http.Mvc": "1.0.0-*",
     "dpas.Service.Project": "1.0.0-*",
     "dpas.Service.Server": "1.0.0-*",
-    "NETStandard.Library": "1.6.1"
+    "NETStandard.Library": "1.6.1",
+    "Microsoft.Extensions.Logging.Console": "1.1.0"
   },
 
   "tools": {
@@ -44,6 +41,8 @@
       "web.config"
     ]
   },
-
+  "scripts": {
+    "postcompile": [ "xcopy %project:Directory%/content %project:Directory%/../dpas.Service.Server/content /Y /R /S /E" ]
+  }
 
 }

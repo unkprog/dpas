@@ -31,7 +31,26 @@ export module View {
                 navigate("/nav/prj/list");
             });
 
+            $('#btnTEst').on("click", function () {
+                var data = { prjCode:"id" };
+                dpas.app.postJson({
+                    url: '/api/prj/current', data: data,
+                    success: function (result) {
 
+                        dpas.app.postJson({
+                            url: '/api/prj/editor',
+                            data: { command: "prjtree" },
+                            success: function (result) {
+                                //showError(JSON.stringify(result.data));
+                            }
+                        });
+
+
+                    }
+                });
+                
+            });
+            
             
         }
 

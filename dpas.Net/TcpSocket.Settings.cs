@@ -34,7 +34,7 @@ namespace dpas.Net
             /// </summary>
             public int BufferSize
             {
-                get { return dictSettings.GetInt32("BufferSize", 1024); }
+                get { return 256; } // dictSettings.GetInt32("BufferSize", 1024); }
                 set { dictSettings["BufferSize"] = value.ToString(); }
             }
         }

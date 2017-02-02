@@ -18,7 +18,7 @@ namespace dpas.Core
         /// <summary>
         /// Occurs when this instance is disposed.
         /// </summary>
-        public event System.EventHandler Disposed { add { disposed += value; } remove { disposed -= value; } }
+        public event EventHandler Disposed { add { disposed += value; } remove { disposed -= value; } }
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources
@@ -42,10 +42,10 @@ namespace dpas.Core
             {
                 if (aDisposing)
                 {
-                    System.EventHandler handler = disposed;
+                    EventHandler handler = disposed;
                     if (handler != null)
                     {
-                        handler(this, System.EventArgs.Empty);
+                        handler(this, EventArgs.Empty);
                         handler = null;
                     }
                 }

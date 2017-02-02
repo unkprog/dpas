@@ -39,6 +39,8 @@
         that.callJson = function (options) {
             loading.show();
 
+            var jsonData = options.url + " ---> " + options.data ? JSON.stringify(options.data) : undefined;
+            console.log(jsonData);
             $.ajax({
                 type: options.type, url: location.protocol + '//' + location.host + options.url, async: true, dataType: 'json', data: JSON.stringify(options.data), //contentType: 'application/json; charset=utf-8',
                 success: function (result) {

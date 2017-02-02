@@ -8,6 +8,8 @@
     "dpas.Net.Http": "1.0.0-*",
     "dpas.Net.Http.Mvc": "1.0.0-*",
     "dpas.Service.Project": "1.0.0-*",
+    "Microsoft.Extensions.Logging": "1.1.0",
+    "Microsoft.Extensions.Logging.Console": "1.1.0",
     "NETStandard.Library": "1.6.1"
   },
 
@@ -15,8 +17,5 @@
     "netstandard1.6": {
       "imports": "dnxcore50"
     }
-  },
-  "scripts": {
-    "postcompile": [ "xcopy %project:Directory%/content %project:Directory%/../dpas.Web.Application/content /Y /R /S /E" ],
   }
 }

@@ -15,15 +15,20 @@ namespace dpas.Net
                 OnStart(this, EventArgs.Empty);
         }
 
+        protected override void ProcessAccept(TcpSocketAsyncEventArgs e)
+        {
+            ProcessAccept(e, false);
+        }
+
         // This method is triggered when the accept socket completes an operation async
         // In the case of our accept socket, we are looking for a client connection to complete
         // This method is used to process the accept socket connection
-        protected override void ProcessAccept(TcpSocketAsyncEventArgs e)
+        protected void ProcessAccept(TcpSocketAsyncEventArgs e, bool fromAccept)
         {
            
 #if DEBUG
-            if (isLogging)
-                WriteToLog("ProcessAccept");
+            if (isLogging) 
+                WriteToLog(string.Concat("ProcessAccept (fromAccept=", fromAccept, ", e.Socket.Connected=", e.Socket.Connected, ", e.Buffer.Length=", e.Buffer == null ? 0 : e.Buffer.Length, ")"));
 #endif
             listenEvent.Set();
             

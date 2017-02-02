@@ -16,7 +16,7 @@ namespace dpas.Net
             /// </summary>
             public int MaxConnections
             {
-                get { return dictSettings.GetInt32("MaxConnections", 10); }
+                get { return dictSettings.GetInt32("MaxConnections", 30); }
                 set { dictSettings["MaxConnections"] = value.ToString(); }
             }
         }

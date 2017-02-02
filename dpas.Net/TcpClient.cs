@@ -1,11 +1,15 @@
 ﻿using System;
-using System.Net.Sockets;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace dpas.Net
 {
     public partial class TcpClient : TcpSocket
     {
+        public TcpClient(ILoggerFactory loggerFactory) : base(loggerFactory)
+        {
+
+        }
         /// <summary>
         /// Асинхронное отключение от сервера
         /// </summary>

@@ -28,7 +28,7 @@ namespace dpas.Console
             System.Console.WriteLine("Command begin: Start server");
             if (server == null)
             {
-                server = new Service.Server();
+                server = new Service.Server(null);
                 server.Settings.IsLogging = true;
             }
             server.Start();

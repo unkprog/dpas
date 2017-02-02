@@ -1,12 +1,18 @@
 ﻿using System;
-using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using System.Net.Sockets;
 
 namespace dpas.Net
 {
     public partial class TcpServer : TcpSocket
     {
+        public TcpServer(ILoggerFactory loggerFactory) : base(loggerFactory)
+        {
+
+        }
+
         //private static Mutex mutex = null;
         private ManualResetEvent listenEvent = null;
 
@@ -99,6 +105,8 @@ namespace dpas.Net
         private bool Start()
         {
             if (!CreateSocket(string.Empty, Settings.Port)) return false;
+            socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
+            socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontLinger, true);
             InitServer();
             try
             {
@@ -138,7 +146,7 @@ namespace dpas.Net
                     if (e != null)
                     {
                         if (!socket.AcceptAsync(e))
-                            ProcessAccept(e);
+                            ProcessAccept(e, true);
                     }
                     else
                         System.Diagnostics.Debug.Write("socket.AcceptAsync(e): e == null !!!");

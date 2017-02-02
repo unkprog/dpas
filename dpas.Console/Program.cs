@@ -1,5 +1,4 @@
 ﻿using dpas.Console.TcpSockets;
-using dpas.Core.IO.Debug;
 
 namespace dpas.Console
 {
@@ -13,7 +12,7 @@ namespace dpas.Console
         }
         public static void Main(string[] args)
         {
-            LogConsole.Setup();
+            //LogConsole.Setup();
 
             new ConsoleHandler().Input((command, userparams) =>
             {

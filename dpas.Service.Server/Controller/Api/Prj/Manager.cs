@@ -4,32 +4,48 @@ using System.Text;
 using System.Net;
 using dpas.Core.Extensions;
 using dpas.Service.Project;
+using Microsoft.Extensions.Logging;
 
 namespace dpas.Net.Http.Mvc.Api.Prj
 {
     public partial class Manager : IController
     {
+        private Dictionary<string, Action<IControllerContext>> commandHandlers;
+        private static ILogger logger;
+
+        public Manager()
+        {
+            if(logger == null)
+            {
+                ILoggerFactory loggerFactory = new LoggerFactory().AddConsole(true);
+                logger = loggerFactory.CreateLogger<Manager>();
+            }
+            if (commandHandlers == null) {
+                commandHandlers = new Dictionary<string, Action<IControllerContext>>();
+                commandHandlers.Add("/list", List);
+                commandHandlers.Add("/current", Current);
+                commandHandlers.Add("/create", Create);
+                commandHandlers.Add("/delete", Delete);
+                commandHandlers.Add("/rename", Rename);
+                commandHandlers.Add("/editor", EditorHandle);
+            }
+        }
+
+        
+
         public virtual void Exec(IControllerContext context)
         {
+            context.Response.ContentType = "application/json";
             try
             {
-                context.Response.ContentType = "application/json";
-
-                if (context.ControllerInfo.Action == "/list")
-                    List(context);
-                else if (context.ControllerInfo.Action == "/current")
-                    Current(context);
-                else if (context.ControllerInfo.Action == "/create")
-                    Create(context);
-                else if (context.ControllerInfo.Action == "/delete")
-                    Delete(context);
-                else if (context.ControllerInfo.Action == "/rename")
-                    Rename(context);
-                else
+                Action<IControllerContext> command;
+                if (commandHandlers.TryGetValue(context.ControllerInfo.Action, out command))
                 {
-                    context.Response.ContentType = "application/json";
-                    Json.Serialize(new { result = false, error = string.Concat("Команда <", context.ControllerInfo.Action, "> не поддерживается.") });
+                    logger.LogInformation(string.Concat("Manager handle command <", context.ControllerInfo.Action, ">"));
+                    command(context);
                 }
+                else
+                    Json.Serialize(new { result = false, error = string.Concat("Команда <", context.ControllerInfo.Action, "> не поддерживается.") });
             }
             catch (Exception ex)
             {
@@ -139,6 +155,19 @@ namespace dpas.Net.Http.Mvc.Api.Prj
             }
             else
                 context.Response.Write(Json.Serialize(new { result = false, error = string.Concat("Проект ", prjOldName, " не найден.") }));
+        }
+
+        static Dictionary<string, object> empty = new Dictionary<string, object>();
+        /// <summary>
+        /// Команды редактора
+        /// </summary>
+        private void EditorHandle(IControllerContext context)
+        {
+           
+            string data = WebUtility.UrlDecode(context.Request.Content);
+            Dictionary<string, object> parameters = string.IsNullOrEmpty(context.Request.Content) ? empty : (Dictionary<string, object>)Json.Parse(data);
+            Editor.Handle(context, parameters);
+            
         }
     }
 }

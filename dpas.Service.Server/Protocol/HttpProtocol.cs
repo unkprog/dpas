@@ -7,7 +7,7 @@ using dpas.Net.Http;
 using dpas.Net.Http.Mvc;
 using dpas.Net.Http.Mvc.Api;
 using dpas.Net.Http.Mvc.Api.Prj;
-
+using dpas.Core.Extensions;
 using static dpas.Service.DpasTcpServer;
 
 namespace dpas.Service.Protocol
@@ -19,12 +19,39 @@ namespace dpas.Service.Protocol
             _BufferSize = 1024;
         }
 
+        TcpServer _server;
+        public HttpProtocol(TcpServer server):this()
+        {
+            _server = server;
+        }
         private int _BufferSize;
         public int BufferSize { get { return _BufferSize; } set { if (_BufferSize != value) _BufferSize = value; } }
 
         void IProtocol.Handle(TcpSocket.TcpSocketAsyncEventArgs e, byte[] data)
         {
-            IControllerContext context = new ControllerContext(data);
+            HttpRequest Request = e.UserToken as HttpRequest;
+            if (Request == null)
+                Request = HttpParser.ParseRequest(data);
+            else
+            {
+                HttpParser.ParseContent(Request, data, 0, data.Length);
+            }
+            // ******************************************* //
+            // КОСТЫЛЬ?!?!?!?!
+            // ******************************************* //
+            int contentLen = Request.Parameters.GetInt32(HttpHeader.ContentLength);
+            if (string.IsNullOrEmpty(Request.Content) && contentLen != Request.Content.Length)
+            {
+                e.UserToken = Request;
+                //int len = data.Length;
+                return;
+            }
+            e.UserToken = null;
+            // ******************************************* //
+            // END КОСТЫЛЬ?!?!?!?!
+            // ******************************************* //
+
+            IControllerContext context = new ControllerContext(Request);
             try
             {
                 string dpasKey;
@@ -44,6 +71,14 @@ namespace dpas.Service.Protocol
                 RequestError(context, ex, HttpStatusCode.InternalServerError);
             }
             SendResponse(e, context);
+
+            if (!context.Request.Header.ShouldKeepAlive)
+            {
+                _server.CloseConnection(e);
+               
+            }
+
+            context.Dispose();
         }
 
         /// <summary>
@@ -61,6 +96,11 @@ namespace dpas.Service.Protocol
             {
                 if (contentLength > 0)
                     context.Response.Parameters.Add(HttpHeader.ContentLength, contentLength.ToString());
+
+                if (context.Request.Header.ShouldKeepAlive)
+                    context.Response.Parameters.Add(HttpHeader.Connection, "Keep-Alive");
+                else
+                    context.Response.Parameters.Add("Connection", "close");
                 using (var sw = new StreamWriter(ms, Encoding.ASCII/*.UTF8*/, _BufferSize, true))
                 {
                     sw.Write(context.Response.ToString());
@@ -75,13 +115,7 @@ namespace dpas.Service.Protocol
                 var sendTask = e.Socket.Send(responseData);
             }
 
-            //if (!response.Header.ShouldKeepAlive)
-            {
-                e.CloseSocket();
-                e.Socket.Dispose();
-            }
-
-            context.Dispose();
+            
         }
 
 

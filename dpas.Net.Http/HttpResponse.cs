@@ -62,7 +62,7 @@ namespace dpas.Net.Http
         {
             Header.Protocol = request.Header.Protocol;
             Parameters.Add("Server", "DPAS");
-            Parameters.Add("Connection", "close");
+            
            // string accEnc = result.Parameters["Accept-Encoding"];
             //foreach (var param in request.Parameters.AllKeys)
             //{

@@ -1,11 +1,17 @@
 ﻿using System.Text;
 using dpas.Net;
 using dpas.Service.Protocol;
+using Microsoft.Extensions.Logging;
+using System;
 
 namespace dpas.Service
 {
-    internal class DpasTcpServer: TcpServer
+    internal class DpasTcpServer : TcpServer
     {
+        public DpasTcpServer(ILoggerFactory loggerFactory) : base(loggerFactory)
+        {
+        }
+
         static byte[] DPAS = Encoding.ASCII.GetBytes("DPAS");//.UTF8.GetBytes("DPAS");
         protected override void OnReceiveHandle(TcpSocketAsyncEventArgs e)
         {
@@ -17,7 +23,7 @@ namespace dpas.Service
             {
                 HandleHttpProtocol(e, data);
                 // Для Http закрываем соединение, как только произведем обработку
-                CloseProcessReceive(e);
+                //CloseProcessReceive(e);
             }
         }
 
@@ -52,9 +58,42 @@ namespace dpas.Service
 
         private void HandleHttpProtocol(TcpSocketAsyncEventArgs e, byte[] data)
         {
+            DumpData(data);
             if (httpProtocol == null)
-                httpProtocol = new HttpProtocol() { BufferSize = Settings.BufferSize };
+                httpProtocol = new HttpProtocol(this) { BufferSize = Settings.BufferSize };
             httpProtocol.Handle(e, data);
+        }
+
+        private void DumpData(byte[] data)
+        {
+            if (_logger != null)
+            {
+                string inputData = Encoding.UTF8.GetString(data);
+                WriteToLog(string.Concat(Environment.NewLine, inputData));
+
+                int i, icount = data.Length, divider = 20;
+
+                int last = icount % divider, rows = (icount - last) / divider;
+                StringBuilder sb = new StringBuilder(string.Concat(Environment.NewLine, "DumpData request: ", icount, Environment.NewLine));
+                string row;
+                for (int j = 0; j < rows; j++)
+                {
+                    row = string.Empty;
+                    for (i = 0; i < divider; i++)
+                    {
+                        row = string.Format("{0}{1:X2} ", row, data[j * 10 + i]);
+                    }
+                    sb.Append(string.Concat(row, Environment.NewLine));
+                }
+                row = string.Empty;
+                for (i = 0; i < last; i++)
+                {
+                    row = string.Format("{0}{1:X2} ", row, data[rows * divider + i]);
+                }
+                sb.Append(string.Concat(row, Environment.NewLine));
+
+                WriteToLog(sb.ToString());
+            }
         }
 
         private void SetupProtocols()

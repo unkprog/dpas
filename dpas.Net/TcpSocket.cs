@@ -2,9 +2,8 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using dpas.Core;
-using dpas.Core.IO.Debug;
-//using dpas.Core.IO.Debug;
 
 namespace dpas.Net
 {
@@ -18,6 +17,14 @@ namespace dpas.Net
         protected bool exceptionThrown = false;
         protected string lastError = "";
 
+        protected readonly ILogger _logger;
+
+        public TcpSocket(ILoggerFactory loggerFactory)
+        {
+            if (loggerFactory != null)
+                _logger = loggerFactory.CreateLogger<TcpSocket>();
+        }
+
         public string GetLastError() { return lastError; }
 
         protected void SetException(Exception ex, string methodName = "")
@@ -29,13 +36,16 @@ namespace dpas.Net
         {
             exceptionThrown = true;
             lastError = string.Concat(string.IsNullOrEmpty(methodName) ? string.Empty : methodName + ": ", errorMessage);
-            WriteToLog(lastError);
+            WriteToLog(lastError, true);
         }
 
-        public virtual void WriteToLog(string data)
+        public void WriteToLog(string data, bool isError = false)
         {
-            BaseLog.WriteToLog(data);
-            System.Diagnostics.Debug.WriteLine(data);
+            if (_logger != null)
+                if (isError)
+                    _logger.LogError(data);
+                else
+                    _logger.LogInformation(data);
         }
 
         // An IPEndPoint contains all of the information about a server or client

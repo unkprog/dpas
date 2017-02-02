@@ -39,8 +39,8 @@ namespace dpas.Service
 
         void IServer.Start()
         {
-            if (server == null)
-                server = new DpasTcpServer();
+            //if (server == null)
+            //    server = new DpasTcpServer();
             CreateDirectories();
             server.Settings.Read(settingsFile);
             //server.OnReceive += Server_OnReceive;

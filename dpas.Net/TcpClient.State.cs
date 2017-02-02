@@ -36,7 +36,7 @@
         /// Процедура записи в лог информационного сообщения
         /// </summary>
         /// <param name="data">Сообщение</param>
-        public override void WriteToLog(string data)
+        public void WriteToLog(string data)
         {
             string logData = socket == null ? string.Empty : string.Concat("(", socket.AddressFamily, ", ", endpoint, ")");
             logData = string.Concat("TcpClient ", logData, ": ", data);
