@@ -39,11 +39,9 @@ namespace dpas.Service.Protocol
             // ******************************************* //
             // КОСТЫЛЬ?!?!?!?!
             // ******************************************* //
-            int contentLen = Request.Parameters.GetInt32(HttpHeader.ContentLength);
-            if (string.IsNullOrEmpty(Request.Content) && contentLen != Request.Content.Length)
+            if (Request.ContentLength != Request.Content.Length)
             {
                 e.UserToken = Request;
-                //int len = data.Length;
                 return;
             }
             e.UserToken = null;
@@ -72,10 +70,9 @@ namespace dpas.Service.Protocol
             }
             SendResponse(e, context);
 
-            if (!context.Request.Header.ShouldKeepAlive)
+            if (!context.Request.Header.IsSupportShouldKeepAlive)
             {
                 _server.CloseConnection(e);
-               
             }
 
             context.Dispose();
@@ -96,11 +93,8 @@ namespace dpas.Service.Protocol
             {
                 if (contentLength > 0)
                     context.Response.Parameters.Add(HttpHeader.ContentLength, contentLength.ToString());
+                context.Response.Parameters.Add(HttpHeader.Connection, context.Request.Header.IsSupportShouldKeepAlive && context.Request.ShouldKeepAlive ? HttpHeader.ConnectionKeepAlive : HttpHeader.ConnectionClose);
 
-                if (context.Request.Header.ShouldKeepAlive)
-                    context.Response.Parameters.Add(HttpHeader.Connection, "Keep-Alive");
-                else
-                    context.Response.Parameters.Add("Connection", "close");
                 using (var sw = new StreamWriter(ms, Encoding.ASCII/*.UTF8*/, _BufferSize, true))
                 {
                     sw.Write(context.Response.ToString());

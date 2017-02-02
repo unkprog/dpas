@@ -23,6 +23,9 @@ namespace dpas.Net.Http
 
         int SupportCompression { get; }
 
+        bool ShouldKeepAlive { get; }
+        int ContentLength { get; }
+
         string Content { get; }
 
     }
@@ -37,13 +40,16 @@ namespace dpas.Net.Http
             Cookies     = new HttpCookies();
             File        = new HttpFile();
         }
-        public HttpHeader       Header      { get; internal set; }
-        public IHttpQueryString QueryString { get; internal set; }
-        public string           Path        { get; internal set; }
-        public HttpFile         File        { get; internal set; }
-        public int              SupportCompression   { get; internal set; }
-        public string           Url        { get { return string.Concat(Header.Source, QueryString); } }
-        public string           Content    { get; set; }
+        public HttpHeader       Header             { get; internal set; }
+        public IHttpQueryString QueryString        { get; internal set; }
+        public string           Path               { get; internal set; }
+        public HttpFile         File               { get; internal set; }
+        public int              SupportCompression { get; internal set; }
+        public string           Url                { get { return string.Concat(Header.Source, QueryString); } }
+
+        public bool             ShouldKeepAlive    { get; internal set; }
+        public int              ContentLength      { get; internal set; }
+        public string           Content            { get; internal set; }
 
         public override string ToString()
         {

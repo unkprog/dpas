@@ -1,4 +1,5 @@
-﻿using System;
+﻿using dpas.Core.Helpers;
+using System;
 using System.Text;
 
 namespace dpas.Net.Http
@@ -146,6 +147,16 @@ namespace dpas.Net.Http
                 string value = string.Empty;
                 if (paramNameValue[0] == HttpHeader.Cookie)
                     request.Cookies = ParseCookie(paramNameValue[1]);
+                else if (paramNameValue[0] == HttpHeader.ContentLength)
+                {
+                    request.Parameters.Add(paramNameValue[0], paramNameValue[1]);
+                    request.ContentLength = TryParse.Int32(paramNameValue[1]);
+                }
+                else if (paramNameValue[0] == HttpHeader.Connection)
+                {
+                    request.Parameters.Add(paramNameValue[0], paramNameValue[1]);
+                    request.ShouldKeepAlive = paramNameValue[1] == HttpHeader.ConnectionKeepAlive;
+                }
                 else
                 {
                     for (int i = 1, icount = paramNameValue.Length; i < icount; i++)

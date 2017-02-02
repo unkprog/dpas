@@ -37,7 +37,7 @@ namespace dpas.Net.Http
             }
         }
 
-        public bool ShouldKeepAlive
+        public bool IsSupportShouldKeepAlive
         {
             get
             {

@@ -15,7 +15,11 @@ namespace dpas.Net.Http
         public const string Connection      = "Connection";
         public const string SetCookie       = "Set-Cookie";
         public const string Cookie          = "Cookie";
-        
+
+
+        public const string ConnectionKeepAlive = "Keep-Alive";
+        public const string ConnectionClose     = "Close";
+
         public string Method { get; internal set; }
         public string Source { get; internal set; }
 
