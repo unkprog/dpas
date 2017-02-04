@@ -1,6 +1,4 @@
-﻿declare var $: any;
-declare var navigate: any;
-declare var dpas: any;
+﻿declare var $, dpas: any;
 
 export module View {
     export module Prj {
@@ -63,7 +61,7 @@ export module View {
                         dpas.app.postJson({
                             url: '/api/prj/current', data: data,
                             success: function (result) {
-                                navigate("/nav/prj/editor");
+                                dpas.app.navigate("/nav/prj/editor");
                             }
                         });
                     });

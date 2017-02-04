@@ -1,55 +1,6 @@
-﻿var content, loading, modal_error, modal_error_content; //, nav_desktop, nav_desktop_a_spans, div_top_offset;
-
-var currentUrl;
-function navigateClear()
-{
-    currentUrl = '';
-}
-
-function navigate(url, el, isAmber) {
-    if (currentUrl !== url)  {
-        loading.show();
-
-        content.css({ opacity: 0 });
-        content.empty();
-        dpas.app.loadHtml(url,
-                   function (html) {
-                       currentUrl = url;
-                       content.html(html);
-                       //var scripts = content[0].getElementsByTagName("script");
-                       //for (var i = 0; i < scripts.length; ++i) {
-                       //    var script = scripts[i];
-                       //    eval(script.innerText);
-                       //}
-
-                       //////var elAmber = isAmber === true ? el : $(".a-index");
-                       //////nav_desktop_a_spans.removeClass('amber-text').addClass('white-text');
-                       //////$(el).find('span').removeClass('white-text').addClass('amber-text');
-                       content.css({ opacity: 1 });
-                       //Materialize.fadeInImage(content);
-                       loading.hide();
-                   });
-    }
-}
-function showError(msg) {
-    if (modal_error === undefined) {
-        modal_error = $("#modal-error");
-        modal_error_content = $("#modal-error-content");
-        modal_error.modal({
-            dismissible: false,
-            
-        });
-        $("#modal-error-ok").on("click", function () { modal_error.modal('close'); });
-    }
-    modal_error_content.html(msg);
-    modal_error.modal('open');
-}
-
+﻿
 $(document).ready(function () {
-    loading = $('.dpas-loadbar');
-    loading.show();
-    content = $("#content");
-
+    dpas.app.showLoading();
     //$.ajax({
     //    url: "/mvc/dpas.application.js",
     //    dataType: "script",
@@ -103,11 +54,11 @@ $(document).ready(function () {
                        
                         var r = target.href;
                         if (r !== '') {
-                            // заносим ссылку в историю
-                            history.pushState({ url: r }, null, r);
+                           
+                            r = r.replace(location.protocol + '//' + location.host, '');
                             //history.replaceState({ path: r }, '');
                             // тут можете вызвать подгрузку данных и т.п.
-                            navigate(r, target, false);
+                            dpas.app.navigate(r, true);
                             // не даем выполнить действие по умолчанию
                             if (event.preventDefault) {
                                 event.preventDefault();
@@ -120,17 +71,16 @@ $(document).ready(function () {
 
                 // вешаем событие на popstate которое срабатывает при нажатии back/forward в браузере
                 window[eventInfo[0]](eventInfo[1] + 'popstate', function (event) {
-
-                    navigate(event.target.location, event.target, false);
+                    //navigate(event.target.currentUrl, event.target, false);
                     // тут можете вызвать подгрузку данных и т.п.
-                    var ddd = 0;
+                    //var ddd = 0;
                     //navigate(url, el, isAmber);
                     // просто сообщение
                     // alert("We returned to the page with a link: " + location.href);
                 }, false);
             })(window.addEventListener ? ['addEventListener', ''] : ['attachEvent', 'on']);
 
-            navigate("/nav/curpage", el[0]);
+            dpas.app.navigate("/nav/curpage", false);
       //  }
    // });
 

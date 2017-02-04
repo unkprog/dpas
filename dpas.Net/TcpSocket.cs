@@ -44,8 +44,8 @@ namespace dpas.Net
             if (_logger != null)
                 if (isError)
                     _logger.LogError(data);
-                else
-                    _logger.LogInformation(data);
+            //    else
+            //        _logger.LogInformation(data);
         }
 
         // An IPEndPoint contains all of the information about a server or client

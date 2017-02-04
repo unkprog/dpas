@@ -52,7 +52,7 @@ var View;
                         dpas.app.postJson({
                             url: '/api/prj/current', data: data,
                             success: function (result) {
-                                navigate("/nav/prj/editor");
+                                dpas.app.navigate("/nav/prj/editor");
                             }
                         });
                     });

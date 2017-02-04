@@ -23,7 +23,6 @@
         };
 
         that.loadHtml = function (url, callback) {
-            
             $.ajax({
                 url: url,
                 type: "GET",
@@ -36,9 +35,35 @@
             });
         };
 
+        var loading = $('.dpas-loadbar');
+        var content = $("#content");
+
+        var currentUrl;
+        that.navigateClear = function () {
+            currentUrl = '';
+        }
+
+        that.showLoading = function () {
+            loading.show();
+        }
+        that.hideLoading = function () {
+            loading.hide();
+        }
+        that.showError = function (msg) {
+            if (modal_error === undefined) {
+                modal_error = $("#modal-error");
+                modal_error_content = $("#modal-error-content");
+                modal_error.modal({
+                    dismissible: false,
+                });
+                $("#modal-error-ok").on("click", function () { modal_error.modal('close'); });
+            }
+            modal_error_content.html(msg);
+            modal_error.modal('open');
+        }
+
         that.callJson = function (options) {
             loading.show();
-
             var jsonData = options.url + " ---> " + options.data ? JSON.stringify(options.data) : undefined;
             console.log(jsonData);
             $.ajax({
@@ -66,56 +91,7 @@
             that.callJson(options);
         };
 
-        that.loadData = function (options) {
-            loading.show();
-
-            $.ajax({
-                type: options.type, url: options.url, async: true, dataType: options.dataType,
-                success: function (result) {
-                    if (options.success)
-                        options.success(result);
-                    loading.hide();
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
-                    showError(thrownError);
-                    loading.hide();
-                }
-            });
-        };
-
-        that.getData = function (url, callback) {
-            that.getDataParams(url, undefined, callback);
-            //var location = '' + (window.history.location || window.location);
-            //var params = this.getParams(location);
-            //$.ajax({
-            //    url: url, type: "POST", cache: false, async: true, data: params,
-            //    success: function (data) {
-            //        if (callback)
-            //            callback(data);
-            //    },
-            //    error: alertError
-            //});
-        };
-
-        that.getDataParams = function (url, data, callback) {
-            var locationPath = '' + (window.history.location || window.location);
-            var params = data;
-            if (!params) {
-                locationPath = '' + (window.history.location || window.location);
-                params = that.getParams(locationPath);
-            }
-
-            $.ajax({
-                url: url, type: "POST", cache: false, async: true, data: params,
-                success: function (data) {
-                    if (callback)
-                        callback(data);
-                },
-                error: alertError
-            });
-        };
-
-        that.getParams = function (url) {
+        that.getQueryParams = function (url) {
             var result = {};
             var sUrl = '' + url;
             var indexQs = sUrl ? sUrl.indexOf('?') : 0;
@@ -128,6 +104,49 @@
             }
             return result;
         };
+
+        var navigateHistory = {
+            count: 0,
+            list: [],
+            push: function (url) {
+                list[count] = url;
+                count++;
+            },
+            pop: function () {
+                var url = list[count];
+                count--;
+                if (count < 0) count = 0;
+                return url;
+            },
+        };
+
+        that.navigate = function (url, options) {
+            if (currentUrl !== url) {
+                loading.show();
+                // заносим ссылку в историю
+                if (options && options.isPush === true && currentUrl && currentUrl !== "/nav/curpage")
+                    navigateHistory.push(currentUrl);
+                if (url !== "/nav/curpage")
+                    currentUrl = url;
+
+                content.css({ opacity: 0 });
+                content.empty();
+                dpas.app.loadHtml(url,
+                           function (html) {
+
+                               content.html(html);
+                               //content.append($(html))
+                               //var scripts = content[0].getElementsByTagName("script");
+                               //for (var i = 0; i < scripts.length; ++i) {
+                               //    var script = scripts[i];
+                               //    eval(script.innerText);
+                               //}
+                               content.css({ opacity: 1 });
+                               loading.hide();
+                           });
+            }
+        }
+
     };
     dpas.app = new dpas.Application();
     return window.app;

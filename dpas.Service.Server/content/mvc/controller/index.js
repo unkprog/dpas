@@ -22,7 +22,7 @@ var View;
                 $('#modal-prj-name').modal('open');
             });
             $('#btnOpenProject').on("click", function () {
-                navigate("/nav/prj/list");
+                dpas.app.navigate("/nav/prj/list");
             });
             $('#btnTEst').on("click", function () {
                 var data = { prjCode: "id" };
@@ -44,15 +44,15 @@ var View;
             if ('' + $('#prjName').val() === '') {
                 return;
             }
-            navigateClear();
+            dpas.app.navigateClear();
             var data = { prjName: $('#prjName').val(), prjDescription: $('#prjDescription').val() };
             dpas.app.postJson({
                 url: '/api/prj/create', data: data,
                 success: function (result) {
                     if (result.result == true)
-                        navigate("/nav/prj/editor?prj=" + result.project.Code);
+                        dpas.app.navigate("/nav/prj/editor?prj=" + result.project.Code);
                     else
-                        showError(result.error);
+                        dpas.app.showError(result.error);
                 }
             });
             //$.ajax({

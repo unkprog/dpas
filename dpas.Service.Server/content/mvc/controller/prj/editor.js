@@ -5,18 +5,17 @@ var View;
     (function (Prj) {
         var Editor = (function () {
             function Editor() {
+                this.This = this;
             }
             Editor.prototype.Init = function () {
-                $("#btnMainMenu").on("click", function (event) {
-                    navigate("/nav/index");
-                });
+                var that = this;
                 $("#editor-menu-tree-view").treemenu({ delay: 300 }); //.openActive();
                 $('ul.tabs').tabs();
                 $(window).resize(function () {
-                    this.ApplyLayout();
+                    that.ApplyLayout();
                 });
-                this.ApplyLayout();
-                this.TreeProjectLoad();
+                that.ApplyLayout();
+                that.TreeProjectLoad();
             };
             Editor.prototype.TreeProjectLoad = function () {
                 var that = this;

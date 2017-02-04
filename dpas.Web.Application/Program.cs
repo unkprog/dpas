@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace dpas.Web.Application
@@ -8,7 +7,7 @@ namespace dpas.Web.Application
     {
         public static void Main(string[] args)
         {
-            ILoggerFactory loggerFactory = new LoggerFactory().AddConsole(true);
+            ILoggerFactory loggerFactory = new LoggerFactory().AddConsole().AddDebug();
 
             var host = new WebHostBuilder()
                 .UseServer(new DPASServer(loggerFactory))//.UseKestrel()

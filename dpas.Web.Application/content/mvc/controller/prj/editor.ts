@@ -1,27 +1,26 @@
-﻿declare var $, navigate, dpas: any;
+﻿declare var $, dpas: any;
 
 export module View {
     export module Prj {
         export class Editor {
 
+            This:Editor = this;
+
             constructor() {
             }
 
-            public Init() {
+            Init() {
               
-                $("#btnMainMenu").on("click", function (event) {
-                    navigate("/nav/index");
-                });
-
+                var that = this;
                 $("#editor-menu-tree-view").treemenu({ delay: 300 }); //.openActive();
                 $('ul.tabs').tabs();
 
                 $(window).resize(function () {
-                    this.ApplyLayout();
+                    that.ApplyLayout();
                 });
 
-                this.ApplyLayout();
-                this.TreeProjectLoad();
+                that.ApplyLayout();
+                that.TreeProjectLoad();
             }
 
             TreeProjectLoad() {
