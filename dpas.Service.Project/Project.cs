@@ -9,7 +9,7 @@ using System.IO;
 
 namespace dpas.Service.Project
 {
-    public class Project : DataNamedPropertyObject, IProject
+    public partial class Project : DataNamedPropertyObject, IProject
     {
         public Project(object aOwner) : base(aOwner)
         {
@@ -65,9 +65,9 @@ namespace dpas.Service.Project
         private IProject FindProjectDependency(IProject aProject)
         {
             if (aProject == null)
-                throw new ArgumentNullException("Не задана ссылка на проект");
+                throw new ErrorException(ErrorException.ArgumentNull);
             if (string.IsNullOrEmpty(aProject.Name))
-                throw new ArgumentNullException("Для ссылки на проект не указано имя");
+                throw new ErrorException(ErrorException.EmptyName);
             return FindProjectDependency(aProject.Name);
         }
 

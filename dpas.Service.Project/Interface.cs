@@ -88,6 +88,11 @@ namespace dpas.Service.Project
         /// <param name="Project">Проект</param>
         void Save(IProject Project);
 
+        /// <summary>
+        /// Поиск проекта поимени
+        /// </summary>
+        /// <param name="aName">Имя проекта</param>
+        /// <returns>Найденный проект</returns>
         IProject FindProject(string aName);
     }
 

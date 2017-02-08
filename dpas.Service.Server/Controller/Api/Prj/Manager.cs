@@ -5,12 +5,13 @@ using System.Net;
 using dpas.Core.Extensions;
 using dpas.Service.Project;
 using Microsoft.Extensions.Logging;
+using dpas.Service.Controller.Api;
 
 namespace dpas.Net.Http.Mvc.Api.Prj
 {
-    public partial class Manager : IController
+    public partial class Manager : Controller
     {
-        private Dictionary<string, Action<IControllerContext>> commandHandlers;
+        
         private static ILogger logger;
 
         public Manager()
@@ -20,37 +21,40 @@ namespace dpas.Net.Http.Mvc.Api.Prj
                 ILoggerFactory loggerFactory = new LoggerFactory().AddConsole(true);
                 logger = loggerFactory.CreateLogger<Manager>();
             }
-            if (commandHandlers == null) {
-                commandHandlers = new Dictionary<string, Action<IControllerContext>>();
-                commandHandlers.Add("/list", List);
-                commandHandlers.Add("/current", Current);
-                commandHandlers.Add("/create", Create);
-                commandHandlers.Add("/delete", Delete);
-                commandHandlers.Add("/rename", Rename);
-                commandHandlers.Add("/editor", EditorHandle);
-            }
         }
 
-        
+        protected override void Init(Dictionary<string, Action<IControllerContext>> commandHandlers)
+        {
+            base.Init(commandHandlers);
+            commandHandlers.Add("/list", List);
+            commandHandlers.Add("/current", Current);
+            commandHandlers.Add("/create", Create);
+            commandHandlers.Add("/delete", Delete);
+            commandHandlers.Add("/rename", Rename);
+            commandHandlers.Add("/editor", EditorHandle);
+        }
 
-        public virtual void Exec(IControllerContext context)
+
+        public override void Exec(IControllerContext context)
         {
             context.Response.ContentType = "application/json";
-            try
-            {
-                Action<IControllerContext> command;
-                if (commandHandlers.TryGetValue(context.ControllerInfo.Action, out command))
-                {
-                    logger.LogInformation(string.Concat("Manager handle command <", context.ControllerInfo.Action, ">"));
-                    command(context);
-                }
-                else
-                    Json.Serialize(new { result = false, error = string.Concat("Команда <", context.ControllerInfo.Action, "> не поддерживается.") });
-            }
-            catch (Exception ex)
-            {
-                context.Response.Write(Json.Serialize(new { result = false, error = ex.Message }));
-            }
+            base.Exec(context);
+            //string command = context.ControllerInfo.Action;
+            //try
+            //{
+            //    Action<IControllerContext> action;
+            //    if (commandHandlers.TryGetValue(context.ControllerInfo.Action, out action))
+            //    {
+            //        logger.LogInformation(string.Concat("Manager handle command <", context.ControllerInfo.Action, ">"));
+            //        action(context);
+            //    }
+            //    else
+            //        context.Response.Write(Json.Serialize(new { result = false, errorcode = ErrorCode.Command.IsNotSupported, error = ErrorCode.Command.GetErrorText(ErrorCode.Command.IsNotSupported, command) }));
+            //}
+            //catch (Exception ex)
+            //{
+            //    context.Response.Write(Json.Serialize(new { result = false, errorcode = ErrorCode.Command.CommandFailed, error = ErrorCode.Command.GetErrorText(ErrorCode.Command.CommandFailed, command, ex.Message) })); 
+            //}
         }
 
         /// <summary>
@@ -147,14 +151,11 @@ namespace dpas.Net.Http.Mvc.Api.Prj
             IHttpFormParameters parameters = HttpParser.ParseFormParameters(data);
             string prjOldName = parameters.GetString("prjOldName");
             IProject project = ProjectManager.Manager.Rename(parameters.GetString("prjOldName"), parameters.GetString("prjName"), parameters.GetString("prjDescription"));
-            if (project != null)
-            {
-                ProjectManager.Manager.Delete(project);
-                StringBuilder result = ResultProjectToJson(true, project);
-                context.Response.Write(result.ToString());
-            }
-            else
-                context.Response.Write(Json.Serialize(new { result = false, error = string.Concat("Проект ", prjOldName, " не найден.") }));
+
+            if (project == null) throw new Project.ErrorException(Project.ErrorException.NotFound, prjOldName);
+
+            StringBuilder result = ResultProjectToJson(true, project);
+            context.Response.Write(result.ToString());
         }
 
         static Dictionary<string, object> empty = new Dictionary<string, object>();

@@ -85,7 +85,7 @@ namespace dpas.Net
                     {
                         Socket.Shutdown(SocketShutdown.Both);
                     }
-                    catch (Exception) { }
+                    catch (System.Exception) { }
                 }
                 IsClosed = true;
             }

@@ -27,7 +27,7 @@ namespace dpas.Net
 
         public string GetLastError() { return lastError; }
 
-        protected void SetException(Exception ex, string methodName = "")
+        protected void SetException(System.Exception ex, string methodName = "")
         {
             SetError(ex.ToString(), methodName);
         }
@@ -63,7 +63,7 @@ namespace dpas.Net
                 IPAddress serverAddress = hostInfo.Result.AddressList[0];
                 endpoint = new IPEndPoint(serverAddress, port);
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 SetException(ex);
                 return false;
@@ -88,7 +88,7 @@ namespace dpas.Net
                 socket = new Socket(endpoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
                 poolEventArgs = CreatePoolSocketAsyncEventArgs();
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 SetException(ex);
                 return false;
@@ -172,7 +172,7 @@ namespace dpas.Net
                 if (!e.Socket.SendAsync(e))
                     ProcessSend(e);
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 SetException(ex, "TcpSocket.Send(byte[] data):");
                 return false;

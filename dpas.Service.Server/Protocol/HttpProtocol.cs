@@ -81,8 +81,8 @@ namespace dpas.Service.Protocol
         /// <summary>
         /// Отправка ответа
         /// </summary>
-        /// <param name="socket">Сокет</param>
-        /// <param name="response">Ответ</param>
+        /// <param name="e">Контекст асинхронного сокета</param>
+        /// <param name="context">Контекст выполнения запроса</param>
         private void SendResponse(TcpSocket.TcpSocketAsyncEventArgs e, IHttpContext context)
         {
             byte[] responseData = null;
@@ -108,48 +108,52 @@ namespace dpas.Service.Protocol
             {
                 var sendTask = e.Socket.Send(responseData);
             }
-
             
         }
 
 
         private static Navigation navigation = null;
+        private static bool RequestNavigation(IControllerContext context)
+        {
+            if (navigation == null)
+                navigation = new Navigation();
+            navigation.Exec(context);
+            return true;
+        }
+
         private static Auth auth = null;
         private static Manager manager = null;
+
+        private static bool RequestApi(IControllerContext context)
+        {
+            if (context.ControllerInfo.Controller == "/auth")
+            {
+                if (auth == null)
+                    auth = new Auth();
+                auth.Exec(context);
+               return true;
+            }
+            else if (context.ControllerInfo.Controller == "/prj")
+            {
+                if (manager == null)
+                    manager = new Manager();
+                manager.Exec(context);
+                return true;
+            }
+            return false;
+        }
+
         private static bool RequestMvcHandle(IControllerContext context)
         {
-            bool result = false;
-            if (context.ControllerInfo.Prefix == "/nav")
-            {
-                if (navigation == null)
-                    navigation = new Navigation();
-                navigation.Exec(context);
-                result = true;
-            }
-            else if (context.ControllerInfo.Prefix == "/api")
-            {
-                if (context.ControllerInfo.Controller == "/auth")
-                {
-                    if (auth == null)
-                        auth = new Auth();
-                    auth.Exec(context);
-                    result = true;
-                }
-                else if (context.ControllerInfo.Controller == "/prj")
-                {
-                    if (manager == null)
-                        manager = new Manager();
-                    manager.Exec(context);
-                    result = true;
-                }
-            }
-            return result;
+                 if (context.ControllerInfo.Prefix == "/nav") return RequestNavigation(context);
+            else if (context.ControllerInfo.Prefix == "/api") return RequestApi(context);
+            return false;
         }
 
         /// <summary>
         /// Обработка запросов
         /// </summary>
-        /// <param name="context">Контекст выполнения запросаЗапрос</param>
+        /// <param name="context">Контекст выполнения запроса</param>
         private static void RequestHandle(IHttpContext context)
         {
             IHttpHandler handler = GetHttpHandler(context);
@@ -165,7 +169,7 @@ namespace dpas.Service.Protocol
         private static void RequestError(IControllerContext context, Exception ex, HttpStatusCode statusCode)
         {
             context.Response.Parameters.Add(HttpHeader.ContentType, string.Concat(Mime.Text.Html, "; charset=utf-8"));
-            context.Response.StreamText.Write(string.Concat("<html><body><h1>", ((int)statusCode).ToString(), " ", ((HttpStatusCode)statusCode).ToString(), "</h1><div>", ex.Message, "</div><div>", ex.StackTrace, "</div></body></html>"));
+            context.Response.StreamText.Write(string.Concat("<html><body><h1>", ((int)statusCode).ToString(), " ", ((HttpStatusCode)statusCode).ToString(), "</h1><div>", ex.ToString(), "</div></body></html>")); //<div>", ex.StackTrace, "</div>
             context.Response.StreamClose();
         }
     }

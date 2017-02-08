@@ -13,8 +13,7 @@ namespace dpas.Net.Http.Mvc
                 curPage = context.State.GetString("curpage");
 
             if (string.IsNullOrEmpty(curPage))
-                //curPage = "/prj/editor";
-            curPage = "/index";
+                curPage = "/index";
 
             context.State["curpage"] = curPage;
 
@@ -26,8 +25,12 @@ namespace dpas.Net.Http.Mvc
         private void Page(IHttpContext context, string curPage)
         {
             string pathFile = string.Concat(Directory.GetCurrentDirectory(), "/content/mvc/view", curPage, ".html");
-            // System.Environment
-            if (!File.Exists(pathFile)) return;
+           
+            if (!File.Exists(pathFile))
+            {
+                PageNotFound(context);
+                return;
+            }
 
             context.Response.ContentType = "text/html";
             using (StreamReader sr = File.OpenText(pathFile))
@@ -60,5 +63,13 @@ namespace dpas.Net.Http.Mvc
             //context.Response.Write(GACode);
         }
 
+        private void PageNotFound(IHttpContext context)
+        {
+            context.Response.StatusCode = System.Net.HttpStatusCode.NotFound;
+            context.Response.ContentType = "text/html";
+            context.Response.Write(string.Concat("Страница <", context.Request.Url, "> не найдена"));
+            context.Response.Write(Environment.NewLine);
+
+        }
     }
 }

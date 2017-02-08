@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using dpas.Core.Extensions;
 using dpas.Service.Project;
 using Microsoft.Extensions.Logging;
+using dpas.Service.Controller.Api;
 
 namespace dpas.Net.Http.Mvc.Api.Prj
 {
@@ -33,12 +34,16 @@ namespace dpas.Net.Http.Mvc.Api.Prj
                 if (commandHandlers.TryGetValue(command, out commandHandler))
                     commandHandler(context, parameters);
                 else
-                    Json.Serialize(new { result = false, error = string.Concat("Команда редактора <", command, "> не поддерживается.") });
+                    context.Response.Write(Json.Serialize(new { result = false, errorcode = ErrorCode.Command.IsNotSupported, error = ErrorCode.Command.GetErrorText(ErrorCode.Command.IsNotSupported, command) }));
             }
 
             public static void PrjTree(IControllerContext context, Dictionary<string, object> parameters)
             {
-                
+                string prjCode = context.State.GetString("prjCurrent");
+
+                if (string.IsNullOrEmpty(prjCode))
+                    throw new Project.ErrorException(Project.ErrorException.NotSelected);
+
                 var dataTreeProject = new object[] { new
                 {
                     id = 1,

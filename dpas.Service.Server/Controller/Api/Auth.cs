@@ -1,23 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace dpas.Net.Http.Mvc.Api
 {
-    public class Auth : IController
+    public class Auth : Controller
     {
-        public virtual void Exec(IControllerContext context)
+        protected override void Init(Dictionary<string, Action<IControllerContext>> commandHandlers)
         {
-            context.State["IsAuthentificated"] = true;
-
-            if (context.ControllerInfo.Action == "/login")
-                Login(context);
-            else if (context.ControllerInfo.Action == "/exit")
-                Exit(context);
-            else
-            {
-                context.Response.ContentType = "application/json";// application / json; charset = UTF - 8
-                                                                  //context.Response.Headers.Add("charset", "UTF-8");
-                context.Response.Write(@"{""result"": true}");
-            }
+            base.Init(commandHandlers);
+            commandHandlers.Add("/login", Login);
+            commandHandlers.Add("/exit", Exit);
         }
 
         /// <summary>
@@ -26,8 +18,7 @@ namespace dpas.Net.Http.Mvc.Api
         private void Login(IControllerContext context)
         {
             context.State["IsAuthentificated"] = true;
-            context.Response.ContentType = "application/json";// application / json; charset = UTF - 8
-            //context.Response.Headers.Add("charset", "UTF-8");
+            context.Response.ContentType = "application/json";
             context.Response.Write(@"{""result"": true}");
         }
 
@@ -37,7 +28,7 @@ namespace dpas.Net.Http.Mvc.Api
         private void Exit(IControllerContext context)
         {
             context.State["IsAuthentificated"] = false;
-            context.Response.ContentType = "application/json";// application / json; charset = UTF - 8
+            context.Response.ContentType = "application/json";
             //context.Response.Headers.Add("charset", "UTF-8");
             context.Response.Write(@"{""result"": true}");
         }

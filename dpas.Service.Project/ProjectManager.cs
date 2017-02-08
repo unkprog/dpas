@@ -8,7 +8,7 @@ using System.IO;
 
 namespace dpas.Service.Project
 {
-    public class ProjectManager : DataObject, IProjectManager, IReaderXml, IWriterXml
+    public partial class ProjectManager : DataObject, IProjectManager, IReaderXml, IWriterXml
     {
         public readonly static ProjectManager Manager = new ProjectManager(null);
 
@@ -61,7 +61,7 @@ namespace dpas.Service.Project
         {
             IProject result = FindProject(OldName);
             if (result == null)
-                throw new Exception(string.Concat("Проект <", OldName, "> не найден"));
+                throw new Project.ErrorException(Project.ErrorException.NotFound, OldName);
             var proj = result as Project;
             proj.Name = Name;
             proj.Description = Decription;
@@ -77,9 +77,10 @@ namespace dpas.Service.Project
         private IProject FindProject(IProject aProject)
         {
             if (aProject == null)
-                throw new ArgumentNullException("Не задана ссылка на проект");
+                throw new Project.ErrorException(Project.ErrorException.ArgumentNull);
             if (string.IsNullOrEmpty(aProject.Name))
-                throw new ArgumentNullException("Для ссылки на проект не указано имя");
+                throw new Project.ErrorException(Project.ErrorException.EmptyName);
+
             return FindProject(aProject.Name);
         }
 
@@ -127,7 +128,7 @@ namespace dpas.Service.Project
             }
             else
                 if (aNew)
-                    throw new ArgumentNullException(string.Concat("Проект ", find.Name, " уже существует."));
+                    throw new Project.ErrorException(Project.ErrorException.AlreadyExists, find.Name);
             SaveProject(aProject);
         }
 
@@ -155,7 +156,7 @@ namespace dpas.Service.Project
             string projectsFile = string.Concat(pathProjects, @"\\projects.dps");
             using (TextWriter textWriter = File.CreateText(projectsFile))
             {
-                using (XmlWriter xmlWriter = XmlWriter.Create(textWriter, new XmlWriterSettings() { Indent = true, IndentChars = "\t", NewLineChars = System.Environment.NewLine }))
+                using (XmlWriter xmlWriter = XmlWriter.Create(textWriter, new XmlWriterSettings() { Indent = true, IndentChars = "\t", NewLineChars = Environment.NewLine }))
                 {
                     xmlWriter.WriteStartDocument();
                     Write(xmlWriter);
