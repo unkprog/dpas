@@ -37,6 +37,8 @@
 
         var loading = $('.dpas-loadbar');
         var content = $("#content");
+        var modal_error;
+        var modal_error_content;
 
         var currentUrl;
         that.navigateClear = function () {
@@ -74,7 +76,10 @@
                     loading.hide();
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
-                    showError(thrownError);
+                    if (xhr.responseText)
+                        that.showError(xhr.responseText);
+                    else
+                        that.showError(thrownError);
                     loading.hide();
                 }
             });

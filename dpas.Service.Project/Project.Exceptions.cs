@@ -4,9 +4,9 @@ namespace dpas.Service.Project
 {
     public partial class Project
     {
-        public class ErrorException : Core.Exception
+        public class Exception : Core.Exception
         {
-            public ErrorException(int errorCode, params string[] listParams) : base(errorCode, GetErrorText(errorCode, listParams))
+            public Exception(int errorCode, params string[] listParams) : base(errorCode, GetErrorText(errorCode, listParams))
             {
             }
 

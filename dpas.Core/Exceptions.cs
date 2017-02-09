@@ -19,9 +19,9 @@ namespace dpas.Core
         {
             string result = string.Concat("Код ошибки:", ErrorCode, Environment.NewLine, "Текст ошибки:", Environment.NewLine, Message);
             if (!string.IsNullOrEmpty(StackTrace))
-                result = string.Concat(Environment.NewLine, Environment.NewLine, "Трассировка стека:", Environment.NewLine, StackTrace);
+                result = string.Concat(result, Environment.NewLine, Environment.NewLine, "Трассировка стека:", Environment.NewLine, StackTrace);
             if (InnerException != null)
-                result = string.Concat(Environment.NewLine, "Внутреннее исключение:", Environment.NewLine, InnerException.ToString());
+                result = string.Concat(result, Environment.NewLine, "Внутреннее исключение:", Environment.NewLine, InnerException.ToString());
             return result;
         }
 

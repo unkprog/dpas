@@ -168,8 +168,8 @@ namespace dpas.Service.Protocol
         /// <param name="statusCode">Статус ошибки</param>
         private static void RequestError(IControllerContext context, Exception ex, HttpStatusCode statusCode)
         {
-            context.Response.Parameters.Add(HttpHeader.ContentType, string.Concat(Mime.Text.Html, "; charset=utf-8"));
-            context.Response.StreamText.Write(string.Concat("<html><body><h1>", ((int)statusCode).ToString(), " ", ((HttpStatusCode)statusCode).ToString(), "</h1><div>", ex.ToString(), "</div></body></html>")); //<div>", ex.StackTrace, "</div>
+            context.Response.Parameters[HttpHeader.ContentType] = string.Concat(Mime.Text.Html, "; charset=utf-8");
+            context.Response.StreamText.Write(string.Concat("<html><body><h1>", ((int)statusCode).ToString(), " ", ((HttpStatusCode)statusCode).ToString(), "</h1><div>", ex.ToString().Replace("\r\n", "<br>"), "</div></body></html>")); //<div>", ex.StackTrace, "</div>
             context.Response.StreamClose();
         }
     }

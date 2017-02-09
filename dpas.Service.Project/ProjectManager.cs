@@ -59,9 +59,9 @@ namespace dpas.Service.Project
         /// <returns>Переименованный проект</returns>
         public IProject Rename(string OldName, string Name, string Decription)
         {
-            IProject result = FindProject(OldName);
+            IProject result = FindProjectByName(OldName);
             if (result == null)
-                throw new Project.ErrorException(Project.ErrorException.NotFound, OldName);
+                throw new Project.Exception(Project.Exception.NotFound, OldName);
             var proj = result as Project;
             proj.Name = Name;
             proj.Description = Decription;
@@ -77,11 +77,11 @@ namespace dpas.Service.Project
         private IProject FindProject(IProject aProject)
         {
             if (aProject == null)
-                throw new Project.ErrorException(Project.ErrorException.ArgumentNull);
+                throw new Project.Exception(Project.Exception.ArgumentNull);
             if (string.IsNullOrEmpty(aProject.Name))
-                throw new Project.ErrorException(Project.ErrorException.EmptyName);
+                throw new Project.Exception(Project.Exception.EmptyName);
 
-            return FindProject(aProject.Name);
+            return FindProjectByName(aProject.Name);
         }
 
         /// <summary>
@@ -89,11 +89,20 @@ namespace dpas.Service.Project
         /// </summary>
         /// <param name="aName">Имя проекта</param>
         /// <returns>Найденная ссылка на проект</returns>
-        public IProject FindProject(string aName)
+        public IProject FindProjectByName(string aName)
         {
             return _Projects.FirstOrDefault(f => f.Name == aName);
         }
 
+        /// <summary>
+        /// Поиск проекта по коду
+        /// </summary>
+        /// <param name="aName">Код проекта</param>
+        /// <returns>Найденная ссылка на проект</returns>
+        public IProject FindProjectByCode(string aCode)
+        {
+            return _Projects.FirstOrDefault(f => f.Code == aCode);
+        }
         /// <summary>
         /// Удаление проекта
         /// </summary>
@@ -128,7 +137,7 @@ namespace dpas.Service.Project
             }
             else
                 if (aNew)
-                    throw new Project.ErrorException(Project.ErrorException.AlreadyExists, find.Name);
+                    throw new Project.Exception(Project.Exception.AlreadyExists, find.Name);
             SaveProject(aProject);
         }
 

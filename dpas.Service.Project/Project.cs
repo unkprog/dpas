@@ -27,6 +27,7 @@ namespace dpas.Service.Project
             Name = aName;
             Description = aDescription;
             _ProjectDependencies = new List<IProject>();
+            _Items = new List<IProjectItem>();
         }
 
         #region IProject
@@ -65,9 +66,9 @@ namespace dpas.Service.Project
         private IProject FindProjectDependency(IProject aProject)
         {
             if (aProject == null)
-                throw new ErrorException(ErrorException.ArgumentNull);
+                throw new Exception(Exception.ArgumentNull);
             if (string.IsNullOrEmpty(aProject.Name))
-                throw new ErrorException(ErrorException.EmptyName);
+                throw new Exception(Exception.EmptyName);
             return FindProjectDependency(aProject.Name);
         }
 
@@ -106,6 +107,18 @@ namespace dpas.Service.Project
             if (find == null)
             {
                 _ProjectDependencies.Remove(find);
+            }
+        }
+
+        private IList<IProjectItem> _Items;
+        /// <summary>
+        /// Список элементов проекта
+        /// </summary>
+        public IList<IProjectItem> Items
+        {
+            get
+            {
+                return _Items;
             }
         }
         #endregion

@@ -39,22 +39,6 @@ namespace dpas.Net.Http.Mvc.Api.Prj
         {
             context.Response.ContentType = "application/json";
             base.Exec(context);
-            //string command = context.ControllerInfo.Action;
-            //try
-            //{
-            //    Action<IControllerContext> action;
-            //    if (commandHandlers.TryGetValue(context.ControllerInfo.Action, out action))
-            //    {
-            //        logger.LogInformation(string.Concat("Manager handle command <", context.ControllerInfo.Action, ">"));
-            //        action(context);
-            //    }
-            //    else
-            //        context.Response.Write(Json.Serialize(new { result = false, errorcode = ErrorCode.Command.IsNotSupported, error = ErrorCode.Command.GetErrorText(ErrorCode.Command.IsNotSupported, command) }));
-            //}
-            //catch (Exception ex)
-            //{
-            //    context.Response.Write(Json.Serialize(new { result = false, errorcode = ErrorCode.Command.CommandFailed, error = ErrorCode.Command.GetErrorText(ErrorCode.Command.CommandFailed, command, ex.Message) })); 
-            //}
         }
 
         /// <summary>
@@ -116,13 +100,13 @@ namespace dpas.Net.Http.Mvc.Api.Prj
         /// </summary>
         private void Create(IControllerContext context)
         {
-                string data = WebUtility.UrlDecode(context.Request.Content);
-                Dictionary<string, object> parameters = (Dictionary<string, object>)Json.Parse(data);
-                
-                IProject project = ProjectManager.Manager.Create(parameters.GetString("prjName"), parameters.GetString("prjDescription"));
-                ProjectManager.Manager.Save();
-                StringBuilder result = ResultProjectToJson(true, project);
-                context.Response.Write(result.ToString());
+            string data = WebUtility.UrlDecode(context.Request.Content);
+            Dictionary<string, object> parameters = (Dictionary<string, object>)Json.Parse(data);
+
+            IProject project = ProjectManager.Manager.Create(parameters.GetString("prjName"), parameters.GetString("prjDescription"));
+            ProjectManager.Manager.Save();
+            StringBuilder result = ResultProjectToJson(true, project);
+            context.Response.Write(result.ToString());
         }
         /// <summary>
         /// Удаление проекта
@@ -132,7 +116,7 @@ namespace dpas.Net.Http.Mvc.Api.Prj
             var data = WebUtility.UrlDecode(context.Request.Content);
             IHttpFormParameters parameters = HttpParser.ParseFormParameters(data);
 
-            IProject project = ProjectManager.Manager.FindProject(parameters.GetString("prjName"));
+            IProject project = ProjectManager.Manager.FindProjectByName(parameters.GetString("prjName"));
             if (project != null)
             {
                 ProjectManager.Manager.Delete(project);
@@ -152,7 +136,7 @@ namespace dpas.Net.Http.Mvc.Api.Prj
             string prjOldName = parameters.GetString("prjOldName");
             IProject project = ProjectManager.Manager.Rename(parameters.GetString("prjOldName"), parameters.GetString("prjName"), parameters.GetString("prjDescription"));
 
-            if (project == null) throw new Project.ErrorException(Project.ErrorException.NotFound, prjOldName);
+            if (project == null) throw new Project.Exception(Project.Exception.NotFound, prjOldName);
 
             StringBuilder result = ResultProjectToJson(true, project);
             context.Response.Write(result.ToString());

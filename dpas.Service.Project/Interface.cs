@@ -3,11 +3,34 @@ using dpas.Core.IO;
 
 namespace dpas.Service.Project
 {
-    
-    public interface IRead
+    public interface IProjectItem : IReaderXml, IWriterXml
     {
-        void Read();
+        /// <summary>
+        /// Индекс
+        /// </summary>
+        int ID { get; }
+
+        /// <summary>
+        /// Имя
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
+        /// Путь в файловой директории
+        /// </summary>
+        string Path { get; }
+        
+        /// <summary>
+        /// Тип
+        /// </summary>
+        int Type { get; }
+
+        /// <summary>
+        /// Список элементов проекта
+        /// </summary>
+        IList<IProjectItem> Items { get; }
     }
+
 
     public interface IProject : IReaderXml, IWriterXml
     {
@@ -49,6 +72,11 @@ namespace dpas.Service.Project
         /// </summary>
         /// <param name="Project"></param>
         void DeleteProjectDependency(IProject Project);
+
+        /// <summary>
+        /// Список элементов проекта
+        /// </summary>
+        IList<IProjectItem> Items { get; }
     }
 
 
@@ -93,7 +121,7 @@ namespace dpas.Service.Project
         /// </summary>
         /// <param name="aName">Имя проекта</param>
         /// <returns>Найденный проект</returns>
-        IProject FindProject(string aName);
+        IProject FindProjectByName(string aName);
     }
 
 }

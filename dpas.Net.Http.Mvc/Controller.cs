@@ -41,13 +41,17 @@ namespace dpas.Net.Http.Mvc
                 else
                     throw new Exception(Controller.Exception.IsNotSupported, command);
             }
-            catch (Controller.Exception controllerException)
+            catch (Exception controllerException)
             {
                 throw controllerException;
             }
+            catch (Core.Exception coreException)
+            {
+                throw coreException;
+            }
             catch (System.Exception exception)
             {
-                throw new Controller.Exception(Controller.Exception.CommandFailed, command, exception.ToString());
+                throw new Exception(Exception.CommandFailed, command, exception.ToString());
             }
         }
 

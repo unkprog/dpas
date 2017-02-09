@@ -40,9 +40,13 @@ namespace dpas.Net.Http.Mvc.Api.Prj
             public static void PrjTree(IControllerContext context, Dictionary<string, object> parameters)
             {
                 string prjCode = context.State.GetString("prjCurrent");
-
                 if (string.IsNullOrEmpty(prjCode))
-                    throw new Project.ErrorException(Project.ErrorException.NotSelected);
+                    throw new Project.Exception(Project.Exception.NotSelected);
+
+                IProject project = ProjectManager.Manager.FindProjectByCode(prjCode);
+                if (project == null)
+                    throw new Project.Exception(Project.Exception.NotFound, prjCode);
+
 
                 var dataTreeProject = new object[] { new
                 {
