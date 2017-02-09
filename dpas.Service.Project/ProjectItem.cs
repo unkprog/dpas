@@ -4,7 +4,7 @@ using dpas.Core.Data.Specialization;
 
 namespace dpas.Service.Project
 {
-    public class ProjectItem : DataNamedPropertyObject, IProjectItem
+    public partial class ProjectItem : DataNamedPropertyObject, IProjectItem
     {
         public ProjectItem(object aOwner) : base(aOwner)
         {
