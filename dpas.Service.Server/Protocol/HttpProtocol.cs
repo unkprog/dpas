@@ -121,6 +121,15 @@ namespace dpas.Service.Protocol
             return true;
         }
 
+        private static Controller.Prj.Navigation prjNavigation = null;
+        private static bool RequestPrjNavigation(IControllerContext context)
+        {
+            if (prjNavigation == null)
+                prjNavigation = new Controller.Prj.Navigation();
+            prjNavigation.Exec(context);
+            return true;
+        }
+
         private static Auth auth = null;
         private static Manager manager = null;
 
@@ -146,6 +155,7 @@ namespace dpas.Service.Protocol
         private static bool RequestMvcHandle(IControllerContext context)
         {
                  if (context.ControllerInfo.Prefix == "/nav") return RequestNavigation(context);
+            else if (context.ControllerInfo.Prefix == "/prj") return RequestPrjNavigation(context);
             else if (context.ControllerInfo.Prefix == "/api") return RequestApi(context);
             return false;
         }

@@ -1,26 +1,15 @@
 ﻿
 $(document).ready(function () {
-    dpas.app.showLoading();
-    //$.ajax({
-    //    url: "/mvc/dpas.application.js",
-    //    dataType: "script",
-    //    success: function (script, textStatus, jqXHR) {
+    var loading = $('.dpas-loadbar');
+    loading.show();
 
-           
-            ////////nav_desktop = $("#nav-desktop");
-            ////////nav_desktop_a_spans = nav_desktop.find('a span');
-            ////////div_top_offset = $("#div-top-offset");
-            ////////div_top_offset.height($("#nav-header-navigation").height());
-            //////////$("#nav-desktop").on("click", "a", function (event) {
-            //////////    event.preventDefault();
-            //////////    navigate(event.currentTarget.href, event.currentTarget, true);
-            //////////});
-            var el = $(".a-index");
-            //////////$('#logo-container').on("click", function (event) {
-            //////////    event.preventDefault();
-            //////////    navigate(el[0].href, el[0], false);
-            //////////});
-           
+    $.ajax({
+        url: "/mvc/dpas.application.js",
+        dataType: "script",
+        success: function (script, textStatus, jqXHR) {
+            dpas.app.setLoadingElement(loading);
+            var content = $("#content");
+            dpas.app.navigateSetContent('/nav', content);
 
             (function (eventInfo) {
 
@@ -33,9 +22,9 @@ $(document).ready(function () {
                         parent = parent.parentNode;
                     }
                 }
-                // получаем нормальный объект Location
 
                 /*
+                 * Получаем нормальный объект Location
                  * заметьте, это единственная разница при работе с данной библиотекой,
                  * так как объект window.location нельзя перезагрузить, поэтому
                  * библиотека history возвращает сформированный "location" объект внутри
@@ -51,12 +40,11 @@ $(document).ready(function () {
                     var target = getReference(event.target || event.srcElement);
                     // ищем все ссылки с классом 'ajax'
                     if (target && target.nodeName === 'A' && (' ' + target.className + ' ').indexOf('ajax') >= 0) {
-                       
+
                         var r = target.href;
                         if (r !== '') {
-                           
+
                             r = r.replace(location.protocol + '//' + location.host, '');
-                            //history.replaceState({ path: r }, '');
                             // тут можете вызвать подгрузку данных и т.п.
                             dpas.app.navigate(r, true);
                             // не даем выполнить действие по умолчанию
@@ -81,11 +69,7 @@ $(document).ready(function () {
             })(window.addEventListener ? ['addEventListener', ''] : ['attachEvent', 'on']);
 
             dpas.app.navigate("/nav/curpage", false);
-      //  }
-   // });
-
-
-
-
+        }
+    });
 
 });

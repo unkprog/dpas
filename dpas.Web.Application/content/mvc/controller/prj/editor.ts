@@ -10,7 +10,10 @@ export module View {
             }
 
             Init() {
-              
+
+                var content = $("#editor-content");
+                dpas.app.navigateSetContent('/prj', content);
+
                 var that = this;
                 $("#editor-menu-tree-view").treemenu({ delay: 300 }); //.openActive();
                 $('ul.tabs').tabs();
@@ -52,13 +55,15 @@ export module View {
             SetupTreeProject(dataTreeProject) {
                 var ids = [], id=0;
                 var drawItemTree = function (curItem) {
-                    var isReference = false || curItem.type === 0 || curItem.type === 3 || curItem.type === 4;
+                    var isReference = false || curItem.Type === 0 || curItem.Type === 3 || curItem.Type === 4;
                     var result = '<li>';
                     //if (isReference) {
                         result += '<a id="';
                         result += curItem.Path;
-                        result += '" data-id="';
+                        result += '" class="ajax" data-id="';
                         result += ids.length.toString();
+                        result += '" href="/prj/editor-project';
+                        result += curItem.Type === 0 ? '?project' : '/' + curItem.Path;
                         result += '">';
                         ids.push(curItem);
                     //}
@@ -87,16 +92,16 @@ export module View {
 
                 $("#editor-menu-tree-view").html(elsStr).treemenu({ delay: 300 });
 
-                var that = this;
-                that['ids'] = ids;
-                for (i = 0, icount = ids.length; i < icount; i++) {
-                    var elItem = ids[i];
-                    var el = $(document.getElementById(elItem.Path));
-                    //el.elItem = elItem;
-                    el.click(function () {
-                        alert(that['ids'][$(this).data('id')].Path);
-                    });
-                }
+                //var that = this;
+                //that['ids'] = ids;
+                //for (i = 0, icount = ids.length; i < icount; i++) {
+                //    var elItem = ids[i];
+                //    var el = $(document.getElementById(elItem.Path));
+                //    //el.elItem = elItem;
+                //    el.click(function () {
+                //        alert(that['ids'][$(this).data('id')].Path);
+                //    });
+                //}
 
             }
 
