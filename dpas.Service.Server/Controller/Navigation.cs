@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using dpas.Core.Extensions;
+using System.Text;
 
 namespace dpas.Net.Http.Mvc
 {
@@ -32,41 +33,37 @@ namespace dpas.Net.Http.Mvc
                 return;
             }
 
-            context.Response.ContentType = "text/html";
+            context.Response.ContentType = Mime.Application.Json;
+            context.Response.Write("{ \"view\": ");
+
+            StringBuilder sbView = new StringBuilder();
             using (StreamReader sr = File.OpenText(pathFile))
             {
                 string htmlLine = String.Empty;
                 while ((htmlLine = sr.ReadLine()) != null)
                 {
-                    context.Response.Write(htmlLine);
-                    context.Response.Write(Environment.NewLine);
+                    sbView.AppendLine(htmlLine);
+                    //context.Response.Write(Json.Serialize(htmlLine));
+                    //context.Response.Write(Environment.NewLine);
                 }
             }
+
+          
 
             pathFile = string.Concat(Directory.GetCurrentDirectory(), "/content/mvc/controller", curPage, ".js");
 
-            if (!File.Exists(pathFile)) return;
-            //context.Response.Write(string.Concat("<script type=", '"', "text/javascript", '"', "src=", '"', "mvc/controller", curPage, ".js", '"', "></script>", Environment.NewLine));
-            context.Response.Write(Environment.NewLine);
-            context.Response.Write(string.Concat("<script type=", '"', "text/javascript", '"', ">", Environment.NewLine));
-            using (StreamReader sr = File.OpenText(pathFile))
-            {
-                string htmlLine = String.Empty;
-                while ((htmlLine = sr.ReadLine()) != null)
-                {
-                    context.Response.Write(htmlLine);
-                    context.Response.Write(Environment.NewLine);
-                }
-            }
-            context.Response.Write(string.Concat("</script>", Environment.NewLine));
+            if (File.Exists(pathFile))
+                sbView.AppendLine(string.Concat("<script type=\"text/javascript\" src=\"/mvc/controller", curPage, ".js\"></script>"));
 
-            //context.Response.Write(GACode);
+            context.Response.Write(Json.Serialize(sbView.ToString()));
+            context.Response.Write(Environment.NewLine);
+            context.Response.Write("}");
         }
 
         private void PageNotFound(IHttpContext context)
         {
             context.Response.StatusCode = System.Net.HttpStatusCode.NotFound;
-            context.Response.ContentType = "text/html";
+            context.Response.ContentType = Mime.Text.Html;
             context.Response.Write(string.Concat("Страница <", context.Request.Url, "> не найдена"));
             context.Response.Write(Environment.NewLine);
 

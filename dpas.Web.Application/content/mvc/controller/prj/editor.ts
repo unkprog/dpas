@@ -3,18 +3,22 @@
 export module View {
     export module Prj {
         export class Editor {
-
-            This:Editor = this;
+            public SelectedItem: any;
+            private ItemsTree: any = [];
+            private That: any;
 
             constructor() {
+                this.That = this;
             }
-
+            
             Init() {
+
+                var that = this;
 
                 var content = $("#editor-content");
                 dpas.app.navigateSetContent('/prj', content);
 
-                var that = this;
+               
                 $("#editor-menu-tree-view").treemenu({ delay: 300 }); //.openActive();
                 $('ul.tabs').tabs();
 
@@ -23,10 +27,11 @@ export module View {
                 });
 
                 that.ApplyLayout();
-                that.TreeProjectLoad();
+                that.TreeProjectLoad(that);
+                return this;
             }
 
-            ApplyLayout() {
+            private ApplyLayout() {
                 var h = window.innerHeight - $('.navbar-fixed').height() - 22;
                 $('#editor-menu').height(h);
                 $('#editor-menu-tree').height(h - 80);
@@ -41,38 +46,39 @@ export module View {
                 $('#code-view-textarea').width(w - 4);
             }
 
-            TreeProjectLoad() {
-                var that = this;
+            private TreeProjectLoad(That: Editor) {
+                var that = That;
                 dpas.app.postJson({
                     url: '/api/prj/editor',
                     data: { command: "prjtree" },
                     success: function (result) {
-                        that.SetupTreeProject(result.data);
+                        that.SetupTreeProject(that, result.data);
                     }
                 });
             }
 
-            SetupTreeProject(dataTreeProject) {
-                var ids = [], id=0;
+            private SetupTreeProject(That: Editor, dataTreeProject: any) {
+                That.ItemsTree = [];
+                let id = 0;
                 var drawItemTree = function (curItem) {
                     var isReference = false || curItem.Type === 0 || curItem.Type === 3 || curItem.Type === 4;
                     var result = '<li>';
-                    //if (isReference) {
-                        result += '<a id="';
-                        result += curItem.Path;
-                        result += '" class="ajax" data-id="';
-                        result += ids.length.toString();
-                        result += '" href="/prj/editor-project';
-                        result += curItem.Type === 0 ? '?project' : '/' + curItem.Path;
-                        result += '">';
-                        ids.push(curItem);
-                    //}
-                    //else
-                    //    result += '<span>';
-                    result += curItem.Name;
-                    result += '</a>';//isReference ? '</a>' : '</span>';
 
-                    
+                    result += '<a id="';
+                    result += curItem.Path;
+                    result += '" class="ajax" data-id="';
+                    result += curItem.Code;
+                    result += '" href="/prj/editor-project';
+                    result += curItem.Type === 0 ? '?project=' + curItem.Name : '/' + curItem.Path;
+                    result += '">';
+                    That.ItemsTree.push(curItem);
+                    That.ItemsTree[curItem.Code] = curItem;
+
+
+                    result += curItem.Name;
+                    result += '</a>';
+
+
                     if (curItem.Items !== undefined) {
                         for (var i = 0, icount = curItem.Items.length; i < icount; i++) {
                             result += '<ul>';
@@ -91,24 +97,9 @@ export module View {
                 }
 
                 $("#editor-menu-tree-view").html(elsStr).treemenu({ delay: 300 });
-
-                //var that = this;
-                //that['ids'] = ids;
-                //for (i = 0, icount = ids.length; i < icount; i++) {
-                //    var elItem = ids[i];
-                //    var el = $(document.getElementById(elItem.Path));
-                //    //el.elItem = elItem;
-                //    el.click(function () {
-                //        alert(that['ids'][$(this).data('id')].Path);
-                //    });
-                //}
-
             }
-
-           
         }
     }
 }
 
-
-(new View.Prj.Editor()).Init();
+export let View_Prj_Editor: View.Prj.Editor = (new View.Prj.Editor()).Init();

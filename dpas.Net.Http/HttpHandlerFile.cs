@@ -1,14 +1,21 @@
 ﻿using System.IO;
 using System.Collections.Generic;
 using System.Net;
+using Microsoft.Extensions.Logging;
 //using dpas.Core.IO.Debug;
 
 namespace dpas.Net.Http
 {
     public class HttpHandlerFile : HttpHandler
     {
+        private static ILogger logger;
         public HttpHandlerFile(IHttpContext context) : base(context)
         {
+            if (logger == null)
+            {
+                ILoggerFactory loggerFactory = new LoggerFactory().AddConsole(true);
+                logger = loggerFactory.CreateLogger<HttpHandlerFile>();
+            }
             Initialize();
         }
 
@@ -46,16 +53,21 @@ namespace dpas.Net.Http
             if (Context.Request.Path == "/" || string.IsNullOrEmpty(Context.Request.Path))
                 filePath = string.Concat(pathSources, "/index.html");
             else
-                filePath = string.Concat(pathSources, Context.Request.Path, "/", Context.Request.File);
+            {
+                string file = WebUtility.UrlDecode(Context.Request.File.ToString());
+                // file = string.Concat(string.IsNullOrEmpty(file) ? string.Empty : "/", Context.Request.File
+                filePath = string.Concat(pathSources, WebUtility.UrlDecode(Context.Request.Path), string.IsNullOrEmpty(file) ? string.Empty : "/", Context.Request.File);
+            }
 
+            logger.LogInformation(string.Concat(System.Environment.NewLine, "Путь запроса: ", Context.Request.Path, System.Environment.NewLine, "Файл для чтения: ", filePath));
             //BaseLog.WriteToLog(string.Format(filePath));
 
             if (!File.Exists(filePath))
             {
-                Context.Response.StatusCode = HttpStatusCode.NotFound;
-                Context.Response.Parameters.Add(HttpHeader.ContentType, string.Concat(Mime.Text.Html, "; charset=utf-8"));
-                Context.Response.StreamText.Write(string.Concat("<html><body><h1>", ((int)Context.Response.StatusCode).ToString(), " ", (Context.Response.StatusCode).ToString(), "</h1><div>Не найден файл</div><div></div></body></html>"));
-
+                //Context.Response.StatusCode = HttpStatusCode.NotFound;
+                // Context.Response.Parameters.Add(HttpHeader.ContentType, string.Concat(Mime.Text.Html, "; charset=utf-8"));
+                //Context.Response.StreamText.Write(string.Concat("<html><body><h1>", ((int)Context.Response.StatusCode).ToString(), " ", (Context.Response.StatusCode).ToString(), "</h1><div>Не найден файл</div><div></div></body></html>"));
+                logger.LogError(string.Concat(System.Environment.NewLine, "Файл для чтения не найден: ", filePath));
                 return;
             }
 

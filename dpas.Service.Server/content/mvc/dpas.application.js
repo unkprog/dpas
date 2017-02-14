@@ -65,7 +65,8 @@
         };
 
         that.callJson = function (options) {
-            loading.show();
+            if (options.showLoading === true)
+                loading.show();
             var jsonData = options.url + " ---> " + options.data ? JSON.stringify(options.data) : undefined;
             console.log(jsonData);
             $.ajax({
@@ -73,14 +74,16 @@
                 success: function (result) {
                     if (options.success)
                         options.success(result);
-                    loading.hide();
+                    if (options.showLoading === true)
+                        loading.hide();
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
                     if (xhr.responseText)
                         that.showError(xhr.responseText);
                     else
                         that.showError(thrownError);
-                    loading.hide();
+                    if (options.showLoading === true)
+                        loading.hide();
                 }
             });
         };
@@ -144,6 +147,7 @@
         }
 
         that.navigate = function (url, options) {
+            that.showLoading();
             if (url === undefined || url === '') {
                 that.showError("Не задана ссылка для перехода.");
                 return;
@@ -166,19 +170,22 @@
 
                 content.css({ opacity: 0 });
                 content.empty();
-                dpas.app.loadHtml(url,
-                           function (html) {
+                dpas.app.getJson({
+                    url: url, success: function (data) {
+                        content.html(data.view);
+                        //content.append($(html))
+                        //var scripts = content[0].getElementsByTagName("script");
+                        //for (var i = 0; i < scripts.length; ++i) {
+                        //    var script = scripts[i];
+                        //    eval(script.innerText);
+                        //}
+                        content.css({ opacity: 1 });
 
-                               content.html(html);
-                               //content.append($(html))
-                               //var scripts = content[0].getElementsByTagName("script");
-                               //for (var i = 0; i < scripts.length; ++i) {
-                               //    var script = scripts[i];
-                               //    eval(script.innerText);
-                               //}
-                               content.css({ opacity: 1 });
-                               loading.hide();
-                           });
+                        //loading.hide();
+                        that.hideLoading();
+
+                    }
+                });
             }
         }
 
