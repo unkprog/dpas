@@ -1,35 +1,34 @@
+/// <reference path="../../dpas.d.ts" />
+/// <reference path="../../dpas.controller.ts" />
 "use strict";
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var View;
 (function (View) {
     var Prj;
     (function (Prj) {
-        var List = (function () {
+        var List = (function (_super) {
+            __extends(List, _super);
             function List() {
+                _super.apply(this, arguments);
             }
+            List.prototype.Initialize = function () {
+                _super.prototype.Initialize.call(this);
+                var that = this;
+                this.LoadProjects(that);
+                $('#btnRefresh').on("click", function () {
+                    that.LoadProjects(that);
+                });
+            };
             List.prototype.LoadProjects = function (that) {
                 dpas.app.postJson({
                     url: '/api/prj/list',
                     success: function (result) {
                         that.SetList(result);
                     }
-                });
-                //$.ajax({
-                //    type: "POST", url: location.protocol + '//' + location.host + '/api/prj/list',
-                //    dataType: "json",
-                //    success: function (result) {
-                //        that.SetList(result);
-                //    },
-                //    error: function (xhr, ajaxOptions, thrownError) {
-                //        showError(thrownError);
-                //    }
-                //});
-            };
-            List.prototype.Init = function () {
-                this.that = this;
-                this.LoadProjects(this.that);
-                var th = this.that;
-                $('#btnRefresh').on("click", function () {
-                    th.LoadProjects(th);
                 });
             };
             List.prototype.SetList = function (data) {
@@ -59,9 +58,9 @@ var View;
                 }
             };
             return List;
-        }());
+        }(dpas.Controller));
         Prj.List = List;
     })(Prj = View.Prj || (View.Prj = {}));
 })(View = exports.View || (exports.View = {}));
-(new View.Prj.List()).Init();
+new View.Prj.List();
 //# sourceMappingURL=list.js.map

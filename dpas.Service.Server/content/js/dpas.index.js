@@ -3,10 +3,10 @@ $(document).ready(function () {
     var loading = $('.dpas-loadbar');
     loading.show();
 
-    $.ajax({
-        url: "/mvc/dpas.application.js",
-        dataType: "script",
-        success: function (script, textStatus, jqXHR) {
+    //$.ajax({
+    //    url: "/mvc/dpas.application.js",
+    //    dataType: "script",
+    //    success: function (script, textStatus, jqXHR) {
             dpas.app.setLoadingElement(loading);
             var content = $("#content");
             dpas.app.navigateSetContent('/nav', content);
@@ -69,7 +69,7 @@ $(document).ready(function () {
             })(window.addEventListener ? ['addEventListener', ''] : ['attachEvent', 'on']);
 
             dpas.app.navigate("/nav/curpage", false);
-        }
-    });
+    //    }
+    //});
 
 });

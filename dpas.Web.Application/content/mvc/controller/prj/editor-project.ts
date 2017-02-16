@@ -1,10 +1,12 @@
-﻿declare var $, dpas: any;
+﻿/// <reference path="../../dpas.d.ts" />
+/// <reference path="../../dpas.controller.ts" />
 
-
-export module View {
+export namespace View {
     export module Prj {
-        export class EditorProject {
-            Init() {
+        export class EditorProject extends dpas.Controller {
+            public Initialize(): void {
+                super.Initialize();
+
                 var that = this;
                 $('#btnPrjAdd').on("click", function () {
                     $('#modal-prj-name').modal({
@@ -19,4 +21,4 @@ export module View {
     }
 }
 
-(new View.Prj.EditorProject()).Init();
+new View.Prj.EditorProject();

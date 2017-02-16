@@ -1,9 +1,21 @@
-﻿declare var $, dpas: any;
+﻿/// <reference path="../../dpas.d.ts" />
+/// <reference path="../../dpas.controller.ts" />
 
-export module View {
+export namespace View {
+
     export module Prj {
-        export class List {
-            that: any;
+        export class List extends dpas.Controller {
+
+            public Initialize(): void {
+                super.Initialize();
+
+                let that = this;
+                this.LoadProjects(that);
+
+                $('#btnRefresh').on("click", function () {
+                    that.LoadProjects(that);
+                });
+            }
 
             public LoadProjects(that: any) {
                 dpas.app.postJson({
@@ -12,30 +24,7 @@ export module View {
                         that.SetList(result);
                     }
                 });
-                //$.ajax({
-                //    type: "POST", url: location.protocol + '//' + location.host + '/api/prj/list',
-                //    dataType: "json",
-                //    success: function (result) {
-                //        that.SetList(result);
-                //    },
-                //    error: function (xhr, ajaxOptions, thrownError) {
-                //        showError(thrownError);
-                //    }
-                //});
             }
-
-            public Init() {
-
-                this.that = this;
-                this.LoadProjects(this.that);
-
-                var th = this.that;
-                $('#btnRefresh').on("click", function () {
-                    th.LoadProjects(th);
-                });
-            }
-
-            
 
             public SetList(data) {
                 var ids = [];
@@ -71,4 +60,4 @@ export module View {
     }
 }
 
-(new View.Prj.List()).Init();
+new View.Prj.List();

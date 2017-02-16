@@ -56,11 +56,13 @@ namespace dpas.Net.Http
             {
                 string file = WebUtility.UrlDecode(Context.Request.File.ToString());
                 // file = string.Concat(string.IsNullOrEmpty(file) ? string.Empty : "/", Context.Request.File
-                filePath = string.Concat(pathSources, WebUtility.UrlDecode(Context.Request.Path), string.IsNullOrEmpty(file) ? string.Empty : "/", Context.Request.File);
+                filePath = string.Concat(pathSources, WebUtility.UrlDecode(Context.Request.Path), string.IsNullOrEmpty(file) ? string.Empty : "/", file);
             }
 
             logger.LogInformation(string.Concat(System.Environment.NewLine, "Путь запроса: ", Context.Request.Path, System.Environment.NewLine, "Файл для чтения: ", filePath));
             //BaseLog.WriteToLog(string.Format(filePath));
+
+            filePath = filePath.Replace('/', '\\');
 
             if (!File.Exists(filePath))
             {
@@ -68,23 +70,23 @@ namespace dpas.Net.Http
                 // Context.Response.Parameters.Add(HttpHeader.ContentType, string.Concat(Mime.Text.Html, "; charset=utf-8"));
                 //Context.Response.StreamText.Write(string.Concat("<html><body><h1>", ((int)Context.Response.StatusCode).ToString(), " ", (Context.Response.StatusCode).ToString(), "</h1><div>Не найден файл</div><div></div></body></html>"));
                 logger.LogError(string.Concat(System.Environment.NewLine, "Файл для чтения не найден: ", filePath));
-                return;
             }
-
-            HttpFile httpFile = new HttpFile(filePath);
-
-            if (!mappingExtMime.TryGetValue(httpFile.FileExt, out contentType))
-                contentType = Mime.Application.Unknown;
-
-
-            Context.Response.Parameters[HttpHeader.ContentType] = contentType;
-            using (FileStream fileStream = File.Open(filePath, FileMode.Open))
+            else
             {
-                int bufferSize = 4096;
-                byte[] buffer = new byte[bufferSize];
-                int readBytesCount = 0;
-                while ((readBytesCount = fileStream.Read(buffer, 0, bufferSize)) > 0)
-                    Context.Response.Stream.Write(buffer, 0, readBytesCount);
+                HttpFile httpFile = new HttpFile(filePath);
+
+                if (!mappingExtMime.TryGetValue(httpFile.FileExt, out contentType))
+                    contentType = Mime.Application.Unknown;
+
+                Context.Response.Parameters[HttpHeader.ContentType] = contentType;
+                using (FileStream fileStream = File.Open(filePath, FileMode.Open))
+                {
+                    int bufferSize = 4096;
+                    byte[] buffer = new byte[bufferSize];
+                    int readBytesCount = 0;
+                    while ((readBytesCount = fileStream.Read(buffer, 0, bufferSize)) > 0)
+                        Context.Response.Stream.Write(buffer, 0, readBytesCount);
+                }
             }
             base.OnExecute();
         }

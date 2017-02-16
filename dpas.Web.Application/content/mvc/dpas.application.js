@@ -1,10 +1,14 @@
-﻿var exports = window.exports = window.exports || {};
+﻿var require = function () {
+
+};
+
+var exports = window.exports = window.exports || {};
 
 (function () {
     var dpas = window.dpas = window.dpas || {};
     dpas.Application = function () {
         var that = this;
-        
+
         var loading;
         that.setLoadingElement = function (elLoading) {
             loading = elLoading;
@@ -127,16 +131,19 @@
         //        return url;
         //    },
         //};
-        var contents = {};
+        var navigateData = {
+            url: '',
+            contents: {},
+            controllers: {}
+        };
 
-        that.navigateSetContent = function (prefix, content)
-        {
-            contents[prefix] = content;
+        that.navigateSetContent = function (prefix, content) {
+            navigateData.contents[prefix] = content;
         }
 
         var currentUrl;
         that.navigateClear = function () {
-            currentUrl = '';
+            navigateData.url = '';
         }
 
         function navigateGetPrefix(ulr) {
@@ -146,50 +153,53 @@
             return prefix;
         }
 
+
+
+        that.navigateSetController = function (controller) {
+            navigateData.controllers[navigateData.url] = controller;
+        }
+
         that.navigate = function (url, options) {
             that.showLoading();
             if (url === undefined || url === '') {
                 that.showError("Не задана ссылка для перехода.");
+                that.hideLoading();
                 return;
             }
 
-            if (currentUrl !== url) {
-                loading.show();
-                //// заносим ссылку в историю
-                //if (options && options.isPush === true && currentUrl && currentUrl !== "/nav/curpage")
-                //    navigateHistory.push(currentUrl);
-                if (url !== "/nav/curpage")
-                    currentUrl = url;
-                
-                var prefix = navigateGetPrefix(url);
-                var content = contents[prefix];
-                if (content === undefined) {
-                    that.showError("Не определен элемент для содежимого.");
-                    return;
-                }
-
-                content.css({ opacity: 0 });
-                content.empty();
-                dpas.app.getJson({
-                    url: url, success: function (data) {
-                        content.html(data.view);
-                        //content.append($(html))
-                        //var scripts = content[0].getElementsByTagName("script");
-                        //for (var i = 0; i < scripts.length; ++i) {
-                        //    var script = scripts[i];
-                        //    eval(script.innerText);
-                        //}
-                        content.css({ opacity: 1 });
-
-                        //loading.hide();
-                        that.hideLoading();
-
-                    }
-                });
+            if (navigateData.url === url) {
+                that.hideLoading();
+                return;
             }
-        }
+            //// заносим ссылку в историю
+            //if (options && options.isPush === true && navigateData.url && navigateData.url !== "/nav/curpage")
+            //    navigateHistory.push(navigateData.url);
+            if (url !== "/nav/curpage")
+                navigateData.url = url;
 
+            var prefix = navigateGetPrefix(url);
+            var content = navigateData.contents[prefix];
+            if (content === undefined) {
+                that.showError("Не определен элемент для содежимого.");
+                that.hideLoading();
+                return;
+            }
+
+            content.css({ opacity: 0 });
+            content.empty();
+            dpas.app.getJson({
+                url: url, success: function (data) {
+                    // Отобразим представление
+                    content.html(data.view);
+                    // Инициализируем контроллер
+                    navigateData.controllers[navigateData.url].Initialize();
+                    content.css({ opacity: 1 });
+                    that.hideLoading();
+                }
+            });
+        }
     };
+
     dpas.app = new dpas.Application();
     return window.app;
 })(window.dpas);

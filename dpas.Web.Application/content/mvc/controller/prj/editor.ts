@@ -1,17 +1,15 @@
-﻿declare var $, dpas: any;
+﻿/// <reference path="../../dpas.d.ts" />
+/// <reference path="../../dpas.controller.ts" />
 
-export module View {
+export namespace View {
     export module Prj {
-        export class Editor {
+        export class Editor extends dpas.Controller {
             public SelectedItem: any;
             private ItemsTree: any = [];
-            private That: any;
-
-            constructor() {
-                this.That = this;
-            }
+         
             
-            Init() {
+            public Initialize(): void {
+                super.Initialize();
 
                 var that = this;
 
@@ -28,7 +26,6 @@ export module View {
 
                 that.ApplyLayout();
                 that.TreeProjectLoad(that);
-                return this;
             }
 
             private ApplyLayout() {
@@ -102,4 +99,4 @@ export module View {
     }
 }
 
-export let View_Prj_Editor: View.Prj.Editor = (new View.Prj.Editor()).Init();
+new View.Prj.Editor();

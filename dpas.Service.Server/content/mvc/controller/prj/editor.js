@@ -1,14 +1,23 @@
+/// <reference path="../../dpas.d.ts" />
+/// <reference path="../../dpas.controller.ts" />
 "use strict";
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var View;
 (function (View) {
     var Prj;
     (function (Prj) {
-        var Editor = (function () {
+        var Editor = (function (_super) {
+            __extends(Editor, _super);
             function Editor() {
+                _super.apply(this, arguments);
                 this.ItemsTree = [];
-                this.That = this;
             }
-            Editor.prototype.Init = function () {
+            Editor.prototype.Initialize = function () {
+                _super.prototype.Initialize.call(this);
                 var that = this;
                 var content = $("#editor-content");
                 dpas.app.navigateSetContent('/prj', content);
@@ -19,7 +28,6 @@ var View;
                 });
                 that.ApplyLayout();
                 that.TreeProjectLoad(that);
-                return this;
             };
             Editor.prototype.ApplyLayout = function () {
                 var h = window.innerHeight - $('.navbar-fixed').height() - 22;
@@ -79,9 +87,9 @@ var View;
                 $("#editor-menu-tree-view").html(elsStr).treemenu({ delay: 300 });
             };
             return Editor;
-        }());
+        }(dpas.Controller));
         Prj.Editor = Editor;
     })(Prj = View.Prj || (View.Prj = {}));
 })(View = exports.View || (exports.View = {}));
-exports.View_Prj_Editor = (new View.Prj.Editor()).Init();
+new View.Prj.Editor();
 //# sourceMappingURL=editor.js.map
