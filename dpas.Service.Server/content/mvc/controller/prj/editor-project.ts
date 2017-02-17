@@ -7,15 +7,20 @@ export namespace View {
             public Initialize(): void {
                 super.Initialize();
 
-                var that = this;
-                $('#btnPrjAdd').on("click", function () {
-                    $('#modal-prj-name').modal({
-                        dismissible: false,
-                        //complete: function () { that.NewProject(); }
-                    });
+                $("#btnPrjAdd").on("click", function () {
+                    $("#modal-prj-name").modal({ dismissible: false });
 
-                    $('#modal-prj-name').modal('open');
+                    $("#modal-prj-name").modal("open");
                 });
+            }
+
+            private selectItem: JQuery;
+            public Navigate(target: Element): void {
+                if (this.selectItem != null) {
+                    this.selectItem.removeClass("dpas-tree-active");
+                }
+                this.selectItem = $(target).addClass("dpas-tree-active");
+
             }
         }
     }

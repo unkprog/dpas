@@ -1,6 +1,16 @@
-﻿/// <reference path="dpas.d.ts" />
+﻿namespace dpas {
 
-namespace dpas {
+    export interface IController {
+        // Метод вызывается после загрузки представления
+        Initialize(): void;
+        // Метод вызывается после перед отображением представления и при изменении размеров окна
+        ApplyLayout(): void;
+        // Метод вызывается перед удалением представления
+        Dispose(): void;
+
+        Navigate(target: HTMLElement): void;
+    }
+
     export class Controller implements IController {
 
         constructor() {
@@ -17,6 +27,9 @@ namespace dpas {
 
         public Dispose(): void {
             dpas.app.navigateRemoveController(this);
+        }
+
+        public Navigate(target: HTMLElement): void {
         }
 
     }

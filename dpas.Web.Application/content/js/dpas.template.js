@@ -5,7 +5,7 @@
         var templatesDictionary = new Array();
         var bTrue = true;
         function parseTemplate(value) {
-            var valueStr = (typeof value !== 'string') ? ('' + value) : value;
+            var valueStr = (typeof value !== 'string') ? '' + value : value;
             var i = -1, len = valueStr.length, cur, prev, section = '';
             var result = 'var o= \'\';with(d){ ';
 
@@ -49,12 +49,12 @@
         }
 
         /**
-         * options = { 
+         * @param {Object} options = { 
          *    id       : 'id'       - идентификатор для запоминания скомпилированного шаблона в кеше
          *    template : 'template' - строковое представление шаблона
          *    error    : err(msg)   - фунцкия обратного вызова обработки ошибки
          * }
-         * return - скомпилированный шаблон
+         * @returns {func} Скомпилированный шаблон
          */
         this.getTemplate = function (options) {
             if (!options.template) { if (options.error) options.error("Не определено содержимое шаблона!"); else throw new Error("Не определено содержимое шаблона!"); }
@@ -74,14 +74,14 @@
             }
             return temp;
         };
-        /****************************************************
-        options = { 
-            id       : 'id'       - идентификатор закешированного шаблона
-            template : 'template' - скомпилированный шаблон
-            error    : err(msg)   - фунцкия обратного вызова обработки ошибки
-        }
-        return - результат выполнения шаблона
-        ****************************************************/
+        /**
+        * @param {Object} options = {
+        *    id       : 'id'       - идентификатор закешированного шаблона
+        *    template : 'template' - скомпилированный шаблон
+        *    error    : err(msg)   - фунцкия обратного вызова обработки ошибки
+        *}
+        * @returns {Object} Результат выполнения шаблона
+        */
         this.render = function (options) {
             var temp;
             if (options.id) temp = templatesDictionary[options.id];

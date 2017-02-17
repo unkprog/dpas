@@ -1,4 +1,3 @@
-/// <reference path="dpas.d.ts" />
 var dpas;
 (function (dpas) {
     var Controller = (function () {
@@ -11,6 +10,8 @@ var dpas;
         };
         Controller.prototype.Dispose = function () {
             dpas.app.navigateRemoveController(this);
+        };
+        Controller.prototype.Navigate = function (target) {
         };
         return Controller;
     }());

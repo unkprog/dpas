@@ -1,3 +1,4 @@
+/// <reference path="../../ts/jquery-3.1.1.d.ts" />
 /// <reference path="../dpas.d.ts" />
 /// <reference path="../dpas.controller.ts" />
 "use strict";

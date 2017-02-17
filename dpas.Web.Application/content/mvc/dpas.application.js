@@ -134,7 +134,7 @@ var exports = window.exports = window.exports || {};
         var navigateData = {
             url: '',
             contents: {},
-            controllers: { all: [] }
+            controllers: { notifyEvent: [] }
         };
 
         that.navigateSetContent = function (prefix, content) {
@@ -157,8 +157,23 @@ var exports = window.exports = window.exports || {};
 
         that.navigateSetController = function (controller) {
             navigateData.controllers[navigateData.url] = controller;
-            navigateData.controllers.all.push(controller);
         }
+
+        that.navigateSetNotifyEventController = function (prefix, controller) {
+            navigateData.controllers.notifyEvent[prefix] = controller;
+        }
+
+        that.navigateNotifyEventController = function () {
+            var notifyEvent = navigateData.controllers.notifyEvent;
+            for (var key in notifyEvent) {
+                if (Object.prototype.hasOwnProperty.call(notifyEvent, key)) {
+                    var controller = obj[key];
+                    if (controller)
+                        controller.ApplyLayout();
+                }
+            }
+        }
+
 
         that.navigate = function (options) {
             that.showLoading();
@@ -196,12 +211,17 @@ var exports = window.exports = window.exports || {};
                         content.html(data.view);
                         // Инициализируем контроллер
                         var controller = navigateData.controllers[navigateData.url];
+                        that.navigateSetNotifyEventController(prefix, controller);
                         if (controller) {
                             controller.Initialize();
                             controller.ApplyLayout();
                         }
                         content.css({ opacity: 1 });
+
                         that.hideLoading();
+                        if (controller) {
+                            controller.Navigate(options.target);
+                        }
                     }
                     else {
                         if (data.view)
@@ -214,9 +234,7 @@ var exports = window.exports = window.exports || {};
         };
 
         that.resize = function () {
-            for (var i = 0, icount = that.navigateData.controllers.all.length; i < icount; i++) {
-                that.navigateData.controllers.all[i].ApplyLayout();
-            }
+            that.navigateNotifyEventController();
         };
     };
 

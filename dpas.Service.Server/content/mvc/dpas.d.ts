@@ -1,4 +1,9 @@
-﻿declare let $: any;
+﻿//declare module "jquery" {
+//    export = $;
+//}
+//declare let jQuery: JQueryStatic;
+//declare let $: JQueryStatic;
+
 
 declare namespace dpas {
 
@@ -7,18 +12,11 @@ declare namespace dpas {
         navigateRemoveController(controller: IController): void;
         navigate(options: any);
         postJson(options: any);
-        navigateSetContent(path: any, content: any);
+        navigateSetContent(path: string, content: JQuery);
 
     }
 
-    export interface IController {
-        // Метод вызывается после загрузки представления
-        Initialize(): void;
-        // Метод вызывается после перед отображением представления и при изменении размеров окна
-        ApplyLayout(): void;
-        // Метод вызывается перед удалением представления
-        Dispose(): void;
-    }
+   
 
     export let app: IApplication;
     export let template: any;

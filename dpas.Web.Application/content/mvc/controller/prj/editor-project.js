@@ -17,13 +17,16 @@ var View;
             }
             EditorProject.prototype.Initialize = function () {
                 _super.prototype.Initialize.call(this);
-                var that = this;
-                $('#btnPrjAdd').on("click", function () {
-                    $('#modal-prj-name').modal({
-                        dismissible: false,
-                    });
-                    $('#modal-prj-name').modal('open');
+                $("#btnPrjAdd").on("click", function () {
+                    $("#modal-prj-name").modal({ dismissible: false });
+                    $("#modal-prj-name").modal("open");
                 });
+            };
+            EditorProject.prototype.Navigate = function (target) {
+                if (this.selectItem != null) {
+                    this.selectItem.removeClass("dpas-tree-active");
+                }
+                this.selectItem = $(target).addClass("dpas-tree-active");
             };
             return EditorProject;
         }(dpas.Controller));
