@@ -7,7 +7,19 @@ namespace dpas.Net.Http.Mvc
 {
     public class Navigation : IController
     {
+        protected string rootPathView = "/mvc/view";
+        protected string rootPathController = "/mvc/controller";
         public virtual void Exec(IControllerContext context)
+        {
+            //if (!state.GetBool("IsAuthentificated"))
+            //    curPage = "/auth";
+
+            string curPage = GetCurrentPage(context);
+            
+            Page(context, curPage);
+        }
+
+        protected virtual string GetCurrentPage(IControllerContext context)
         {
             string curPage = context.ControllerInfo.CurrentPage;
             if (curPage == "/curpage")
@@ -17,15 +29,12 @@ namespace dpas.Net.Http.Mvc
                 curPage = "/index";
 
             context.State["curpage"] = curPage;
-
-            //if (!state.GetBool("IsAuthentificated"))
-            //    curPage = "/auth";
-            Page(context, curPage);
+            return curPage;
         }
 
         private void Page(IHttpContext context, string curPage)
         {
-            string pathFile = string.Concat(Directory.GetCurrentDirectory(), "/content/mvc/view", curPage, ".html");
+            string pathFile = string.Concat(Directory.GetCurrentDirectory(), "/content", rootPathView, curPage, ".html");
            
             if (!File.Exists(pathFile))
             {
@@ -50,10 +59,10 @@ namespace dpas.Net.Http.Mvc
 
           
 
-            pathFile = string.Concat(Directory.GetCurrentDirectory(), "/content/mvc/controller", curPage, ".js");
+            pathFile = string.Concat(Directory.GetCurrentDirectory(), "/content", rootPathController, curPage, ".js");
 
             if (File.Exists(pathFile))
-                sbView.AppendLine(string.Concat("<script type=\"text/javascript\" src=\"/mvc/controller", curPage, ".js\"></script>"));
+                sbView.AppendLine(string.Concat("<script type=\"text/javascript\" src=\"", rootPathController, curPage, ".js\"></script>"));
 
             context.Response.Write(Json.Serialize(sbView.ToString()));
             context.Response.Write(Environment.NewLine);
