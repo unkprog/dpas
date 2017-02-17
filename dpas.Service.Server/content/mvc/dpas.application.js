@@ -70,7 +70,7 @@ var exports = window.exports = window.exports || {};
 
         that.callJson = function (options) {
             if (options.showLoading === true)
-                loading.show();
+                that.showLoading();
             var jsonData = options.url + " ---> " + options.data ? JSON.stringify(options.data) : undefined;
             console.log(jsonData);
             $.ajax({
@@ -79,7 +79,7 @@ var exports = window.exports = window.exports || {};
                     if (options.success)
                         options.success(result);
                     if (options.showLoading === true)
-                        loading.hide();
+                        that.hideLoading(); 
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
                     if (xhr.responseText)
@@ -87,7 +87,7 @@ var exports = window.exports = window.exports || {};
                     else
                         that.showError(thrownError);
                     if (options.showLoading === true)
-                        loading.hide();
+                        that.hideLoading();
                 }
             });
         };
@@ -189,12 +189,21 @@ var exports = window.exports = window.exports || {};
             content.empty();
             dpas.app.getJson({
                 url: url, success: function (data) {
-                    // Отобразим представление
-                    content.html(data.view);
-                    // Инициализируем контроллер
-                    navigateData.controllers[navigateData.url].Initialize();
-                    content.css({ opacity: 1 });
-                    that.hideLoading();
+                    if (data.result) {
+                        // Отобразим представление
+                        content.html(data.view);
+                        // Инициализируем контроллер
+                        navigateData.controllers[navigateData.url].Initialize();
+                        content.css({ opacity: 1 });
+                        that.hideLoading();
+                    }
+                    else
+                    {
+                        if(data.view)
+                            that.showError(data.view);
+                       else
+                            that.showError(data.error);
+                    }
                 }
             });
         }
