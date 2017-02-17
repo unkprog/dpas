@@ -21,12 +21,9 @@ var View;
                 var that = this;
                 var content = $("#editor-content");
                 dpas.app.navigateSetContent('/prj', content);
-                $("#editor-menu-tree-view").treemenu({ delay: 300 }); //.openActive();
+                $("#editor-menu-tree-view").treemenu({ delay: 300 });
                 $('ul.tabs').tabs();
-                $(window).resize(function () {
-                    that.ApplyLayout();
-                });
-                that.ApplyLayout();
+                //that.ApplyLayout();
                 that.TreeProjectLoad(that);
             };
             Editor.prototype.ApplyLayout = function () {

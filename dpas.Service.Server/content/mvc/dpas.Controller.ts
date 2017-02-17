@@ -11,7 +11,12 @@ namespace dpas {
             
         }
 
+        public ApplyLayout(): void {
+
+        }
+
         public Dispose(): void {
+            dpas.app.navigateRemoveController(this);
         }
 
     }

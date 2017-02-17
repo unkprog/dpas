@@ -11,6 +11,10 @@ $(document).ready(function () {
             var content = $("#content");
             dpas.app.navigateSetContent('/nav', content);
 
+            $(window).resize(function () {
+                dpas.app.resize();
+            });
+
             (function (eventInfo) {
 
                 function getReference(target) {
@@ -46,7 +50,7 @@ $(document).ready(function () {
 
                             r = r.replace(location.protocol + '//' + location.host, '');
                             // тут можете вызвать подгрузку данных и т.п.
-                            dpas.app.navigate(r, true);
+                            dpas.app.navigate({ url: r, target: target });
                             // не даем выполнить действие по умолчанию
                             if (event.preventDefault) {
                                 event.preventDefault();
@@ -68,7 +72,7 @@ $(document).ready(function () {
                 }, false);
             })(window.addEventListener ? ['addEventListener', ''] : ['attachEvent', 'on']);
 
-            dpas.app.navigate("/nav/curpage", false);
+            dpas.app.navigate({ url: "/nav/curpage" });
     //    }
     //});
 

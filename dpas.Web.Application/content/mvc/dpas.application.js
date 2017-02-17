@@ -1,6 +1,6 @@
-﻿var require = function () {
+﻿//var require = function () {
 
-};
+//};
 
 var exports = window.exports = window.exports || {};
 
@@ -134,7 +134,7 @@ var exports = window.exports = window.exports || {};
         var navigateData = {
             url: '',
             contents: {},
-            controllers: {}
+            controllers: { all: [] }
         };
 
         that.navigateSetContent = function (prefix, content) {
@@ -157,17 +157,19 @@ var exports = window.exports = window.exports || {};
 
         that.navigateSetController = function (controller) {
             navigateData.controllers[navigateData.url] = controller;
+            navigateData.controllers.all.push(controller);
         }
 
-        that.navigate = function (url, options) {
+        that.navigate = function (options) {
             that.showLoading();
+            var url = options.url;
             if (url === undefined || url === '') {
                 that.showError("Не задана ссылка для перехода.");
                 that.hideLoading();
                 return;
             }
 
-            if (navigateData.url === url) {
+            if (navigateData.url === options.url) {
                 that.hideLoading();
                 return;
             }
@@ -193,20 +195,29 @@ var exports = window.exports = window.exports || {};
                         // Отобразим представление
                         content.html(data.view);
                         // Инициализируем контроллер
-                        navigateData.controllers[navigateData.url].Initialize();
+                        var controller = navigateData.controllers[navigateData.url];
+                        if (controller) {
+                            controller.Initialize();
+                            controller.ApplyLayout();
+                        }
                         content.css({ opacity: 1 });
                         that.hideLoading();
                     }
-                    else
-                    {
-                        if(data.view)
+                    else {
+                        if (data.view)
                             that.showError(data.view);
-                       else
+                        else
                             that.showError(data.error);
                     }
                 }
             });
-        }
+        };
+
+        that.resize = function () {
+            for (var i = 0, icount = that.navigateData.controllers.all.length; i < icount; i++) {
+                that.navigateData.controllers.all[i].ApplyLayout();
+            }
+        };
     };
 
     dpas.app = new dpas.Application();

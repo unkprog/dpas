@@ -7,7 +7,10 @@ var dpas;
         }
         Controller.prototype.Initialize = function () {
         };
+        Controller.prototype.ApplyLayout = function () {
+        };
         Controller.prototype.Dispose = function () {
+            dpas.app.navigateRemoveController(this);
         };
         return Controller;
     }());

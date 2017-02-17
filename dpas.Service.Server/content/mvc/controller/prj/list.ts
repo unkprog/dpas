@@ -50,7 +50,7 @@ export namespace View {
                         dpas.app.postJson({
                             url: '/api/prj/current', data: data,
                             success: function (result) {
-                                dpas.app.navigate("/nav/prj/editor");
+                                dpas.app.navigate({ url: "/nav/prj/editor" });
                             }
                         });
                     });

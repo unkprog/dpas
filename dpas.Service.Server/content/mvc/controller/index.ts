@@ -29,7 +29,7 @@ export namespace View {
                 $('#modal-prj-name').modal('open');
             });
             $('#btnOpenProject').on("click", function () {
-                dpas.app.navigate("/nav/prj/list");
+                dpas.app.navigate({ url: "/nav/prj/list" });
             });
 
             $('#btnTEst').on("click", function () {

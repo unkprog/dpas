@@ -17,18 +17,15 @@ export namespace View {
                 dpas.app.navigateSetContent('/prj', content);
 
                
-                $("#editor-menu-tree-view").treemenu({ delay: 300 }); //.openActive();
+                $("#editor-menu-tree-view").treemenu({ delay: 300 });
                 $('ul.tabs').tabs();
 
-                $(window).resize(function () {
-                    that.ApplyLayout();
-                });
-
-                that.ApplyLayout();
+              
+                //that.ApplyLayout();
                 that.TreeProjectLoad(that);
             }
 
-            private ApplyLayout() {
+            public ApplyLayout() {
                 var h = window.innerHeight - $('.navbar-fixed').height() - 22;
                 $('#editor-menu').height(h);
                 $('#editor-menu-tree').height(h - 80);
