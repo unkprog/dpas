@@ -1,7 +1,6 @@
 /// <reference path="../../../ts/materialize.d.ts" />
 /// <reference path="../../dpas.d.ts" />
 /// <reference path="../../dpas.controller.ts" />
-"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -14,12 +13,14 @@ var View;
         var Editor = (function (_super) {
             __extends(Editor, _super);
             function Editor() {
-                _super.apply(this, arguments);
+                _super.call(this);
                 this.ItemsTree = [];
+                Editor.editor = this;
             }
             Editor.prototype.Initialize = function () {
                 _super.prototype.Initialize.call(this);
                 var that = this;
+                this.dialogAdd = $("#editor-add").modal({ dismissible: false });
                 var content = $("#editor-content");
                 dpas.app.navigateSetContent("/prj", content);
                 $("#editor-menu-tree-view").treemenu({ delay: 300 });
@@ -50,9 +51,7 @@ var View;
             };
             Editor.prototype.SetupTreeProject = function (That, dataTreeProject) {
                 That.ItemsTree = [];
-                //let id = 0;
                 var drawItemTree = function (curItem) {
-                    //var isReference = false || curItem.Type === 0 || curItem.Type === 3 || curItem.Type === 4;
                     var result = "<li>";
                     result += "<a id=\"";
                     result += curItem.Path;
@@ -66,9 +65,9 @@ var View;
                     result += curItem.Name;
                     result += "</a>";
                     if (curItem.Items !== undefined) {
-                        for (var i = 0, icount = curItem.Items.length; i < icount; i++) {
+                        for (var i_1 = 0, icount_1 = curItem.Items.length; i_1 < icount_1; i_1++) {
                             result += "<ul>";
-                            result += drawItemTree(curItem.Items[i]);
+                            result += drawItemTree(curItem.Items[i_1]);
                             result += "</ul>";
                         }
                     }
@@ -82,10 +81,17 @@ var View;
                 }
                 $("#editor-menu-tree-view").html(elsStr).treemenu({ delay: 300 });
             };
+            Editor.prototype.AddNewItem = function () {
+                if (this.selectedItem == null) {
+                }
+                //this.dialogAdd = $("#editor-add");
+                //this.dialogAdd.modal({ dismissible: false });
+                this.dialogAdd.modal("open");
+            };
             return Editor;
         }(dpas.Controller));
         Prj.Editor = Editor;
     })(Prj = View.Prj || (View.Prj = {}));
-})(View = exports.View || (exports.View = {}));
+})(View || (View = {}));
 new View.Prj.Editor();
 //# sourceMappingURL=editor.js.map

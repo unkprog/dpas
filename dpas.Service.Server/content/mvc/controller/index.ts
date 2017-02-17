@@ -5,60 +5,58 @@
 export namespace View {
 
     export class Index extends dpas.Controller {
+        private modalNewProject: JQuery;
 
         public Initialize(): void {
             super.Initialize();
           
-            var that = this;
-            $("#modal-prj-form").submit(function (e) {
+            var that: Index = this;
+            $("#modal-prj-form").submit(function (e: JQueryEventObject):any {
                 e.preventDefault();
-                $('#modal-prj-name').modal('close');
+                $("#modal-prj-name").modal("close");
             });
 
-
-            $('#modal-prj-name').modal({
+            that.modalNewProject = $("#modal-prj-name").modal({
                 dismissible: false,
-                complete: function () { that.NewProject(); }
+                complete: function ():void { that.NewProject(); }
             });
 
             $('#btnNewProject').on("click", function () {
-                $('#modal-prj-name').modal({
-                    dismissible: false,
-                    complete: function () { that.NewProject(); }
-                });
+                //$('#modal-prj-name').modal({
+                //    dismissible: false,
+                //    complete: function () { that.NewProject(); }
+                //});
 
-                $('#modal-prj-name').modal('open');
+                that.modalNewProject.modal('open');
             });
-            $('#btnOpenProject').on("click", function () {
+
+            $("#btnOpenProject").on("click", function () {
                 dpas.app.navigate({ url: "/nav/prj/list" });
             });
 
-            $('#btnTEst').on("click", function () {
-                var data = { prjCode: "id" };
-                dpas.app.postJson({
-                    url: '/api/prj/current', data: data,
-                    success: function (result) {
+            //$('#btnTEst').on("click", function () {
+            //    var data = { prjCode: "id" };
+            //    dpas.app.postJson({
+            //        url: '/api/prj/current', data: data,
+            //        success: function (result:any):any {
 
-                        dpas.app.postJson({
-                            url: '/api/prj/editor',
-                            data: { command: "prjtree" },
-                            success: function (result) {
-                                //showError(JSON.stringify(result.data));
-                            }
-                        });
-
-
-                    }
-                });
-
-            });
+            //            dpas.app.postJson({
+            //                url: '/api/prj/editor',
+            //                data: { command: "prjtree" },
+            //                success: function (result) {
+            //                    //showError(JSON.stringify(result.data));
+            //                }
+            //            });
+            //        }
+            //    });
+            //});
         }
 
         public Dispose(): void {
             super.Dispose();
         }
 
-        public NewProject() {
+        public NewProject():void {
             //if ('' + $('#prjName').val() === '') {
             //    return;
             //}
@@ -97,4 +95,3 @@ export namespace View {
 
 new View.Index();
 
-//# sourceMappingURL=mvc/controller/index.js.map

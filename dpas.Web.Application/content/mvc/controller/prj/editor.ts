@@ -2,18 +2,24 @@
 /// <reference path="../../dpas.d.ts" />
 /// <reference path="../../dpas.controller.ts" />
 
-
-export namespace View {
+namespace View {
     export module Prj {
         export class Editor extends dpas.Controller {
-            private ItemsTree: any = [];
-            
+           
+            public static editor: Editor;
+
+            constructor() {
+                super();
+                Editor.editor = this;
+            }
+
+            public dialogAdd: JQuery;
             public Initialize(): void {
                 super.Initialize();
-
+               
                 let that: Editor = this;
-
-                var content = $("#editor-content");
+                this.dialogAdd = $("#editor-add").modal({ dismissible: false });
+                let content: JQuery = $("#editor-content");
                 dpas.app.navigateSetContent("/prj", content);
 
                 $("#editor-menu-tree-view").treemenu({ delay: 300 });
@@ -21,7 +27,7 @@ export namespace View {
                 that.TreeProjectLoad(that);
             }
 
-            public ApplyLayout() {
+            public ApplyLayout():void {
                 let h: number = window.innerHeight - $(".navbar-fixed").height() - 22;
                 $("#editor-menu").height(h);
                 $("#editor-menu-tree").height(h - 80);
@@ -36,21 +42,23 @@ export namespace View {
                 $("#code-view-textarea").width(w - 4);
             }
 
-            private TreeProjectLoad(That: Editor) {
+            private TreeProjectLoad(That: Editor): void {
                 dpas.app.postJson({
                     url: "/api/prj/editor",
                     data: { command: "prjtree" },
-                    success: function (result) {
+                    success: function (result: any): any {
                         That.SetupTreeProject(That, result.data);
                     }
                 });
             }
 
-            private SetupTreeProject(That: Editor, dataTreeProject: any) {
+            private ItemsTree: any = [];
+            public selectedItem: JQuery;
+            private SetupTreeProject(That: Editor, dataTreeProject: any):void {
                 That.ItemsTree = [];
-                //let id = 0;
-                var drawItemTree = function (curItem) {
-                    //var isReference = false || curItem.Type === 0 || curItem.Type === 3 || curItem.Type === 4;
+
+                let drawItemTree: Function = function (curItem: any): string {
+
                     let result: string = "<li>";
 
                     result += "<a id=\"";
@@ -69,7 +77,7 @@ export namespace View {
 
 
                     if (curItem.Items !== undefined) {
-                        for (var i = 0, icount = curItem.Items.length; i < icount; i++) {
+                        for (let i: number = 0, icount: number = curItem.Items.length; i < icount; i++) {
                             result += "<ul>";
                             result += drawItemTree(curItem.Items[i]);
                             result += "</ul>";
@@ -79,13 +87,19 @@ export namespace View {
                     return result;
                 };
 
-                let elsStr = "";
+                let elsStr: string = "";
                 let i: number = 0, icount: number = dataTreeProject.length;
                 for (; i < icount; i++) {
                     elsStr += drawItemTree(dataTreeProject[i]);
                 }
 
                 $("#editor-menu-tree-view").html(elsStr).treemenu({ delay: 300 });
+            }
+
+            public AddNewItem(): void {
+                if (this.selectedItem == null) {
+                }
+                this.dialogAdd.modal("open");
             }
         }
     }

@@ -19,37 +19,37 @@ var View;
             var that = this;
             $("#modal-prj-form").submit(function (e) {
                 e.preventDefault();
-                $('#modal-prj-name').modal('close');
+                $("#modal-prj-name").modal("close");
             });
-            $('#modal-prj-name').modal({
+            that.modalNewProject = $("#modal-prj-name").modal({
                 dismissible: false,
                 complete: function () { that.NewProject(); }
             });
             $('#btnNewProject').on("click", function () {
-                $('#modal-prj-name').modal({
-                    dismissible: false,
-                    complete: function () { that.NewProject(); }
-                });
-                $('#modal-prj-name').modal('open');
+                //$('#modal-prj-name').modal({
+                //    dismissible: false,
+                //    complete: function () { that.NewProject(); }
+                //});
+                that.modalNewProject.modal('open');
             });
-            $('#btnOpenProject').on("click", function () {
+            $("#btnOpenProject").on("click", function () {
                 dpas.app.navigate({ url: "/nav/prj/list" });
             });
-            $('#btnTEst').on("click", function () {
-                var data = { prjCode: "id" };
-                dpas.app.postJson({
-                    url: '/api/prj/current', data: data,
-                    success: function (result) {
-                        dpas.app.postJson({
-                            url: '/api/prj/editor',
-                            data: { command: "prjtree" },
-                            success: function (result) {
-                                //showError(JSON.stringify(result.data));
-                            }
-                        });
-                    }
-                });
-            });
+            //$('#btnTEst').on("click", function () {
+            //    var data = { prjCode: "id" };
+            //    dpas.app.postJson({
+            //        url: '/api/prj/current', data: data,
+            //        success: function (result:any):any {
+            //            dpas.app.postJson({
+            //                url: '/api/prj/editor',
+            //                data: { command: "prjtree" },
+            //                success: function (result) {
+            //                    //showError(JSON.stringify(result.data));
+            //                }
+            //            });
+            //        }
+            //    });
+            //});
         };
         Index.prototype.Dispose = function () {
             _super.prototype.Dispose.call(this);
@@ -90,5 +90,4 @@ var View;
     View.Index = Index;
 })(View = exports.View || (exports.View = {}));
 new View.Index();
-//# sourceMappingURL=mvc/controller/index.js.map
 //# sourceMappingURL=index.js.map

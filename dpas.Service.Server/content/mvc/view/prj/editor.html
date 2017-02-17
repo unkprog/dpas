@@ -19,6 +19,31 @@
 <div id="editor-content">
 </div>
    
+<div id="editor-add" class="modal">
+    <div class="modal-content">
+        <h4>Добавить</h4>
+        <form id="editor-add-form" class="col s12" action="api/prj" method="post">
+            <div class="row">
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">playlist_add</i>
+                    <input id="editor-add-name" name="prjName" type="text" class="validate">
+                    <label for="editor-add-name">Имя</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">info_outline</i>
+                    <input id="editor-add-description" name="prjDescription" type="text" class="validate">
+                    <label for="editor-add-description">Описание</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="modal-prj-name-cancel" class="modal-action waves-effect btn-flat btn-margin8">Отмена</button>
+                <button class="modal-action waves-effect btn-flat btn-margin8" type="submit" name="new">Создать</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 <script type="text/javascript" src="/js/dpas.tree.js"></script>
 
