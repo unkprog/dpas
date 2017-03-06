@@ -27,7 +27,7 @@ namespace dpas.Service.Project
             Name = aName;
             Description = aDescription;
             _ProjectDependencies = new List<IProject>();
-            _Items = new List<IProjectItem>();
+            _Items = new List<IProjectItems>();
         }
 
         #region IProject
@@ -110,11 +110,11 @@ namespace dpas.Service.Project
             }
         }
 
-        private IList<IProjectItem> _Items;
+        private IList<IProjectItems> _Items;
         /// <summary>
         /// Список элементов проекта
         /// </summary>
-        public IList<IProjectItem> Items
+        public IList<IProjectItems> Items
         {
             get
             {
@@ -151,8 +151,11 @@ namespace dpas.Service.Project
 
             while (Reader.Read() && Reader.NodeType != XmlNodeType.EndElement)
             {
-                if (Reader.NodeType == XmlNodeType.Element && Reader.Name == "ProjectDependencies")
-                    ReadProjectDependencies(Reader);
+                if (Reader.NodeType == XmlNodeType.Element && !Reader.IsEmptyElement)
+                {
+                         if (Reader.Name == "ProjectDependencies") ReadProjectDependencies(Reader);
+                    else if (Reader.Name == "Items")               ProjectItemExtensions.ReadItems(this, Reader);
+                }
             }
         }
 
@@ -160,11 +163,27 @@ namespace dpas.Service.Project
         {
             while (Reader.Read() && Reader.NodeType != XmlNodeType.EndElement)
             {
-                if (Reader.NodeType == XmlNodeType.Element && Reader.Name == "Project")
+                if (Reader.NodeType == XmlNodeType.Element && !Reader.IsEmptyElement)
                 {
-                    IProject project = new Project(ProjectManager.Manager);
-                    project.Read(Reader);
-                    _ProjectDependencies.Add(project);
+                    if (Reader.Name == "Project")
+                    {
+                        IProject project = new Project(ProjectManager.Manager);
+                        project.Read(Reader);
+                        _ProjectDependencies.Add(project);
+                    }
+                }
+            }
+        }
+
+        public void ReadProjectItems(XmlReader Reader)
+        {
+            while (Reader.Read() && Reader.NodeType != XmlNodeType.EndElement)
+            {
+                if (Reader.Name == "ProjectItem")
+                {
+                    IProjectItem projectItem = new ProjectItem(ProjectManager.Manager);
+                    projectItem.Read(Reader);
+                    Items.Add(projectItem);
                 }
             }
         }
@@ -172,7 +191,7 @@ namespace dpas.Service.Project
         public void Read(string path)
         {
             string pathProject = path;
-           
+            pathProject = string.Concat(pathProject, @"\\", Name, ".dpj");
             if (File.Exists(pathProject))
             {
                 using (XmlReader xmlReader = XmlReader.Create(pathProject))
@@ -205,6 +224,8 @@ namespace dpas.Service.Project
                 Writer.WriteEndElement();
             }
             Writer.WriteEndElement();
+
+            ProjectItemExtensions.WriteItems(this, Writer);
 
             Writer.WriteEndElement();
         }

@@ -70,7 +70,11 @@ namespace dpas.Net.Http.Mvc.Api.Prj
             if (string.IsNullOrEmpty(prjCode))
                 prjCode = context.State.GetString("prjCurrent");
             else
+            {
+                IProject project = Editor.getProject(prjCode);
+                ProjectManager.Manager.ReadProject(project);
                 context.State.SetValue("prjCurrent", prjCode);
+            }
             context.Response.Write(Json.Serialize(new { result = true }));
         }
 

@@ -26,7 +26,8 @@ var View;
                 if (impEditor.editor.selectedItem != null) {
                     impEditor.editor.selectedItem.removeClass("dpas-tree-active");
                 }
-                impEditor.editor.selectedItem = $(target).addClass("dpas-tree-active");
+                impEditor.editor.selectedItem = $(target);
+                impEditor.editor.selectedItem.addClass("dpas-tree-active");
             };
             return EditorProject;
         }(dpas.Controller));

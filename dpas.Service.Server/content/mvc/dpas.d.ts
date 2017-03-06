@@ -13,6 +13,7 @@ declare namespace dpas {
         navigate(options: any);
         postJson(options: any);
         navigateSetContent(path: string, content: JQuery);
+        showError(msg: string);
 
     }
 

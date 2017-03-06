@@ -59,7 +59,7 @@ namespace dpas.Net.Http
                 result.SupportCompression += accEnc.Contains("deflate") ? (int)HttpCompress.Deflate : 0;
             }
 
-            result.Content = string.Empty;
+            //result.ContentStream = string.Empty;
             ParseContent(result, data, startIndex, icount - startIndex);
             return result;
         }
@@ -67,7 +67,7 @@ namespace dpas.Net.Http
         public static HttpRequest ParseContent(HttpRequest request, byte[] data, int index, int count)
         {
             if (count > 0)
-                request.Content = string.Concat(request.Content, Encoding.UTF8.GetString(data, index, count));
+                request.ContentStream.Write(data, index, count);
             return request;
         }
 

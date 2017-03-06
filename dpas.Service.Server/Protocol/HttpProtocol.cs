@@ -39,7 +39,7 @@ namespace dpas.Service.Protocol
             // ******************************************* //
             // КОСТЫЛЬ?!?!?!?!
             // ******************************************* //
-            if (Request.ContentLength != Request.Content.Length)
+            if (Request.IsContentContinueRead)
             {
                 e.UserToken = Request;
                 return;

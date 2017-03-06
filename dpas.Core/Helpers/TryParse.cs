@@ -46,7 +46,8 @@ namespace dpas.Core.Helpers
 
         public static double Double(object aValue, double aDefault = 0.0)
         {
-            return Double(aValue, aDefault);
+            if (aValue == null) return aDefault;
+            return Double(aValue.ToString(), aDefault);
         }
 
         public static int Int32(string aValue, int aDefault = 0)
@@ -60,7 +61,8 @@ namespace dpas.Core.Helpers
 
         public static int Int32(object aValue, int aDefault = 0)
         {
-            return Int32(aValue, aDefault);
+            if (aValue == null) return aDefault;
+            return Int32(aValue.ToString(), aDefault);
         }
 
         public static bool Bool(string aValue, bool aDefault = false)

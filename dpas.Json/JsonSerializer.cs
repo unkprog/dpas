@@ -9,9 +9,17 @@ namespace dpas
 {
     public static partial class Json
     {
+        public class SerializeOptions
+        {
+            public Dictionary<string, bool> ExcludeProperties = new Dictionary<string, bool>();
+        }
 
         internal class JsonSerializer
         {
+            internal JsonSerializer(SerializeOptions aOptions = null)
+            {
+                options = aOptions == null ? new SerializeOptions() : aOptions;
+            }
 
             internal string ToJson(object obj)
             {
@@ -19,7 +27,7 @@ namespace dpas
                 return _output.ToString();
             }
 
-
+            private SerializeOptions options;
             private StringBuilder _output = new StringBuilder();
 
             private bool _useEscapedUnicode = false;
@@ -253,15 +261,19 @@ namespace dpas
 
                 Dictionary<string, string> map = new Dictionary<string, string>();
                 Type t = obj.GetType();
-                bool append = false;
+                bool append = false, isWrite;
 
                 IEnumerable<PropertyInfo> properties = t.GetRuntimeProperties();
                 foreach (var propertie in properties)
                 {
-                    if (append)
-                        _output.Append(',');
-                    WritePair(propertie.Name, propertie.GetValue(obj));
-                    append = true;
+                     isWrite = true;
+                    if (!options.ExcludeProperties.TryGetValue(propertie.Name, out isWrite) || isWrite)
+                    {
+                        if (append)
+                            _output.Append(',');
+                        WritePair(propertie.Name, propertie.GetValue(obj));
+                        append = true;
+                    }
                 }
                 _output.Append('}');
                 _current_depth--;

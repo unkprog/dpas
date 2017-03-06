@@ -70,3 +70,7 @@ footer.page-footer .footer-copyright {
     33.3333% {left: 0; width: 100%;z-index: 10;}
     to {left: 0; width: 100%;}
 }
+
+.btn-margin8 {
+    margin: 6px 6px !important;
+}

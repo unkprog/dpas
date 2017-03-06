@@ -2,6 +2,7 @@
 using System.Text;
 using System.Collections.Specialized;
 using System.Collections.Generic;
+using System.IO;
 
 namespace dpas.Net.Http
 {
@@ -26,8 +27,9 @@ namespace dpas.Net.Http
         bool ShouldKeepAlive { get; }
         int ContentLength { get; }
 
-        string Content { get; }
+        MemoryStream ContentStream { get; }
 
+        string Content { get; }
     }
 
     public class HttpRequest : HttpRequestResponse, IHttpRequest
@@ -39,6 +41,7 @@ namespace dpas.Net.Http
             QueryString = new HttpQueryString();
             Cookies     = new HttpCookies();
             File        = new HttpFile();
+            ContentStream     = new MemoryStream();
         }
         public HttpHeader       Header             { get; internal set; }
         public IHttpQueryString QueryString        { get; internal set; }
@@ -49,7 +52,11 @@ namespace dpas.Net.Http
 
         public bool             ShouldKeepAlive    { get; internal set; }
         public int              ContentLength      { get; internal set; }
-        public string           Content            { get; internal set; }
+        public MemoryStream     ContentStream      { get; internal set; }
+
+        public string           Content            { get { return ContentStream != null && ContentStream.Length != 0 ? Encoding.UTF8.GetString(ContentStream.ToArray()) : string.Empty; } }
+
+        public bool             IsContentContinueRead { get { return !(ContentLength == 0 || (ContentStream != null && ContentStream.Length == ContentLength)); } }
 
         public override string ToString()
         {
@@ -60,13 +67,22 @@ namespace dpas.Net.Http
                 result.Append(Parameters);
                 result.Append(Environment.NewLine);
             }
-            if (!string.IsNullOrEmpty(Content))
-            {
-                result.Append(Environment.NewLine);
-                result.Append(Environment.NewLine);
-                result.Append(Content);
-            }
+            //if (!string.IsNullOrEmpty(Content))
+            //{
+            //    result.Append(Environment.NewLine);
+            //    result.Append(Environment.NewLine);
+            //    result.Append(Content);
+            //}
             return result.ToString();
+        }
+
+        protected override void Dispose(bool aDisposing)
+        {
+            if (aDisposing)
+            {
+                if (ContentStream != null) ContentStream.Dispose(); ContentStream = null;
+            }
+            base.Dispose(aDisposing);
         }
     }
 }

@@ -127,17 +127,23 @@ namespace dpas.Service.Project
             Save(aProject, false);
         }
 
-        public void Save(IProject aProject, bool aNew)
+        public IProject AddProject(IProject aProject, bool isRead)
         {
-            var find = FindProject(aProject);
+            IProject find = FindProject(aProject);
             if (find == null)
             {
                 _Projects.Add(aProject);
-                SetState(ObjectState.Modified);
+                if (!isRead)
+                    SetState(ObjectState.Modified);
             }
-            else
-                if (aNew)
-                    throw new Project.Exception(Project.Exception.AlreadyExists, find.Name);
+            return find;
+        }
+
+        public void Save(IProject aProject, bool aNew)
+        {
+            var find = AddProject(aProject, false);
+            if (find != null && aNew)
+                throw new Project.Exception(Project.Exception.AlreadyExists, find.Name);
             SaveProject(aProject);
         }
 
@@ -154,6 +160,12 @@ namespace dpas.Service.Project
             ((Project)aProject).Save(projectFile);
         }
 
+        public void ReadProject(IProject aProject)
+        {
+            CheckProjectsDirectory();
+            string projectFile = string.Concat(pathProjects, @"\\", aProject.Name);
+            ((Project)aProject).Read(projectFile);
+        }
 
         public void Save()
         {
@@ -216,7 +228,7 @@ namespace dpas.Service.Project
             {
                 if (Reader.NodeType == XmlNodeType.Element && Reader.Name == "Project")
                 {
-                    Save(new Project(this) { Code = Reader.GetAttribute("Code"), Name = Reader.GetAttribute("Name"), Description = Reader.GetAttribute("Description") });
+                    AddProject(new Project(this) { Code = Reader.GetAttribute("Code"), Name = Reader.GetAttribute("Name"), Description = Reader.GetAttribute("Description") }, false);
                 }
             }
         

@@ -20,12 +20,16 @@ var View;
             Editor.prototype.Initialize = function () {
                 _super.prototype.Initialize.call(this);
                 var that = this;
-                this.dialogAdd = $("#editor-add").modal({ dismissible: false });
+                that.typeSelect = $("select").material_select();
+                that.dialogAdd = $("#editor-add").modal({ dismissible: false, complete: function () { that.AddNewItemCompleted(that); } });
                 var content = $("#editor-content");
                 dpas.app.navigateSetContent("/prj", content);
                 $("#editor-menu-tree-view").treemenu({ delay: 300 });
-                $("ul.tabs").tabs();
                 that.TreeProjectLoad(that);
+                $("#editor-add-form").submit(function (e) {
+                    e.preventDefault();
+                    that.dialogAdd.modal("close");
+                });
             };
             Editor.prototype.ApplyLayout = function () {
                 var h = window.innerHeight - $(".navbar-fixed").height() - 22;
@@ -49,49 +53,90 @@ var View;
                     }
                 });
             };
+            Editor.prototype.DrawItemTree = function (That, curItem) {
+                var result = "<li";
+                if (!(curItem.Items !== undefined && curItem.Items.length > 0)) {
+                    result += " class=\"dpas-tree-empty\"";
+                }
+                result += "><span class=\"dpas-toggler\"></span>";
+                result += "<a id=\"";
+                result += curItem.Path;
+                result += "\" class=\"ajax\" data-id=\"";
+                result += curItem.Code;
+                result += "\" href=\"/prj/editor-project";
+                result += curItem.Type === 0 ? "?project=" + curItem.Name : "/" + curItem.Path;
+                result += "\">";
+                That.SaveItemTree(curItem);
+                result += curItem.Name;
+                result += "</a>";
+                if (curItem.Items !== undefined) {
+                    for (var i = 0, icount = curItem.Items.length; i < icount; i++) {
+                        result += "<ul class=\"dpas-treemenu\">";
+                        //result += "<ul>";
+                        result += That.DrawItemTree(That, curItem.Items[i]);
+                        result += "</ul>";
+                    }
+                }
+                result += "</li>";
+                return result;
+            };
+            Editor.prototype.SaveItemTree = function (curItem) {
+                this.ItemsTree.push(curItem);
+                this.ItemsTree[curItem.Code] = curItem;
+            };
+            Editor.prototype.AppendItemTree = function (That, result) {
+                var itemHtml = That.DrawItemTree(That, result.data);
+                if (result.data.Type === 1 || result.data.Type === 2)
+                    itemHtml = "<ul class=\"dpas-treemenu\">" + itemHtml + "</ul>";
+                //let toggler: JQuery = That.selectedItem.find('.dpas-toggler');
+                //if (toggler.length === 0)
+                //    That.selectedItem.add('<span class="dpas-toggler" ></span>');
+                That.selectedItem.parent().removeClass("dpas-tree-empty").addClass("dpas-tree-opened").addClass(".dpas-tree-active");
+                That.selectedItem.parent().append(itemHtml);
+                That.SaveItemTree(result.data);
+                //That.selectedItem.addClass("dpas-tree-active");
+            };
             Editor.prototype.SetupTreeProject = function (That, dataTreeProject) {
                 That.ItemsTree = [];
-                var drawItemTree = function (curItem) {
-                    var result = "<li>";
-                    result += "<a id=\"";
-                    result += curItem.Path;
-                    result += "\" class=\"ajax\" data-id=\"";
-                    result += curItem.Code;
-                    result += "\" href=\"/prj/editor-project";
-                    result += curItem.Type === 0 ? "?project=" + curItem.Name : "/" + curItem.Path;
-                    result += "\">";
-                    That.ItemsTree.push(curItem);
-                    That.ItemsTree[curItem.Code] = curItem;
-                    result += curItem.Name;
-                    result += "</a>";
-                    if (curItem.Items !== undefined) {
-                        for (var i_1 = 0, icount_1 = curItem.Items.length; i_1 < icount_1; i_1++) {
-                            result += "<ul>";
-                            result += drawItemTree(curItem.Items[i_1]);
-                            result += "</ul>";
-                        }
-                    }
-                    result += "</li>";
-                    return result;
-                };
                 var elsStr = "";
                 var i = 0, icount = dataTreeProject.length;
                 for (; i < icount; i++) {
-                    elsStr += drawItemTree(dataTreeProject[i]);
+                    elsStr += That.DrawItemTree(That, dataTreeProject[i]);
                 }
                 $("#editor-menu-tree-view").html(elsStr).treemenu({ delay: 300 });
             };
             Editor.prototype.AddNewItem = function () {
                 if (this.selectedItem == null) {
+                    return;
                 }
-                //this.dialogAdd = $("#editor-add");
-                //this.dialogAdd.modal({ dismissible: false });
                 this.dialogAdd.modal("open");
+            };
+            Editor.prototype.AddNewItemCompleted = function (That) {
+                var name = "" + $("#editor-add-name").val();
+                if (name === "") {
+                    return;
+                }
+                var data = {
+                    command: "additem",
+                    Type: $("#editor-add-type").val(), Name: name, Description: $("#editor-add-description").val(),
+                    Parent: That.selectedItem.attr("id")
+                };
+                dpas.app.postJson({
+                    url: "/api/prj/editor", data: data,
+                    success: function (result) {
+                        if (result.result === true) {
+                            Editor.editor.AppendItemTree(Editor.editor, result);
+                        }
+                        else {
+                            dpas.app.showError(result.error);
+                        }
+                    }
+                });
             };
             return Editor;
         }(dpas.Controller));
         Prj.Editor = Editor;
     })(Prj = View.Prj || (View.Prj = {}));
 })(View || (View = {}));
-new View.Prj.Editor();
+var editor = new View.Prj.Editor();
 //# sourceMappingURL=editor.js.map

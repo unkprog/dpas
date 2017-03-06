@@ -9,7 +9,7 @@ namespace View {
             public Initialize(): void {
                 super.Initialize();
 
-                $("#btnPrjAdd").on("click", function () {
+                $("#btnPrjAdd").on("click", function ():void {
                     impEditor.editor.AddNewItem.call(impEditor.editor);
                 });
             }
@@ -18,7 +18,8 @@ namespace View {
                 if (impEditor.editor.selectedItem != null) {
                     impEditor.editor.selectedItem.removeClass("dpas-tree-active");
                 }
-                impEditor.editor.selectedItem = $(target).addClass("dpas-tree-active");
+                impEditor.editor.selectedItem = $(target);
+                impEditor.editor.selectedItem.addClass("dpas-tree-active");
             }
         }
     }
