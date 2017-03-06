@@ -13,7 +13,7 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dpas.Service.Server", "dpas
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{72BD8342-2CCD-4476-9BD0-C9F714CEB99A}"
 	ProjectSection(SolutionItems) = preProject
-		LICENSE = LICENSE
+		LICENSE.txt = LICENSE.txt
 		README.md = README.md
 	EndProjectSection
 EndProject
