@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Xml;
 using dpas.Core.Data.Specialization;
+using dpas.Core.Extensions;
 
 namespace dpas.Service.Project
 {
@@ -23,7 +24,7 @@ namespace dpas.Service.Project
         {
             Name = Reader.GetAttribute("Name");
             Path = Reader.GetAttribute("Path");
-
+            Type = Reader.GetInt32("Type");
             while (Reader.Read() && Reader.NodeType != XmlNodeType.EndElement)
             {
                 if (Reader.NodeType == XmlNodeType.Element && !Reader.IsEmptyElement)

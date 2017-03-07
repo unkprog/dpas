@@ -65,9 +65,15 @@
     background-color: #fff;
 }
 
+#editor-menu-buttons {
+    margin-top: 70px;
+    padding-right: 6pt;
+    padding-left: 6pt;
+}
+
 #editor-menu-tree {
     width:255px;
-    margin-top: 70px;
+    margin-top: 10px;
     overflow: auto;
     padding-right: 6pt;
 }

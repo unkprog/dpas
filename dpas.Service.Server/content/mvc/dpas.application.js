@@ -167,7 +167,7 @@ var exports = window.exports = window.exports || {};
             var notifyEvent = navigateData.controllers.notifyEvent;
             for (var key in notifyEvent) {
                 if (Object.prototype.hasOwnProperty.call(notifyEvent, key)) {
-                    var controller = obj[key];
+                    var controller = navigateData.controllers.notifyEvent[key];
                     if (controller)
                         controller.ApplyLayout();
                 }
