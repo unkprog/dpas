@@ -1,7 +1,6 @@
 ﻿/// <reference path="../../dpas.d.ts" />
 /// <reference path="../../dpas.controller.ts" />
 /// <reference path="editor.ts" />
-import impEditor = View.Prj.Editor;
 
 namespace View {
     export module Prj {

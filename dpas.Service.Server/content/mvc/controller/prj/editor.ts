@@ -57,14 +57,6 @@ namespace View {
                 $("#editor-menu").height(h);
                 $("#editor-menu-tree").height(h - 90 - $(".editor-menu-buttons").height());
                 $("#editor-content").height(h);
-                h = h - $("#editor-tabs").height();
-                $("#editor-designer-view").height(h);
-                $("#editor-code-view").height(h);
-                $("#code-view-textarea").height(h);
-
-                let w: number = window.innerWidth - $("#editor-menu").width() - 17;
-                $("#editor-content").width(w);
-                $("#code-view-textarea").width(w - 4);
             }
 
             private TreeProjectLoad(That: Editor): void {
@@ -95,7 +87,8 @@ namespace View {
                 result
                 result += "<a id=\"";
                 result += curItem.PathId;
-                result += "\" class=\"ajax\" href=\"/prj/editor-project";
+                result += "\" class=\"ajax\" href=\"/prj/";
+                result += curItem.Type === 0 ? "editor-project" : curItem.Type === 1 ? "editor-reference" : curItem.Type === 2 ? "editor-data" : "editor-class";
                 result += curItem.Type === 0 ? "?project=" + curItem.Name : "?projectitem=" + curItem.PathId;
                 result += "\">";
                
@@ -240,3 +233,4 @@ namespace View {
 }
 
 let editor: View.Prj.Editor = new View.Prj.Editor();
+import impEditor = View.Prj.Editor;

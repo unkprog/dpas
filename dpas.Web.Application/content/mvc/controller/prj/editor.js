@@ -46,13 +46,6 @@ var View;
                 $("#editor-menu").height(h);
                 $("#editor-menu-tree").height(h - 90 - $(".editor-menu-buttons").height());
                 $("#editor-content").height(h);
-                h = h - $("#editor-tabs").height();
-                $("#editor-designer-view").height(h);
-                $("#editor-code-view").height(h);
-                $("#code-view-textarea").height(h);
-                var w = window.innerWidth - $("#editor-menu").width() - 17;
-                $("#editor-content").width(w);
-                $("#code-view-textarea").width(w - 4);
             };
             Editor.prototype.TreeProjectLoad = function (That) {
                 dpas.app.postJson({
@@ -76,7 +69,8 @@ var View;
                 result;
                 result += "<a id=\"";
                 result += curItem.PathId;
-                result += "\" class=\"ajax\" href=\"/prj/editor-project";
+                result += "\" class=\"ajax\" href=\"/prj/";
+                result += curItem.Type === 0 ? "editor-project" : curItem.Type === 1 ? "editor-reference" : curItem.Type === 2 ? "editor-data" : "editor-class";
                 result += curItem.Type === 0 ? "?project=" + curItem.Name : "?projectitem=" + curItem.PathId;
                 result += "\">";
                 That.SaveItemTree(curItem);
@@ -202,4 +196,5 @@ var View;
     })(Prj = View.Prj || (View.Prj = {}));
 })(View || (View = {}));
 var editor = new View.Prj.Editor();
+var impEditor = View.Prj.Editor;
 //# sourceMappingURL=editor.js.map
