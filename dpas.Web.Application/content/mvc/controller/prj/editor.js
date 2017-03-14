@@ -1,7 +1,6 @@
 /// <reference path="../../../ts/materialize.d.ts" />
 /// <reference path="../../dpas.d.ts" />
 /// <reference path="../../dpas.controller.ts" />
-/// <reference path="../../dpas.d.ts" />
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -21,7 +20,8 @@ var View;
             Editor.prototype.Initialize = function () {
                 _super.prototype.Initialize.call(this);
                 var that = this;
-                that.typeSelect = $("select").material_select();
+                that.typeSelect = $("#editor-add-type");
+                that.typeSelect.material_select();
                 that.dialogAdd = $("#editor-add").modal({ dismissible: false, complete: function () { that.AddNewItemCompleted(that); } });
                 var content = $("#editor-content");
                 dpas.app.navigateSetContent("/prj", content);
@@ -64,15 +64,20 @@ var View;
                 });
             };
             Editor.prototype.DrawItemTree = function (That, curItem) {
+                curItem.PathId = curItem.Path.replace(new RegExp("/", "g"), "_");
                 var result = "<li";
                 if (!(curItem.Items !== undefined && curItem.Items.length > 0) && !(curItem.Type === 1 || curItem.Type === 2)) {
                     result += " class=\"dpas-tree-empty\"";
                 }
                 result += "><span class=\"dpas-toggler\"></span>";
+                //if (curItem.Type == 0) {
+                //    result += "<i class=\"small material-icons left\" style=\"margin-right:5px\">create_new_folder</i>";
+                //}
+                result;
                 result += "<a id=\"";
-                result += curItem.Path;
+                result += curItem.PathId;
                 result += "\" class=\"ajax\" href=\"/prj/editor-project";
-                result += curItem.Type === 0 ? "?project=" + curItem.Name : "?projectitem=" + curItem.Path.replace("/", "_");
+                result += curItem.Type === 0 ? "?project=" + curItem.Name : "?projectitem=" + curItem.PathId;
                 result += "\">";
                 That.SaveItemTree(curItem);
                 result += curItem.Name;
@@ -89,7 +94,7 @@ var View;
             };
             Editor.prototype.SaveItemTree = function (curItem) {
                 this.ItemsTree.push(curItem);
-                this.ItemsTree[curItem.Path] = curItem;
+                this.ItemsTree[curItem.PathId] = curItem;
             };
             Editor.prototype.AppendItemTree = function (That, result) {
                 var itemHtml = That.DrawItemTree(That, result.data);
@@ -97,7 +102,7 @@ var View;
                     itemHtml = "<ul class=\"dpas-treemenu\">" + itemHtml + "</ul>";
                 That.selectedItem.parent().removeClass("dpas-tree-empty").addClass("dpas-tree-opened").addClass(".dpas-tree-active");
                 That.selectedItem.parent().append(itemHtml);
-                That.SaveItemTree(result.data);
+                That.SelectApply($("#" + result.data.PathId));
             };
             Editor.prototype.SetupTreeProject = function (That, dataTreeProject) {
                 That.ItemsTree = [];
@@ -112,11 +117,11 @@ var View;
                 Editor.editor.SelectApply($(target));
             };
             Editor.prototype.SelectApply = function (item) {
-                if (this.selectedItem != null) {
+                if (this.isSelected()) {
                     this.selectedItem.removeClass("dpas-tree-active");
                 }
                 this.selectedItem = item;
-                if (this.selectedItem != null) {
+                if (this.isSelected()) {
                     this.selectedItem.addClass("dpas-tree-active");
                     var itemData = this.ItemsTree[this.selectedItem.attr("id")];
                     if (itemData === undefined || itemData === null || itemData.Type === 0) {
@@ -132,24 +137,48 @@ var View;
                     this.buttonDel.addClass("disabled");
                 }
             };
-            Editor.prototype.AddNewItem = function () {
-                if (this.selectedItem == null) {
-                    return;
+            Editor.prototype.isSelected = function () {
+                return !(this.selectedItem === null || this.selectedItem === undefined || this.selectedItem.length !== 1);
+            };
+            Editor.prototype.setupAddNewItemSelectOptions = function (curItem) {
+                var strHtml = "<option value=\"\" disabled selected>Выберите тип</option>";
+                if (curItem.Type === 0) {
+                    strHtml += "<option value= \"1\">Справочник</option>";
+                    strHtml += "<option value= \"2\">Данные</option>";
                 }
-                this.dialogAdd.modal("open");
+                else if (curItem.Type === 1) {
+                    strHtml += "<option value= \"3\">Справочник</option>";
+                    strHtml += "<option value= \"1\">Группа</option>";
+                }
+                else if (curItem.Type === 2) {
+                    strHtml += "<option value= \"4\">Данные</option>";
+                    strHtml += "<option value= \"2\">Группа</option>";
+                }
+                this.typeSelect.html(strHtml);
+                this.typeSelect.material_select();
+            };
+            Editor.prototype.AddNewItem = function () {
+                if (this.isSelected()) {
+                    var cirItemId = this.selectedItem.attr("id");
+                    var curItem = this.ItemsTree[cirItemId];
+                    this.setupAddNewItemSelectOptions(curItem);
+                    this.dialogAdd.modal("open");
+                }
             };
             Editor.prototype.DeleteItem = function () {
             };
             Editor.prototype.AddNewItemCompleted = function (That) {
                 var errorMessage = "";
-                var data = { command: "additem", Type: $("#editor-add-type").val(), Name: $("#editor-add-name").val(), Description: $("#editor-add-description").val(), Parent: That.selectedItem.attr("id") };
+                var cirItemId = That.selectedItem.attr("id");
+                var curItem = That.ItemsTree[cirItemId];
+                var data = { command: "additem", Type: $("#editor-add-type").val(), Name: $("#editor-add-name").val(), Description: $("#editor-add-description").val(), Parent: curItem.Path };
                 //let type: number = $("#editor-add-type").val();
                 //let name: string = "" + $("#editor-add-name").val();
-                if (data.Type === 0) {
-                    errorMessage += (errorMessage === "" ? "" : "\n") + "Не указан тип.";
+                if (data.Type === 0 || data.Type === null) {
+                    errorMessage += (errorMessage === "" ? "" : "<br>") + "Не указан тип.";
                 }
                 if (data.Name === "") {
-                    errorMessage += (errorMessage === "" ? "" : "\n") + "Не задано имя.";
+                    errorMessage += (errorMessage === "" ? "" : "<br>") + "Не задано имя.";
                 }
                 if (errorMessage !== "") {
                     dpas.app.showError(errorMessage);

@@ -3,7 +3,7 @@ using dpas.Core.IO;
 
 namespace dpas.Service.Project
 {
-    public interface IProjectItems
+    public interface IProjectItem : IReaderXml, IWriterXml
     {
         /// <summary>
         /// Имя
@@ -11,41 +11,45 @@ namespace dpas.Service.Project
         string Name { get; }
 
         /// <summary>
-        /// Список элементов проекта
-        /// </summary>
-        IList<IProjectItems> Items { get; }
-    }
-
-    public interface IProjectItem : IProjectItems, IReaderXml, IWriterXml
-    {
-        /// <summary>
-        /// Индекс
-        /// </summary>
-        int ID { get; }
-
-        /// <summary>
         /// Путь в файловой директории
         /// </summary>
         string Path { get; }
-        
+
+        /// <summary>
+        /// Список элементов проекта
+        /// </summary>
+        IList<IProjectItem> Items { get; }
+   
+        /// <summary>
+        /// Индекс
+        /// </summary>
+        int Index { get; }
+
         /// <summary>
         /// Тип
         /// </summary>
         int Type { get; }
+
+        /// <summary>
+        /// Описание
+        /// </summary>
+        string Description { get; }
     }
 
+    public interface IProjectItemField : IProjectItem
+    {
+        /// <summary>
+        /// Наименование класса
+        /// </summary>
+        string TypeClass { get; }
+    }
 
-    public interface IProject : IProjectItems, IReaderXml, IWriterXml
+    public interface IProject : IProjectItem, IReaderXml, IWriterXml
     {
         /// <summary>
         /// Код проекта
         /// </summary>
         string Code { get; }
-
-        /// <summary>
-        /// Описание проекта
-        /// </summary>
-        string Description { get; }
 
         /// <summary>
         /// Переименование проекта

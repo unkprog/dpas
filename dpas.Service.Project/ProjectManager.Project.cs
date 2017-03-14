@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace dpas.Service.Project
 {
@@ -11,7 +12,7 @@ namespace dpas.Service.Project
         /// </summary>
         /// <param name="aName">Ссылка на элемент проекта</param>
         /// <returns>Найденная ссылка на элемент проекта</returns>
-        private IProjectItems FindProjectItem(IProject aProject, IProjectItems aItem)
+        private IProjectItem FindProjectItem(IProject aProject, IProjectItem aItem)
         {
             if (aItem == null)
                 throw new Project.Exception(Project.Exception.ArgumentNull);
@@ -21,32 +22,32 @@ namespace dpas.Service.Project
         /// <summary>
         /// Поиск элемента проекта
         /// </summary>
-        /// <param name="aName">Ссылка на элемент проекта</param>
+        /// <param name="aPath">Ссылка на элемент проекта</param>
         /// <returns>Найденная ссылка на элемент проекта</returns>
-        private IProjectItems FindProjectItem(IProject aProject, string aName)
+        private IProjectItem FindProjectItem(IProject aProject, string aPath)
         {
             if (aProject == null)
                 throw new Project.Exception(Project.Exception.ArgumentNull);
-            if (string.IsNullOrEmpty(aName))
+            if (string.IsNullOrEmpty(aPath))
                 throw new Project.Exception(Project.Exception.EmptyName);
-            return FindProjectItemByName(aProject.Items, aName);
+            return FindProjectItemByPath(aProject.Items, aPath);
         }
 
         /// <summary>
         /// Поиск элемента проекта по имени
         /// </summary>
-        /// <param name="aName">Имя элемента проекта</param>
+        /// <param name="aPath">Имя элемента проекта</param>
         /// <returns>Найденная ссылка на элемент проекта</returns>
-        private IProjectItems FindProjectItemByName(IList<IProjectItems> aItems, string aName, bool aFindInChilds = true)
+        private IProjectItem FindProjectItemByPath(IList<IProjectItem> aItems, string aPath, bool aFindInChilds = true)
         {
-            IProjectItems result = null;
+            IProjectItem result = null;
             for (int i = 0, icount = aItems.Count; result == null && i < icount; i++)
             {
-                if (aItems[i].Name == aName)
+                if (aItems[i].Path == aPath)
                     result = aItems[i];
                 else
                     if (aFindInChilds)
-                    result = FindProjectItemByName(aItems[i].Items, aName);
+                    result = FindProjectItemByPath(aItems[i].Items, aPath);
             }
             return result;
         }
@@ -62,7 +63,7 @@ namespace dpas.Service.Project
             ProjectItem result = null;
             if (string.IsNullOrEmpty(aName))
                 throw new Project.Exception(Project.Exception.ItemEmptyName);
-            IProjectItems parent = FindProjectItem(aProject, aParent);
+            IProjectItem parent = FindProjectItem(aProject, aParent);
             if (parent == null)
             {
                 if (aProject.Name != aParent)
@@ -71,21 +72,57 @@ namespace dpas.Service.Project
                     parent = aProject;
             }
 
-            IProjectItems find = FindProjectItemByName(parent.Items, aName, false);
+            result = new ProjectItem(parent) { Type = aType, Name = aName, Description = aDecription };
+            result.SetupParams();
+
+            IProjectItem find = FindProjectItemByPath(parent.Items, result.Path, false);
             if (find != null)
                 throw new Project.Exception(Project.Exception.ItemAlreadyExists, aName);
 
-            result = new ProjectItem(parent) { Type = aType, Name = aName };
-            result.SetupParams();
-
             string path = string.Concat(pathProjects, "/", result.Path);
 
-            if ((aType == ProjectItem.Reference || aType == ProjectItem.Data) && !Directory.Exists(path))
-                Directory.CreateDirectory(path);
+            if (aType == ProjectItem.Reference || aType == ProjectItem.Data)
+            {
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+            }
+            else if (aType == ProjectItem.ReferenceItem || aType == ProjectItem.DataItem)
+            {
+                if (!File.Exists(path))
+                    SaveItemToFile(result);
+            }
+
             parent.Items.Add(result);
             SaveProject(aProject);
             return result;
         }
+
+
+        private void SaveItemToFile(IProjectItem aItem)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("namespace ");
+            sb.AppendLine(aItem.Path.Substring(0, aItem.Path.Length - (string.Concat("/", aItem.Name)).Length).Replace('/', '.'));
+            sb.AppendLine("{");
+            sb.Append("    public class ");
+            sb.AppendLine(aItem.Name);
+            sb.AppendLine("    {");
+            IProjectItem item;
+            for (int i = 0, icount = aItem.Items.Count; i< icount; i++)
+            {
+                item = aItem.Items[i];
+                sb.AppendLine(string.Concat("        public ", item.GetStringType(), " ", item.Name, " { get; set; }"));
+            }
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            string file = string.Concat(pathProjects, "/", aItem.Path, ".cs");
+            using (TextWriter textWriter = File.CreateText(file))
+            {
+                textWriter.Write(sb.ToString());
+            }
+        }
+
+
 
     }
 }

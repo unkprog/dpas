@@ -27,10 +27,11 @@ namespace dpas.Service.Project
             Name = aName;
             Description = aDescription;
             _ProjectDependencies = new List<IProject>();
-            _Items = new List<IProjectItems>();
+            _Items = new List<IProjectItem>();
         }
 
         #region IProject
+        public string Path { get { return Name; } }
 
         public string Code { get; internal set; }
         public string Description { get; internal set; }
@@ -110,17 +111,21 @@ namespace dpas.Service.Project
             }
         }
 
-        private IList<IProjectItems> _Items;
+        private IList<IProjectItem> _Items;
         /// <summary>
         /// Список элементов проекта
         /// </summary>
-        public IList<IProjectItems> Items
+        public IList<IProjectItem> Items
         {
             get
             {
                 return _Items;
             }
         }
+
+        public int Index { get; internal set; }
+
+        public int Type { get; internal set; }
         #endregion
 
         #region IDisposable

@@ -1,8 +1,6 @@
 ﻿/// <reference path="../../../ts/materialize.d.ts" />
 /// <reference path="../../dpas.d.ts" />
 /// <reference path="../../dpas.controller.ts" />
-/// <reference path="../../dpas.d.ts" />
-
 
 namespace View {
     export module Prj {
@@ -25,7 +23,8 @@ namespace View {
                
                 let that: Editor = this;
 
-                that.typeSelect = $("select").material_select();
+                that.typeSelect = $("#editor-add-type");
+                that.typeSelect.material_select();
                 that.dialogAdd = $("#editor-add").modal({ dismissible: false, complete: function (): void { that.AddNewItemCompleted(that); } });
 
                 let content: JQuery = $("#editor-content");
@@ -82,23 +81,29 @@ namespace View {
 
             private DrawItemTree(That: Editor, curItem: any): string {
 
+                curItem.PathId = curItem.Path.replace(new RegExp("/", "g"), "_");
+
                 let result: string = "<li";
                 if (!(curItem.Items !== undefined && curItem.Items.length > 0) && !(curItem.Type === 1 || curItem.Type === 2)) {
                     result += " class=\"dpas-tree-empty\"";
                 }
 
                 result += "><span class=\"dpas-toggler\"></span>";
-
+                //if (curItem.Type == 0) {
+                //    result += "<i class=\"small material-icons left\" style=\"margin-right:5px\">create_new_folder</i>";
+                //}
+                result
                 result += "<a id=\"";
-                result += curItem.Path;
+                result += curItem.PathId;
                 result += "\" class=\"ajax\" href=\"/prj/editor-project";
-                result += curItem.Type === 0 ? "?project=" + curItem.Name : "?projectitem=" + curItem.Path.replace("/", "_");
+                result += curItem.Type === 0 ? "?project=" + curItem.Name : "?projectitem=" + curItem.PathId;
                 result += "\">";
+               
                 That.SaveItemTree(curItem);
 
                 result += curItem.Name;
                 result += "</a>";
-
+               
                 if (curItem.Items !== undefined) {
                     for (let i: number = 0, icount: number = curItem.Items.length; i < icount; i++) {
                         result += "<ul class=\"dpas-treemenu\">";
@@ -112,7 +117,7 @@ namespace View {
 
             public SaveItemTree(curItem: any): void {
                 this.ItemsTree.push(curItem);
-                this.ItemsTree[curItem.Path] = curItem;
+                this.ItemsTree[curItem.PathId] = curItem;
             }
 
             public AppendItemTree(That: Editor, result: any): void {
@@ -121,7 +126,7 @@ namespace View {
                     itemHtml = "<ul class=\"dpas-treemenu\">" + itemHtml + "</ul>";
                 That.selectedItem.parent().removeClass("dpas-tree-empty").addClass("dpas-tree-opened").addClass(".dpas-tree-active");
                 That.selectedItem.parent().append(itemHtml);
-                That.SaveItemTree(result.data);
+                That.SelectApply($("#" + result.data.PathId));
             }
 
             private SetupTreeProject(That: Editor, dataTreeProject: any):void {
@@ -142,11 +147,11 @@ namespace View {
             private buttonAdd: JQuery;
             private buttonDel: JQuery;
             public SelectApply(item: JQuery): void {
-                if (this.selectedItem != null) {
+                if (this.isSelected()) {
                     this.selectedItem.removeClass("dpas-tree-active");
                 }
                 this.selectedItem = item;
-                if (this.selectedItem != null) {
+                if (this.isSelected()) {
                     this.selectedItem.addClass("dpas-tree-active");
                     let itemData: any = this.ItemsTree[this.selectedItem.attr("id")];
                     if (itemData === undefined || itemData === null || itemData.Type === 0) {
@@ -163,11 +168,37 @@ namespace View {
                 }
             }
 
-            public AddNewItem(): void {
-                if (this.selectedItem == null) {
-                    return;
+            private isSelected(): boolean {
+                return !(this.selectedItem === null || this.selectedItem === undefined || this.selectedItem.length !== 1)
+            }
+
+            private setupAddNewItemSelectOptions(curItem: any): void {
+
+                let strHtml: string = "<option value=\"\" disabled selected>Выберите тип</option>";
+                if (curItem.Type === 0) {
+                    strHtml += "<option value= \"1\">Справочник</option>";
+                    strHtml += "<option value= \"2\">Данные</option>";
                 }
-                this.dialogAdd.modal("open");
+                else if (curItem.Type === 1) {
+                    strHtml += "<option value= \"3\">Справочник</option>";
+                    strHtml += "<option value= \"1\">Группа</option>";
+                }
+                else if (curItem.Type === 2) {
+                    strHtml += "<option value= \"4\">Данные</option>";
+                    strHtml += "<option value= \"2\">Группа</option>";
+                }
+                this.typeSelect.html(strHtml);
+                this.typeSelect.material_select();
+            }
+
+            public AddNewItem(): void {
+                if (this.isSelected()) {
+                    let cirItemId: any = this.selectedItem.attr("id");
+                    let curItem: any = this.ItemsTree[cirItemId];
+                    this.setupAddNewItemSelectOptions(curItem);
+
+                    this.dialogAdd.modal("open");
+                }
             }
 
             public DeleteItem(): void {
@@ -176,14 +207,16 @@ namespace View {
 
             private AddNewItemCompleted(That: Editor): void {
                 let errorMessage: string = "";
-                let data: any = { command: "additem", Type: $("#editor-add-type").val(), Name: $("#editor-add-name").val(), Description: $("#editor-add-description").val(), Parent: That.selectedItem.attr("id") };
+                let cirItemId: any = That.selectedItem.attr("id");
+                let curItem: any = That.ItemsTree[cirItemId];
+                let data: any = { command: "additem", Type: $("#editor-add-type").val(), Name: $("#editor-add-name").val(), Description: $("#editor-add-description").val(), Parent: curItem.Path };
                 //let type: number = $("#editor-add-type").val();
                 //let name: string = "" + $("#editor-add-name").val();
-                if (data.Type === 0) {
-                    errorMessage += (errorMessage === "" ? "" : "\n")  + "Не указан тип.";
+                if (data.Type === 0 || data.Type === null) {
+                    errorMessage += (errorMessage === "" ? "" : "<br>")  + "Не указан тип.";
                 }
                 if (data.Name === "") {
-                    errorMessage += (errorMessage === "" ? "" : "\n") + "Не задано имя.";
+                    errorMessage += (errorMessage === "" ? "" : "<br>") + "Не задано имя.";
                 }
 
                 if (errorMessage !== "") {

@@ -9,28 +9,38 @@ namespace dpas.Service.Project
     {
         public ProjectItem(object aOwner) : base(aOwner)
         {
-            Items = new List<IProjectItems>();
+            Items = new List<IProjectItem>();
         }
-        public int ID { get; internal set; }
+        public int Index { get; internal set; }
 
-        public IList<IProjectItems> Items { get; internal set; }
+
+        public string Description { get; internal set; }
+
+        public IList<IProjectItem> Items { get; internal set; }
 
         public string Path { get; internal set; }
 
         public int Type    { get; internal set; }
 
         #region IReaderXml
-        public void Read(XmlReader Reader)
+
+        protected virtual void ReadProperties(XmlReader aReader)
         {
-            Name = Reader.GetAttribute("Name");
-            Path = Reader.GetAttribute("Path");
-            Type = Reader.GetInt32("Type");
-            while (Reader.Read() && Reader.NodeType != XmlNodeType.EndElement)
+            Name = aReader.GetAttribute("Name");
+            Path = aReader.GetAttribute("Path");
+            Description = aReader.GetAttribute("Description");
+            Type = aReader.GetInt32("Type");
+        }
+        public void Read(XmlReader aReader)
+        {
+            ReadProperties(aReader);
+          
+            while (aReader.Read() && aReader.NodeType != XmlNodeType.EndElement)
             {
-                if (Reader.NodeType == XmlNodeType.Element && !Reader.IsEmptyElement)
+                if (aReader.NodeType == XmlNodeType.Element && !aReader.IsEmptyElement)
                 {
-                    if (Reader.Name == "Items")
-                        ProjectItemExtensions.ReadItems(this, Reader);
+                    if (aReader.Name == "Items")
+                        ProjectItemExtensions.ReadItems(this, aReader);
                 }
             }
         }
@@ -44,17 +54,22 @@ namespace dpas.Service.Project
                                                             : Name;
         }
         #region IWriterXml
-        public void Write(XmlWriter Writer)
+
+        protected virtual void WriteProperties(XmlWriter aWriter)
         {
-            Writer.WriteStartElement("ProjectItem");
+            aWriter.WriteAttributeString("Name", Name);
+            aWriter.WriteAttributeString("Path", Path);
+            aWriter.WriteAttributeString("Description", Description);
+            aWriter.WriteAttributeString("Type", Type.ToString());
+        }
+        public void Write(XmlWriter aWriter)
+        {
+            aWriter.WriteStartElement("ProjectItem");
 
-            Writer.WriteAttributeString("Name", Name);
-            Writer.WriteAttributeString("Path", Path);
-            Writer.WriteAttributeString("Type", Type.ToString());
+            WriteProperties(aWriter);
+            ProjectItemExtensions.WriteItems(this, aWriter);
 
-            ProjectItemExtensions.WriteItems(this, Writer);
-
-            Writer.WriteEndElement();
+            aWriter.WriteEndElement();
         }
         #endregion
     }
