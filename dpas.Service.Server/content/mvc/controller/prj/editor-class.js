@@ -17,10 +17,72 @@ var View;
             }
             EditorClass.prototype.Initialize = function () {
                 _super.prototype.Initialize.call(this);
+                var that = this;
+                that.dataFields = that.NewClassData();
                 $("#editor-tabs").tabs();
-                //$("#btnPrjAdd").on("click", function ():void {
-                //    impEditor.editor.AddNewItem.call(impEditor.editor);
-                //});
+                that.typeSelect = $("#editor-add-field-type");
+                that.typeSelect.material_select();
+                that.dialogAdd = $("#editor-add-field").modal({ dismissible: false, complete: function () { that.AddNewItemCompleted(); } });
+                that.SetupHandlers();
+            };
+            EditorClass.prototype.NewClassData = function () {
+                return { Inherited: "", Items: [] };
+            };
+            EditorClass.prototype.AddFieldData = function (newField) {
+                var that = this;
+                if (newField === undefined || newField === null) {
+                    dpas.app.showError("Пустое поле!");
+                    return false;
+                }
+                var errorMessage = "";
+                if (newField.Type === undefined || newField.Type === null || newField.Type < 0 || newField.Type > 5 || (newField.Type === 5 && (newField.TypeName === undefined || newField.TypeName === null || newField.TypeName === ""))) {
+                    errorMessage += "Не указан Тип поля<br>";
+                }
+                if (newField.Name === undefined || newField.Name === null || newField.Name === "") {
+                    errorMessage += "Не указано Имя поля<br>";
+                }
+                if (that.dataFields[newField.Name] !== undefined) {
+                    errorMessage += "Указанное Имя поля уже используется<br>";
+                }
+                if (errorMessage !== "") {
+                    dpas.app.showError(errorMessage);
+                    return false;
+                }
+                that.dataFields[newField.Name] = newField;
+                that.dataFields.Items.push(newField);
+                return true;
+            };
+            EditorClass.prototype.SetupHandlers = function () {
+                var that = this;
+                $("#editor-add-field-form").submit(function (e) {
+                    e.preventDefault();
+                    //that.dialogAdd.modal("close");
+                });
+                $("#editor-add-field-apply").on("click", function () {
+                    that.dialogAdd.modalResult = 0;
+                    if (that.AddFieldData({ Type: 0, TypeName: "", Name: "", Description: "" })) {
+                        that.dialogAdd.modal("close");
+                    }
+                });
+                $("#editor-add-field-cancel").on("click", function () {
+                    that.dialogAdd.modalResult = 1;
+                    that.dialogAdd.modal("close");
+                });
+                $("#editor-designer-view-button-add").on("click", function () {
+                    that.dialogAdd.modal("open");
+                });
+            };
+            EditorClass.prototype.AddNewItemCompleted = function () {
+                var that = this;
+                if (that.dialogAdd.modalResult === 0) {
+                    alert("Ok");
+                }
+                else if (that.dialogAdd.modalResult === 1) {
+                    alert("Cancel");
+                }
+                else {
+                    alert("Undefined");
+                }
             };
             EditorClass.prototype.ApplyLayout = function () {
                 var h = $("#editor-content").height() - $("#editor-tabs").height();

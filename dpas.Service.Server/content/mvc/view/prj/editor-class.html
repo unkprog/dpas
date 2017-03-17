@@ -7,9 +7,22 @@
     </ul>
 
     <div id="editor-designer-view">
-        <div id="editor-menu-buttons" style="margin-top:0;">
+        <!--<div id="editor-designer-view-buttons" style="margin-top:0;">
             <a class="btn-floating blue darken-2 btn-small" id="editor-designer-view-button-add"><i class="small material-icons">add</i></a>
             <a class="btn-floating blue darken-2 btn-small" id="editor-designer-view-button-del"><i class="small material-icons">remove</i></a>
+        </div>-->
+        <div id="editor-designer-view-buttons" class="fixed-action-btn horizontal" style="height: 4em; position: static; padding:0;">
+            <a class="btn-floating btn-large amber darken-2">
+                <i class="large material-icons">mode_edit</i>
+            </a>
+            <span id="editor-designer-view-header"></span>
+            <ul style="margin: 0; padding-left: 4em; position: relative; height: 4em; transform: translateY(-6.25em); text-align:center">
+                <li><a class="btn-floating blue darken-2" id="editor-designer-view-button-add"><i class="material-icons">add</i></a></li>
+                <li><a class="btn-floating blue darken-2" id="editor-designer-view-button-del"><i class="material-icons">remove</i></a></li>
+                <li><a class="btn-floating blue darken-2" id="editor-designer-view-button-copy"><i class="material-icons">content_copy</i></a></li>
+                <li><a class="btn-floating green darken-2" id="editor-designer-view-button-save"><i class="material-icons">done</i></a></li>
+                <li><a class="btn-floating red" id="editor-designer-view-button-cancel"><i class="material-icons">clear</i></a></li>
+            </ul>
         </div>
 
         <ul class="collection">
@@ -32,18 +45,6 @@
                 <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
             </li>
         </ul>
-        <div class="fixed-action-btn horizontal">
-            <a class="btn-floating btn-large amber darken-2">
-                <i class="large material-icons">mode_edit</i>
-            </a>
-            <ul>
-                <li><a class="btn-floating blue darken-2"><i class="material-icons">add</i></a></li>
-                <li><a class="btn-floating blue darken-2"><i class="material-icons">remove</i></a></li>
-                <li><a class="btn-floating blue darken-2"><i class="material-icons">content_copy</i></a></li>
-                <li><a class="btn-floating green darken-2"><i class="material-icons">done</i></a></li>
-                <li><a class="btn-floating red"><i class="material-icons">clear</i></a></li>
-            </ul>
-        </div>
     </div>
 
     <div id="editor-code-view">
@@ -68,33 +69,37 @@
     <div class="modal-content">
         <h4>Добавить</h4>
         <form id="editor-add-field-form" class="col s12">
-            <div class="row">
+            <div class="row" style="margin-bottom:0;">
                 <div class="input-field col s12">
+                    <i class="material-icons prefix">title</i>
                     <select id="editor-add-field-type">
-                        <option value="" disabled selected>Выберите тип</option>
-                        <option value="1">Справочник</option>
-                        <option value="2">Данные</option>
+                        <option value="0" selected>Строка</option>
+                        <option value="1">Целое</option>
+                        <option value="2">Вещестенное</option>
+                        <option value="3">Логическое</option>
+                        <option value="4">Дата</option>
+                        <option value="5">Класс</option>
                     </select>
                     <label for="editor-add-field-name">Тип</label>
                 </div>
             </div>
-            <div class="row">
+            <div class="row"  style="margin-bottom:0;">
                 <div class="input-field col s12">
-                    <i class="material-icons prefix">playlist_add</i>
+                    <i class="material-icons prefix">short_text</i>
                     <input id="editor-add-field-name" name="addName" type="text" class="validate">
                     <label for="editor-add-field-name">Имя</label>
                 </div>
             </div>
-            <div class="row">
+            <div class="row"  style="margin-bottom:0;">
                 <div class="input-field col s12">
-                    <i class="material-icons prefix">info_outline</i>
+                    <i class="material-icons prefix">wrap_text</i>
                     <input id="editor-add-field-description" name="addDescription" type="text" class="validate">
                     <label for="editor-add-field-description">Описание</label>
                 </div>
             </div>
             <div class="modal-footer">
                 <button id="editor-add-field-cancel" class="modal-action waves-effect btn-flat btn-margin8">Отмена</button>
-                <button class="modal-action waves-effect btn-flat btn-margin8" type="submit" name="add">Создать</button>
+                <button id="editor-add-field-apply" class="modal-action waves-effect btn-flat btn-margin8">Применить</button>
             </div>
         </form>
     </div>

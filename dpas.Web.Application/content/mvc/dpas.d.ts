@@ -1,10 +1,4 @@
-﻿//declare module "jquery" {
-//    export = $;
-//}
-//declare let jQuery: JQueryStatic;
-//declare let $: JQueryStatic;
-
-
+﻿
 declare namespace dpas {
 
     export interface IApplication {
