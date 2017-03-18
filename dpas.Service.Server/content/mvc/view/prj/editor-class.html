@@ -7,10 +7,6 @@
     </ul>
 
     <div id="editor-designer-view">
-        <!--<div id="editor-designer-view-buttons" style="margin-top:0;">
-            <a class="btn-floating blue darken-2 btn-small" id="editor-designer-view-button-add"><i class="small material-icons">add</i></a>
-            <a class="btn-floating blue darken-2 btn-small" id="editor-designer-view-button-del"><i class="small material-icons">remove</i></a>
-        </div>-->
         <div id="editor-designer-view-buttons" class="fixed-action-btn horizontal" style="height: 4em; position: static; padding:0;">
             <a class="btn-floating btn-large amber darken-2">
                 <i class="large material-icons">mode_edit</i>
@@ -18,33 +14,27 @@
             <span id="editor-designer-view-header"></span>
             <ul style="margin: 0; padding-left: 4em; position: relative; height: 4em; transform: translateY(-6.25em); text-align:center">
                 <li><a class="btn-floating blue darken-2" id="editor-designer-view-button-add"><i class="material-icons">add</i></a></li>
-                <li><a class="btn-floating blue darken-2" id="editor-designer-view-button-del"><i class="material-icons">remove</i></a></li>
-                <li><a class="btn-floating blue darken-2" id="editor-designer-view-button-copy"><i class="material-icons">content_copy</i></a></li>
-                <li><a class="btn-floating green darken-2" id="editor-designer-view-button-save"><i class="material-icons">done</i></a></li>
-                <li><a class="btn-floating red" id="editor-designer-view-button-cancel"><i class="material-icons">clear</i></a></li>
+                <li><a class="btn-floating blue darken-2 disabled" id="editor-designer-view-button-del"><i class="material-icons">remove</i></a></li>
+                <li><a class="btn-floating blue darken-2 disabled" id="editor-designer-view-button-copy"><i class="material-icons">content_copy</i></a></li>
+                <li><a class="btn-floating green darken-2 disabled" id="editor-designer-view-button-save"><i class="material-icons">done</i></a></li>
+                <li><a class="btn-floating red disabled" id="editor-designer-view-button-cancel"><i class="material-icons">clear</i></a></li>
             </ul>
         </div>
+        <div id="div-table-fields" style="overflow:auto;">
+            <table id="table-fields" class="highlight" >
+                <thead>
+                    <tr>
+                        <th data-field="Name">Имя</th>
+                        <th data-field="TypeName">Тип</th>
+                        <th data-field="Description">Описание</th>
+                    </tr>
+                </thead>
 
-        <ul class="collection">
-            <li class="collection-item avatar">
-                <img src="images/yuna.jpg" alt="" class="circle">
-                <span class="title">Title</span>
-                <p>
-                    First Line <br>
-                    Second Line
-                </p>
-                <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
-            </li>
-            <li class="collection-item avatar">
-                <i class="material-icons circle">folder</i>
-                <span class="title">Title</span>
-                <p>
-                    First Line <br>
-                    Second Line
-                </p>
-                <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
-            </li>
-        </ul>
+                <tbody id="table-fields-body">
+                    
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <div id="editor-code-view">
@@ -73,6 +63,20 @@
                 <div class="input-field col s12">
                     <i class="material-icons prefix">title</i>
                     <select id="editor-add-field-type">
+                        <option value="0" selected>Строка</option>
+                        <option value="1">Целое</option>
+                        <option value="2">Вещестенное</option>
+                        <option value="3">Логическое</option>
+                        <option value="4">Дата</option>
+                        <option value="5">Класс</option>
+                    </select>
+                    <label for="editor-add-field-name">Тип</label>
+                </div>
+            </div>
+            <div class="row" style="margin-bottom:0;display:none;">
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">title</i>
+                    <select id="editor-add-field-type-name">
                         <option value="0" selected>Строка</option>
                         <option value="1">Целое</option>
                         <option value="2">Вещестенное</option>
