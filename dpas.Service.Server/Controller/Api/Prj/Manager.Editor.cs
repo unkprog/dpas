@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using dpas.Core.Extensions;
 using dpas.Service.Project;
@@ -18,7 +19,9 @@ namespace dpas.Net.Http.Mvc.Api.Prj
                 {
                     commandHandlers = new Dictionary<string, Action<IControllerContext, Dictionary<string, object>>>();
                     commandHandlers.Add("prjtree", PrjTree);
+                    commandHandlers.Add("readitem", ReadItem);
                     commandHandlers.Add("additem", AddItem);
+                    commandHandlers.Add("saveitem", SaveItem);
                     //commandHandlers.Add("/create", Create);
                     //commandHandlers.Add("/delete", Delete);
                     //commandHandlers.Add("/rename", Rename);
@@ -81,6 +84,15 @@ namespace dpas.Net.Http.Mvc.Api.Prj
                 context.Response.Write(dataToSend);
             }
 
+            public static void ReadItem(IControllerContext context, Dictionary<string, object> parameters)
+            {
+                IProject project = getProject(context);
+                string path = parameters.GetString("path");
+
+                IProjectItem item = ProjectManager.Manager.FindProjectItem(project, path);
+                context.Response.Write(Json.Serialize(new { result = true, item = item }, getSerializeOptions()));
+            }
+
             public static void AddItem(IControllerContext context, Dictionary<string, object> parameters)
             {
                 IProject project = getProject(context);
@@ -88,6 +100,20 @@ namespace dpas.Net.Http.Mvc.Api.Prj
                 int type = parameters.GetInt32("Type");
                 IProjectItem item = ProjectManager.Manager.ProjectAddItem(project, parent, type, name, description);
                 context.Response.Write(Json.Serialize(new { result = true, data = item }, getSerializeOptions()));
+            }
+
+            public static void SaveItem(IControllerContext context, Dictionary<string, object> parameters)
+            {
+                IProject project = getProject(context);
+                string path = parameters.GetString("path");
+
+                Dictionary<string, object> data = (Dictionary<string, object>)parameters.GetValue("data");
+                string inherited = data.GetString("Inherited");
+                List<object> fields = (List<object>)data.GetValue("Items");
+               
+
+                ProjectManager.Manager.ProjectSaveItem(project, path, fields);
+                context.Response.Write(Json.Serialize(new { result = true }, getSerializeOptions()));
             }
         }
     }

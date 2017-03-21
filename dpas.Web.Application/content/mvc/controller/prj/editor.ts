@@ -148,18 +148,42 @@ namespace View {
                     this.selectedItem.addClass("dpas-tree-active");
                     let itemData: any = this.ItemsTree[this.selectedItem.attr("id")];
                     if (itemData === undefined || itemData === null || itemData.Type === 0) {
-                        this.buttonDel.addClass("disabled");
+                        if (this.buttonDel !== undefined) {
+                            this.buttonDel.addClass("disabled");
+                        }
                     }
                     else {
-                        this.buttonDel.removeClass("disabled");
+                        if (this.buttonDel !== undefined) {
+                            this.buttonDel.removeClass("disabled");
+                        }
                     }
-                    this.buttonAdd.removeClass("disabled");
+                    if (this.buttonAdd !== undefined) {
+                        this.buttonAdd.removeClass("disabled");
+                    }
                 }
                 else {
-                    this.buttonAdd.addClass("disabled");
-                    this.buttonDel.addClass("disabled");
+                    if (this.buttonAdd !== undefined) {
+                        this.buttonAdd.addClass("disabled");
+                    }
+                    if (this.buttonDel !== undefined) {
+                        this.buttonDel.addClass("disabled");
+                    }
                 }
             }
+
+            public GetSelectedItemId(): string {
+                if (this.isSelected())
+                    return this.selectedItem.attr("id");
+                return "";
+            }
+
+            public GetSelectedItemPath(): any {
+                let cirItemId: string = this.GetSelectedItemId();
+                if (cirItemId!== "")
+                    return this.ItemsTree[cirItemId];
+                return undefined;
+            }
+           
 
             private isSelected(): boolean {
                 return !(this.selectedItem === null || this.selectedItem === undefined || this.selectedItem.length !== 1)
@@ -200,9 +224,9 @@ namespace View {
 
             private AddNewItemCompleted(That: Editor): void {
                 let errorMessage: string = "";
-                let cirItemId: any = That.selectedItem.attr("id");
-                let curItem: any = That.ItemsTree[cirItemId];
-                let data: any = { command: "additem", Type: $("#editor-add-type").val(), Name: $("#editor-add-name").val(), Description: $("#editor-add-description").val(), Parent: curItem.Path };
+                //let cirItemId: any = That.selectedItem.attr("id");
+                //let curItem: any = That.ItemsTree[cirItemId];
+                let data: any = { command: "additem", Type: $("#editor-add-type").val(), Name: $("#editor-add-name").val(), Description: $("#editor-add-description").val(), Parent: That.GetSelectedItemPath() };
                 //let type: number = $("#editor-add-type").val();
                 //let name: string = "" + $("#editor-add-name").val();
                 if (data.Type === 0 || data.Type === null) {

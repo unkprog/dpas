@@ -18,7 +18,7 @@ var View;
             EditorClass.prototype.Initialize = function () {
                 _super.prototype.Initialize.call(this);
                 var that = this;
-                that.dataFields = that.NewClassData();
+                that.dataFields = that.NewClassData(null);
                 $("#editor-tabs").tabs();
                 that.tableFields = $("#table-fields");
                 that.tableFieldsBody = $("#table-fields-body");
@@ -33,8 +33,13 @@ var View;
                 that.SetupHandlers();
                 that.Load();
             };
-            EditorClass.prototype.NewClassData = function () {
-                return { Inherited: "", Items: [] };
+            EditorClass.prototype.NewClassData = function (newClassData) {
+                if (newClassData === undefined || newClassData === null)
+                    return { Inherited: "", Items: [] };
+                for (var i = 0, icount = newClassData.Items.length; i < icount; i++) {
+                    newClassData[newClassData.Items[i].Name] = newClassData.Items[i];
+                }
+                return newClassData;
             };
             EditorClass.prototype.AddFieldData = function (newField) {
                 var that = this;
@@ -43,23 +48,81 @@ var View;
                     return false;
                 }
                 var errorMessage = "";
-                if (newField.Type === undefined || newField.Type === null || newField.Type < 0 || newField.Type > 5 || (newField.Type === 5 && (newField.TypeName === undefined || newField.TypeName === null || newField.TypeName === ""))) {
+                if (newField.Type === undefined || newField.Type === null || newField.Type < 0 || newField.Type > 5 || (newField.Type === 5 && (newField.TypeClass === undefined || newField.TypeClass === null || newField.TypeClass === ""))) {
                     errorMessage += "Не указан Тип поля<br>";
                 }
                 if (newField.Name === undefined || newField.Name === null || newField.Name === "") {
                     errorMessage += "Не указано Имя поля<br>";
                 }
-                if (that.dataFields[newField.Name] !== undefined) {
+                if (that.dataFields["field_" + newField.Name] !== undefined) {
                     errorMessage += "Указанное Имя поля уже используется<br>";
                 }
                 if (errorMessage !== "") {
                     dpas.app.showError(errorMessage);
                     return false;
                 }
-                that.dataFields[newField.Name] = newField;
+                that.dataFields["field_" + newField.Name] = newField;
                 that.dataFields.Items.push(newField);
-                that.tableFieldsBody.append($(that.DrawClassField(newField)));
+                var newRow = $(that.DrawClassField(newField));
+                newRow.click(function () {
+                    that.SelectFieldRow($(this));
+                });
+                that.tableFieldsBody.append(newRow);
+                that.SelectFieldRow(newRow);
                 return true;
+            };
+            EditorClass.prototype.RemoveFieldData = function () {
+                if (this.isSelected()) {
+                    var field = this.GetSelectedField();
+                    this.dataFields["field_" + field.Name] = undefined;
+                    delete this.dataFields["field_" + field.Name];
+                    this.dataFields.Items.splice(this.dataFields.Items.indexOf(field), 1);
+                    this.rowSelected.remove();
+                    this.SelectFieldRow(undefined);
+                    this.btnSave.removeClass("disabled");
+                    this.btnCancel.removeClass("disabled");
+                }
+                return true;
+            };
+            EditorClass.prototype.CopyFieldData = function () {
+                if (this.isSelected()) {
+                    var field = this.GetSelectedField();
+                    $("#editor-add-field-type").val(field.Type);
+                    $("#editor-add-field-type-name").val(field.TypeClass);
+                    $("#editor-add-field-name").val(field.Name);
+                    $("#editor-add-field-description").val(field.Description);
+                    this.dialogAdd.modal("open");
+                }
+                return true;
+            };
+            EditorClass.prototype.isSelected = function () {
+                return !(this.rowSelected === null || this.rowSelected === undefined || this.rowSelected.length !== 1);
+            };
+            EditorClass.prototype.GetSelectedFieldId = function () {
+                if (this.isSelected())
+                    return this.rowSelected.attr("id");
+                return "";
+            };
+            EditorClass.prototype.GetSelectedField = function () {
+                var cirItemId = this.GetSelectedFieldId();
+                if (cirItemId !== "")
+                    return this.dataFields["field_" + cirItemId];
+                return undefined;
+            };
+            EditorClass.prototype.SelectFieldRow = function (row) {
+                if (this.isSelected()) {
+                    this.rowSelected.removeClass("dpas-tree-active");
+                }
+                this.rowSelected = row;
+                if (this.isSelected()) {
+                    this.rowSelected.addClass("dpas-tree-active");
+                    this.btnCopy.removeClass("disabled");
+                    this.btnDelete.removeClass("disabled");
+                }
+                else {
+                    this.btnCopy.addClass("disabled");
+                    this.btnDelete.addClass("disabled");
+                }
             };
             EditorClass.prototype.DrawClassField = function (newField) {
                 var result = "<tr id=\"";
@@ -99,7 +162,7 @@ var View;
                 });
                 $("#editor-add-field-apply").on("click", function () {
                     that.dialogAdd.modalResult = 0;
-                    var newField = { Type: $("#editor-add-field-type").val(), TypeName: $("#editor-add-field-type-name").val(), Name: $("#editor-add-field-name").val(), Description: $("#editor-add-field-description").val() };
+                    var newField = { Type: $("#editor-add-field-type").val(), TypeClass: $("#editor-add-field-type-name").val(), Name: $("#editor-add-field-name").val(), Description: $("#editor-add-field-description").val() };
                     //{ command: "additem", Type: $("#editor-add-type").val(), Name: $("#editor-add-field-type-name").val(), Description: $("#editor-add-field-description").val(), Parent: curItem.Path };
                     if (that.AddFieldData(newField)) {
                         that.btnSave.removeClass("disabled");
@@ -107,6 +170,8 @@ var View;
                         that.dialogAdd.modal("close");
                     }
                 });
+                that.btnDelete.on("click", function () { that.RemoveFieldData(); });
+                that.btnCopy.on("click", function () { that.CopyFieldData(); });
                 that.btnSave.on("click", function () { that.Save(); });
                 that.btnCancel.on("click", function () { that.Cancel(); });
                 $("#editor-add-field-cancel").on("click", function () {
@@ -139,9 +204,62 @@ var View;
             EditorClass.prototype.Load = function () {
                 dpas.app.showLoading();
                 this.DisableButtons();
-                dpas.app.hideLoading();
+                var that = this;
+                var data = {
+                    command: "readitem",
+                    path: Prj.Editor.editor.GetSelectedItemPath().Path
+                };
+                dpas.app.postJson({
+                    url: "/api/prj/editor", data: data,
+                    success: function (result) {
+                        if (result.result === true) {
+                            that.LoadClassItem(that.NewClassData(result.item));
+                        }
+                        else {
+                            dpas.app.showError(result.error);
+                        }
+                        dpas.app.hideLoading();
+                    }
+                });
+            };
+            EditorClass.prototype.LoadClassItem = function (data) {
+                var that = this;
+                var htmlString = "";
+                that.dataFields = data;
+                if (that.dataFields !== undefined && that.dataFields !== null) {
+                    for (var i = 0, icount = (that.dataFields.Items === undefined || that.dataFields.Items === null ? 0 : that.dataFields.Items.length); i < icount; i++) {
+                        htmlString += that.DrawClassField(that.dataFields.Items[i]);
+                        that.dataFields["field_" + that.dataFields.Items[i].Name] = that.dataFields.Items[i];
+                    }
+                }
+                var rows = $(htmlString);
+                rows.click(function () {
+                    that.SelectFieldRow($(this));
+                });
+                that.tableFieldsBody.empty();
+                that.tableFieldsBody.append(rows);
             };
             EditorClass.prototype.Save = function () {
+                var that = this;
+                var data = {
+                    command: "saveitem",
+                    path: Prj.Editor.editor.GetSelectedItemPath().Path,
+                    data: that.dataFields
+                };
+                //let cirItemId: any = That.selectedItem.attr("id");
+                //let curItem: any = That.ItemsTree[cirItemId];
+                //let data: any = { command: "additem", Type: $("#editor-add-type").val(), Name: $("#editor-add-name").val(), Description: $("#editor-add-description").val(), Parent: curItem.Path };
+                dpas.app.postJson({
+                    url: "/api/prj/editor", data: data,
+                    success: function (result) {
+                        if (result.result === true) {
+                            that.DisableButtons();
+                        }
+                        else {
+                            dpas.app.showError(result.error);
+                        }
+                    }
+                });
                 this.DisableButtons();
             };
             EditorClass.prototype.Cancel = function () {

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using dpas.Core.Extensions;
 
 namespace dpas.Service.Project
 {
@@ -24,7 +25,7 @@ namespace dpas.Service.Project
         /// </summary>
         /// <param name="aPath">Ссылка на элемент проекта</param>
         /// <returns>Найденная ссылка на элемент проекта</returns>
-        private IProjectItem FindProjectItem(IProject aProject, string aPath)
+        public IProjectItem FindProjectItem(IProject aProject, string aPath)
         {
             if (aProject == null)
                 throw new Project.Exception(Project.Exception.ArgumentNull);
@@ -108,7 +109,7 @@ namespace dpas.Service.Project
             sb.AppendLine(aItem.Name);
             sb.AppendLine("    {");
             IProjectItem item;
-            for (int i = 0, icount = aItem.Items.Count; i< icount; i++)
+            for (int i = 0, icount = aItem.Items.Count; i < icount; i++)
             {
                 item = aItem.Items[i];
                 sb.AppendLine(string.Concat("        public ", item.GetStringType(), " ", item.Name, " { get; set; }"));
@@ -122,7 +123,26 @@ namespace dpas.Service.Project
             }
         }
 
+        public IProjectItem ProjectSaveItem(IProject aProject, string aPath, List<object> aFields)
+        {
+            IProjectItem result = FindProjectItem(aProject, aPath);
+            if (result == null)
+                throw new Project.Exception(Project.Exception.NotFound, aPath);
 
-
-    }
+            result.Items.Clear();
+            foreach (var fieldItem in aFields)
+            {
+                result.Items.Add(new ProjectItemField(result)
+                {
+                    Name = ((Dictionary<string, object>)fieldItem).GetString("Name"),
+                    Description = ((Dictionary<string, object>)fieldItem).GetString("Description"),
+                    Type = ((Dictionary<string, object>)fieldItem).GetInt32("Type"),
+                    TypeClass = ((Dictionary<string, object>)fieldItem).GetString("TypeClass")
+                });
+            }
+            SaveItemToFile(result);
+            SaveProject(aProject);
+            return result;
+        }
+    }        
 }

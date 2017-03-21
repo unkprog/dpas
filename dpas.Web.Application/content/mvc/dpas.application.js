@@ -213,15 +213,13 @@ var exports = window.exports = window.exports || {};
                         var controller = navigateData.controllers[navigateData.url];
                         that.navigateSetNotifyEventController(prefix, controller);
                         if (controller) {
+                            controller.Navigate(options.target);
                             controller.Initialize();
                             controller.ApplyLayout();
                         }
                         content.css({ opacity: 1 });
 
                         that.hideLoading();
-                        if (controller) {
-                            controller.Navigate(options.target);
-                        }
                     }
                     else {
                         if (data.view)
