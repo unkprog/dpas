@@ -3,6 +3,8 @@
 /// <reference path="editor.ts" />
 /// <reference path="editor-helpers.ts" />
 
+let hljs: any;
+
 namespace View {
     export module Prj {
 
@@ -14,6 +16,8 @@ namespace View {
             private tableFields: JQuery;
             private tableFieldsBody: JQuery;
             private dataFields: IClass;
+
+            private codeViewTextarea: JQuery;
 
             private rowSelected: JQuery;
             private btnDelete: JQuery;
@@ -34,6 +38,8 @@ namespace View {
                 that.typeSelect = $("#editor-add-field-type");
                 that.typeSelect.material_select();
 
+                that.codeViewTextarea = $("#editor-code-view-pre-code");
+
                 that.dialogAdd = $("#editor-add-field").modal({ dismissible: false });
 
                 that.btnDelete = $("#editor-designer-view-button-del");
@@ -51,7 +57,7 @@ namespace View {
                     return { Inherited: "", Name : "", Path:"", Items: [] };
 
                 for (let i = 0, icount = newClassData.Items.length; i < icount; i++) {
-                    newClassData[newClassData.Items[i].Name] = newClassData.Items[i];
+                    newClassData["field_" + newClassData.Items[i].Name] = newClassData.Items[i];
                 }
                 return newClassData;
             }
@@ -89,14 +95,25 @@ namespace View {
                 //that.dataFields["field_" + newField.Name] = newField;
                 //that.dataFields.Items.push(newField);
 
-                let newRow: JQuery = $(Helper.IFieldToHtml(newField, that.setupField));
+                let newRow: JQuery = $(Helper.IFieldToHtml(newField, function (field: IField) { that.setupField(field); }));
                 newRow.click(function () {
                     that.SelectFieldRow($(this));
                 });
 
                 that.tableFieldsBody.append(newRow);
                 that.SelectFieldRow(newRow);
+                that.SetupViewSourceCode();
+                
+
                 return true;
+            }
+
+            private SetupViewSourceCode() {
+                this.codeViewTextarea.html(Helper.IClassToSourceCode(this.dataFields));
+               
+                $('pre code').each(function (i, block) {
+                    hljs.highlightBlock(block);
+                });
             }
 
             private RemoveFieldData(): boolean {
@@ -161,26 +178,6 @@ namespace View {
                 }
             }
 
-            //private DrawClassField(newField: IFieldData): string {
-            //    let result: string = "<tr id=\"";
-            //    result += newField.Name; result += "\">";
-            //    result += "<td>"; result += newField.Name; result += "</td>";
-            //    result += "<td>"; result += Helper.GetTypeString(newField); result += "</td>";
-            //    result += "<td>"; result += newField.Description; result += "</td>";
-            //    result += "</tr>";
-            //    return result;
-            //}
-
-            //private DrawSourceCode(): string {
-            //    let result: string = "<tr id=\"";
-            //    result += newField.Name; result += "\">";
-            //    result += "<td>"; result += newField.Name; result += "</td>";
-            //    result += "<td>"; result += this.GetTypeString(newField); result += "</td>";
-            //    result += "<td>"; result += newField.Description; result += "</td>";
-            //    result += "</tr>";
-            //    return result;
-            //}
-
             private SetupHandlers() {
                 let that: EditorClass = this;
 
@@ -222,12 +219,12 @@ namespace View {
                 let h: number = $("#editor-content").height() - $("#editor-tabs").height();
                 $("#editor-designer-view").height(h);
                 $("#editor-code-view").height(h);
-                $("#code-view-textarea").height(h);
+                $("#editor-code-view-pre").height(h);
                 $("#div-table-fields").height(h - $("#editor-designer-view-buttons").height() - 4);
 
                 let w: number = window.innerWidth - $("#editor-menu").width() - 17;
                 $("#editor-content").width(w);
-                $("#code-view-textarea").width(w - 4);
+                $("#editor-code-view-pre").width(w - 4);
 
             }
 
@@ -273,6 +270,8 @@ namespace View {
                 if (that.dataFields !== undefined && that.dataFields !== null) {
                     htmlString = Helper.IFieldsToHtml(that.dataFields.Items, (field: IField) => { that.dataFields["field_" + field.Name] = field });
                 }
+
+                that.SetupViewSourceCode();
 
                 let rows: JQuery = $(htmlString);
                 rows.click(function () {

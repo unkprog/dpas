@@ -1,4 +1,6 @@
 ﻿<link href="/mvc/css/prj/editor-class.css" rel="stylesheet" />
+<script src="/mvc/controller/prj/editor-helpers.js"></script>
+
 
 <div class="row">
     <ul id="editor-tabs" class="tabs">
@@ -38,11 +40,12 @@
     </div>
 
     <div id="editor-code-view">
-        <textarea id="code-view-textarea" class="materialize-textarea">
-            class Record
-            {
-            }
-        </textarea>
+        
+        <pre id="editor-code-view-pre">
+            <code class="cs" id="editor-code-view-pre-code">
+                    
+            </code>
+        </pre>
         <div class="fixed-action-btn horizontal">
             <a class="btn-floating btn-large amber darken-2">
                 <i class="large material-icons">mode_edit</i>

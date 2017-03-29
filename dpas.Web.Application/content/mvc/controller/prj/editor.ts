@@ -96,12 +96,14 @@ namespace View {
 
                 result += curItem.Name;
                 result += "</a>";
-               
-                if (curItem.Items !== undefined) {
-                    for (let i: number = 0, icount: number = curItem.Items.length; i < icount; i++) {
-                        result += "<ul class=\"dpas-treemenu\">";
-                        result += That.DrawItemTree(That, curItem.Items[i]);
-                        result += "</ul>";
+
+                if (curItem.Type < 3) {
+                    if (curItem.Items !== undefined) {
+                        for (let i: number = 0, icount: number = curItem.Items.length; i < icount; i++) {
+                            result += "<ul class=\"dpas-treemenu\">";
+                            result += That.DrawItemTree(That, curItem.Items[i]);
+                            result += "</ul>";
+                        }
                     }
                 }
                 result += "</li>";

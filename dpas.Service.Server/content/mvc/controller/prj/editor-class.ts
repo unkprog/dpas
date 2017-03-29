@@ -1,31 +1,23 @@
 ﻿/// <reference path="../../dpas.d.ts" />
 /// <reference path="../../dpas.controller.ts" />
 /// <reference path="editor.ts" />
+/// <reference path="editor-helpers.ts" />
+
+let hljs: any;
 
 namespace View {
     export module Prj {
-        interface IFieldData {
-            Type: number;
-            TypeClass: string;
-            Name: string;
-            Description: string;
-        }
-
-        interface IClassData {
-            Inherited: string;
-            Items: IFieldData[];
-        }
 
         export class EditorClass extends dpas.Controller {
-
-       
 
             private dialogAdd: JQuery;
             private typeSelect: JQuery;
 
             private tableFields: JQuery;
             private tableFieldsBody: JQuery;
-            private dataFields: IClassData;
+            private dataFields: IClass;
+
+            private codeViewTextarea: JQuery;
 
             private rowSelected: JQuery;
             private btnDelete: JQuery;
@@ -46,6 +38,8 @@ namespace View {
                 that.typeSelect = $("#editor-add-field-type");
                 that.typeSelect.material_select();
 
+                that.codeViewTextarea = $("#editor-code-view-pre-code");
+
                 that.dialogAdd = $("#editor-add-field").modal({ dismissible: false });
 
                 that.btnDelete = $("#editor-designer-view-button-del");
@@ -58,17 +52,22 @@ namespace View {
                 that.Load();
             }
 
-            private NewClassData(newClassData: IClassData): IClassData {
+            private NewClassData(newClassData: IClass): IClass {
                 if (newClassData === undefined || newClassData === null)
-                    return { Inherited: "", Items: [] };
+                    return { Inherited: "", Name : "", Path:"", Items: [] };
 
                 for (let i = 0, icount = newClassData.Items.length; i < icount; i++) {
-                    newClassData[newClassData.Items[i].Name] = newClassData.Items[i];
+                    newClassData["field_" + newClassData.Items[i].Name] = newClassData.Items[i];
                 }
                 return newClassData;
             }
 
-            private AddFieldData(newField: IFieldData): boolean {
+            private setupField(field: IField): void {
+                this.dataFields["field_" + field.Name] = field;
+                this.dataFields.Items.push(field);
+            }
+
+            private AddFieldData(newField: IField): boolean {
                 let that: EditorClass = this;
 
                 if (newField === undefined || newField === null) {
@@ -93,22 +92,33 @@ namespace View {
                     return false;
                 }
 
-                that.dataFields["field_" + newField.Name] = newField;
-                that.dataFields.Items.push(newField);
+                //that.dataFields["field_" + newField.Name] = newField;
+                //that.dataFields.Items.push(newField);
 
-                let newRow: JQuery = $(that.DrawClassField(newField));
+                let newRow: JQuery = $(Helper.IFieldToHtml(newField, function (field: IField) { that.setupField(field); }));
                 newRow.click(function () {
                     that.SelectFieldRow($(this));
                 });
 
                 that.tableFieldsBody.append(newRow);
                 that.SelectFieldRow(newRow);
+                that.SetupViewSourceCode();
+                
+
                 return true;
+            }
+
+            private SetupViewSourceCode() {
+                this.codeViewTextarea.html(Helper.IClassToSourceCode(this.dataFields));
+               
+                $('pre code').each(function (i, block) {
+                    hljs.highlightBlock(block);
+                });
             }
 
             private RemoveFieldData(): boolean {
                 if (this.isSelected()) {
-                    let field: IFieldData = this.GetSelectedField();
+                    let field: IField = this.GetSelectedField();
                     this.dataFields["field_" + field.Name] = undefined;
                     delete this.dataFields["field_" + field.Name];
                     this.dataFields.Items.splice(this.dataFields.Items.indexOf(field), 1); 
@@ -122,7 +132,7 @@ namespace View {
 
             private CopyFieldData(): boolean {
                 if (this.isSelected()) {
-                    let field: IFieldData = this.GetSelectedField();
+                    let field: IField = this.GetSelectedField();
                     $("#editor-add-field-type").val(field.Type);
                     $("#editor-add-field-type-name").val(field.TypeClass);
                     $("#editor-add-field-name").val(field.Name);
@@ -142,7 +152,7 @@ namespace View {
                 return "";
             }
 
-            public GetSelectedField(): IFieldData {
+            public GetSelectedField(): IField {
                 let cirItemId: string = this.GetSelectedFieldId();
                 if (cirItemId !== "")
                     return this.dataFields["field_" + cirItemId];
@@ -168,27 +178,6 @@ namespace View {
                 }
             }
 
-            private DrawClassField(newField: IFieldData): string {
-                let result: string = "<tr id=\"";
-                result += newField.Name; result += "\">";
-                result += "<td>"; result += newField.Name; result += "</td>";
-                result += "<td>"; result += this.GetTypeString(newField); result += "</td>";
-                result += "<td>"; result += newField.Description; result += "</td>";
-                result += "</tr>";
-                return result;
-            }
-
-
-            private GetTypeString(field: IFieldData) {
-                let type: string = "" + field.Type;
-                if (type === "0") return "Строка";
-                if (type === "1") return "Целое";
-                if (type === "2") return "Вещестенное";
-                if (type === "3") return "Логическое";
-                if (type === "4") return "Дата";
-                return "Класс"; //field.TypeName;
-            }
-
             private SetupHandlers() {
                 let that: EditorClass = this;
 
@@ -199,7 +188,7 @@ namespace View {
 
                 $("#editor-add-field-apply").on("click", function (): void {
                     that.dialogAdd.modalResult = 0;
-                    let newField: IFieldData = { Type: $("#editor-add-field-type").val(), TypeClass: $("#editor-add-field-type-name").val(), Name: $("#editor-add-field-name").val(), Description: $("#editor-add-field-description").val() };
+                    let newField: IField = { Type: $("#editor-add-field-type").val(), TypeClass: $("#editor-add-field-type-name").val(), Name: $("#editor-add-field-name").val(), Description: $("#editor-add-field-description").val() };
                     //{ command: "additem", Type: $("#editor-add-type").val(), Name: $("#editor-add-field-type-name").val(), Description: $("#editor-add-field-description").val(), Parent: curItem.Path };
 
                     if (that.AddFieldData(newField)) {
@@ -230,12 +219,12 @@ namespace View {
                 let h: number = $("#editor-content").height() - $("#editor-tabs").height();
                 $("#editor-designer-view").height(h);
                 $("#editor-code-view").height(h);
-                $("#code-view-textarea").height(h);
+                $("#editor-code-view-pre").height(h);
                 $("#div-table-fields").height(h - $("#editor-designer-view-buttons").height() - 4);
 
                 let w: number = window.innerWidth - $("#editor-menu").width() - 17;
                 $("#editor-content").width(w);
-                $("#code-view-textarea").width(w - 4);
+                $("#editor-code-view-pre").width(w - 4);
 
             }
 
@@ -273,18 +262,16 @@ namespace View {
                 });
             }
 
-            private LoadClassItem(data: IClassData): void {
+            private LoadClassItem(data: IClass): void {
                 let that: EditorClass = this;
                 let htmlString: string = "";
 
                 that.dataFields = data;
-
                 if (that.dataFields !== undefined && that.dataFields !== null) {
-                    for (let i = 0, icount = (that.dataFields.Items === undefined || that.dataFields.Items === null ? 0 : that.dataFields.Items.length); i < icount; i++) {
-                        htmlString += that.DrawClassField(that.dataFields.Items[i]);
-                        that.dataFields["field_" + that.dataFields.Items[i].Name] = that.dataFields.Items[i];
-                    }
+                    htmlString = Helper.IFieldsToHtml(that.dataFields.Items, (field: IField) => { that.dataFields["field_" + field.Name] = field });
                 }
+
+                that.SetupViewSourceCode();
 
                 let rows: JQuery = $(htmlString);
                 rows.click(function () {
