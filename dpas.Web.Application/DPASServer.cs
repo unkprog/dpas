@@ -11,6 +11,7 @@ namespace dpas.Web.Application
     public class DPASServerOptions
     {
 
+
     }
 
     public class DPASServer : IServer
