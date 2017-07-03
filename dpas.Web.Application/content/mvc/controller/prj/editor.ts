@@ -91,7 +91,8 @@ namespace View {
                 result += curItem.Type === 0 ? "editor-project" : curItem.Type === 1 ? "editor-reference" : curItem.Type === 2 ? "editor-data" : "editor-class";
                 result += curItem.Type === 0 ? "?project=" + curItem.Name : "?projectitem=" + curItem.PathId;
                 result += "\">";
-               
+
+
                 That.SaveItemTree(curItem);
 
                 result += curItem.Name;
