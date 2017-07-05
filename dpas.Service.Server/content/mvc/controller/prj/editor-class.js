@@ -171,7 +171,7 @@ var View;
                 $("#editor-designer-view").height(h);
                 $("#editor-code-view").height(h);
                 $("#editor-code-view-pre").height(h);
-                $("#div-table-fields").height(h - $("#editor-designer-view-buttons").height() - 4);
+                $("#div-table-fields").height(h - $("#editor-designer-view-buttons").height() - $("#div-class-params").height() - 4);
                 var w = window.innerWidth - $("#editor-menu").width() - 17;
                 $("#editor-content").width(w);
                 $("#editor-code-view-pre").width(w - 4);

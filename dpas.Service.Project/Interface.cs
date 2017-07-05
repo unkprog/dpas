@@ -6,6 +6,11 @@ namespace dpas.Service.Project
     public interface IProjectItem : IReaderXml, IWriterXml
     {
         /// <summary>
+        /// Абстрактный
+        /// </summary>
+       bool IsAbstract { get; }
+
+        /// <summary>
         /// Имя
         /// </summary>
         string Name { get; }

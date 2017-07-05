@@ -13,6 +13,7 @@ namespace dpas.Service.Project
         }
         public int Index { get; internal set; }
 
+        public bool IsAbstract { get; internal set; }
 
         public string Description { get; internal set; }
 
@@ -22,6 +23,14 @@ namespace dpas.Service.Project
 
         public int Type    { get; internal set; }
 
+        internal void SetupParams()
+        {
+            Path = Owner is IProject ? string.Concat(((IProject)Owner).Name, '/', Name)
+                                    : Owner is IProjectItem ? string.Concat(((IProjectItem)Owner).Path, '/', Name)
+                                                            : Name;
+        }
+
+
         #region IReaderXml
 
         protected virtual void ReadProperties(XmlReader aReader)
@@ -29,6 +38,7 @@ namespace dpas.Service.Project
             Name = aReader.GetAttribute("Name");
             Path = aReader.GetAttribute("Path");
             Description = aReader.GetAttribute("Description");
+            IsAbstract = aReader.GetBool("IsAbstract");
             Type = aReader.GetInt32("Type");
         }
         public void Read(XmlReader aReader)
@@ -46,13 +56,6 @@ namespace dpas.Service.Project
         }
         #endregion
 
-
-        internal void SetupParams()
-        {
-            Path = Owner is IProject ? string.Concat(((IProject)Owner).Name, '/', Name)
-                                    : Owner is IProjectItem ? string.Concat(((IProjectItem)Owner).Path, '/', Name)
-                                                            : Name;
-        }
         #region IWriterXml
 
         protected virtual void WriteProperties(XmlWriter aWriter)
@@ -60,6 +63,7 @@ namespace dpas.Service.Project
             aWriter.WriteAttributeString("Name", Name);
             aWriter.WriteAttributeString("Path", Path);
             aWriter.WriteAttributeString("Description", Description);
+            aWriter.WriteAttributeString("IsAbstract", IsAbstract.ToString());
             aWriter.WriteAttributeString("Type", Type.ToString());
         }
         public void Write(XmlWriter aWriter)

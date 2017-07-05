@@ -31,6 +31,8 @@ namespace dpas.Service.Project
         }
 
         #region IProject
+
+        public bool IsAbstract { get { return false; } }
         public string Path { get { return Name; } }
 
         public string Code { get; internal set; }

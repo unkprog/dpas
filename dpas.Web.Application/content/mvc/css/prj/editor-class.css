@@ -8,10 +8,9 @@
     padding: 8px;
 }
 
-#ddd {
-    height: 4em;
-    position: static;
-    padding: 0;
+
+.m0 {
+    margin: 0;
 }
 
 #code-view-textarea {

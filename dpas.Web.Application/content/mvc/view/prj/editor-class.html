@@ -22,6 +22,24 @@
                 <li><a class="btn-floating red disabled" id="editor-designer-view-button-cancel"><i class="material-icons">clear</i></a></li>
             </ul>
         </div>
+        <div id="div-class-params" class="row m0">
+            <div class="input-field col l5 m5 s5">
+                <input id="class_name" type="text" class="validate m0" >
+                <label for="class_name">Имя класса</label>
+            </div>
+            <div class="input-field col l5 m5 s5">
+                <input id="class_parent" type="text" class="validate m0">
+                <label for="class_parent">Унаследован от</label>
+            </div>
+            <div class="switch col l2 m2 s2">
+                <label>
+                    Абстрактный
+                    <input type="checkbox">
+                    <span class="lever"></span>
+
+                </label>
+            </div>
+        </div>
         <div id="div-table-fields" style="overflow:auto;">
             <table id="table-fields" class="highlight" >
                 <thead>

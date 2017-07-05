@@ -111,6 +111,7 @@ namespace View {
                 return result;
             }
 
+
             public SaveItemTree(curItem: any): void {
                 this.ItemsTree.push(curItem);
                 this.ItemsTree[curItem.PathId] = curItem;
