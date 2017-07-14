@@ -54,6 +54,26 @@ namespace dpas.Service.Project
         }
 
         /// <summary>
+        /// Поиск родителя
+        /// </summary>
+        /// <param name="aProject"></param>
+        /// <param name="aParent"></param>
+        /// <returns></returns>
+        private IProjectItem FindProjectParentItem(IProject aProject, string aParent)
+        {
+            IProjectItem parent = FindProjectItem(aProject, aParent);
+            if (parent == null)
+            {
+                if (aProject.Name != aParent)
+                    throw new Project.Exception(Project.Exception.NotFound, aParent);
+                else
+                    parent = aProject;
+            }
+            return parent;
+        }
+
+
+        /// <summary>
         /// Создание нового элемента проекта
         /// </summary>
         /// <param name="aName">Имя элемента проекта</param>
@@ -64,42 +84,61 @@ namespace dpas.Service.Project
             ProjectItem result = null;
             if (string.IsNullOrEmpty(aName))
                 throw new Project.Exception(Project.Exception.ItemEmptyName);
-            IProjectItem parent = FindProjectItem(aProject, aParent);
-            if (parent == null)
-            {
-                if (aProject.Name != aParent)
-                    throw new Project.Exception(Project.Exception.NotFound, aParent);
-                else
-                    parent = aProject;
-            }
 
+            IProjectItem parent = FindProjectParentItem(aProject, aParent);
+            
             result = new ProjectItem(parent) { Type = aType, Name = aName, Description = aDecription };
             result.SetupParams();
+            
+            return ProjectAddItem(aProject, parent, result);
+        }
 
-            IProjectItem find = FindProjectItemByPath(parent.Items, result.Path, false);
+        public IProjectItem ProjectAddItem(IProject aProject, IProjectItem aParent, IProjectItem result)
+        {
+            IProjectItem find = FindProjectItemByPath(aParent.Items, result.Path, false);
             if (find != null)
-                throw new Project.Exception(Project.Exception.ItemAlreadyExists, aName);
+                throw new Project.Exception(Project.Exception.ItemAlreadyExists, result.Name);
 
             string path = string.Concat(pathProjects, "/", result.Path);
 
-            if (aType == ProjectItem.Reference || aType == ProjectItem.Data)
+            if (result.Type == ProjectItem.Reference || result.Type == ProjectItem.Data)
             {
                 if (!Directory.Exists(path))
                     Directory.CreateDirectory(path);
             }
-            else if (aType == ProjectItem.ReferenceItem || aType == ProjectItem.DataItem)
+            else if (result.Type == ProjectItem.ReferenceItem || result.Type == ProjectItem.DataItem)
             {
-                if (!File.Exists(path))
-                    SaveItemToFile(result);
+                if (Directory.Exists(path))
+                    SaveItemFile(result);
             }
 
-            parent.Items.Add(result);
+            aParent.Items.Add(result);
             SaveProject(aProject);
             return result;
         }
+        public IProjectItem ProjectRemoveItem(IProject aProject, IProjectItem aParent, IProjectItem result)
+        {
+            IProjectItem find = FindProjectItemByPath(aParent.Items, result.Path, false);
+            if (find == null)
+                throw new Project.Exception(Project.Exception.ItemNotExists, result.Name);
 
+            string path = string.Concat(pathProjects, "/", result.Path);
 
-        private void SaveItemToFile(IProjectItem aItem)
+            if (result.Type == ProjectItem.Reference || result.Type == ProjectItem.Data)
+            {
+                if (Directory.Exists(path))
+                    Directory.Delete(path, true);
+            }
+            else if (result.Type == ProjectItem.ReferenceItem || result.Type == ProjectItem.DataItem)
+            {
+                DeleteItemFile(result);
+            }
+
+            aParent.Items.Remove(find);
+            SaveProject(aProject);
+            return result;
+        }
+        private void SaveItemFile(IProjectItem aItem)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("namespace ");
@@ -123,24 +162,40 @@ namespace dpas.Service.Project
             }
         }
 
-        public IProjectItem ProjectSaveItem(IProject aProject, string aPath, List<object> aFields)
+        private void DeleteItemFile(IProjectItem aItem)
+        {
+            string file = string.Concat(pathProjects, "/", aItem.Path, ".cs");
+            if (File.Exists(file))
+                File.Delete(file);
+        }
+
+        private void RemoveItem(IProjectItem aItem, IProjectItem aNewItem = null)
+        {
+            IProjectItem parent = (IProjectItem)((ProjectItem)aItem).Owner;
+            int index = parent.Items.IndexOf(aItem);
+            if(index > -1)
+            {
+                if (aNewItem == null)
+                    parent.Items.RemoveAt(index);
+                else
+                {
+                    parent.Items[index] = aNewItem;
+                    ((ProjectItem)aNewItem).ChangeOwner(parent);
+                    ((ProjectItem)aNewItem).SetupParams();
+                }
+            }
+        }
+
+        public IProjectItem ProjectSaveItem(IProject aProject, string aPath, IProjectItem saveItem)
         {
             IProjectItem result = FindProjectItem(aProject, aPath);
+
             if (result == null)
                 throw new Project.Exception(Project.Exception.NotFound, aPath);
 
-            result.Items.Clear();
-            foreach (var fieldItem in aFields)
-            {
-                result.Items.Add(new ProjectItemField(result)
-                {
-                    Name = ((Dictionary<string, object>)fieldItem).GetString("Name"),
-                    Description = ((Dictionary<string, object>)fieldItem).GetString("Description"),
-                    Type = ((Dictionary<string, object>)fieldItem).GetInt32("Type"),
-                    TypeClass = ((Dictionary<string, object>)fieldItem).GetString("TypeClass")
-                });
-            }
-            SaveItemToFile(result);
+            RemoveItem(result, saveItem);
+
+            SaveItemFile(saveItem);
             SaveProject(aProject);
             return result;
         }

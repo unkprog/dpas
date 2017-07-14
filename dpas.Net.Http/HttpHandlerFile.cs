@@ -54,9 +54,9 @@ namespace dpas.Net.Http
                 filePath = string.Concat(pathSources, "/index.html");
             else
             {
-                string file = WebUtility.UrlDecode(Context.Request.File.ToString());
+                string file = WebUtility.UrlDecode(Context.Request.File.ToString().Replace("%EF%BB%BF", string.Empty));
                 // file = string.Concat(string.IsNullOrEmpty(file) ? string.Empty : "/", Context.Request.File
-                filePath = string.Concat(pathSources, WebUtility.UrlDecode(Context.Request.Path), string.IsNullOrEmpty(file) ? string.Empty : "/", file);
+                filePath = string.Concat(pathSources, WebUtility.UrlDecode(Context.Request.Path.Replace("%EF%BB%BF", string.Empty)), string.IsNullOrEmpty(file) ? string.Empty : "/", file);
             }
 
             logger.LogInformation(string.Concat(System.Environment.NewLine, "Путь запроса: ", Context.Request.Path, System.Environment.NewLine, "Файл для чтения: ", filePath));

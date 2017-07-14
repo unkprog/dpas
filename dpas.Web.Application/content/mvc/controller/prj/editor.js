@@ -150,9 +150,14 @@ var View;
             };
             Editor.prototype.GetSelectedItemPath = function () {
                 var cirItemId = this.GetSelectedItemId();
-                if (cirItemId !== "")
+                if (!Prj.Helper.IsNullOrEmpty(cirItemId))
                     return this.ItemsTree[cirItemId];
                 return undefined;
+            };
+            Editor.prototype.UpdateSelectedItem = function (newPath, newName) {
+                var cirItemId = this.GetSelectedItemId();
+                this.selectedItem.html(this.DrawItemTree(this, this.GetSelectedItemPath()));
+                this.ItemsTree[cirItemId] = newPath;
             };
             Editor.prototype.isSelected = function () {
                 return !(this.selectedItem === null || this.selectedItem === undefined || this.selectedItem.length !== 1);

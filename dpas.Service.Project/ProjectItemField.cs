@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml;
+using dpas.Core.Extensions;
 
 namespace dpas.Service.Project
 {
@@ -30,7 +31,19 @@ namespace dpas.Service.Project
             base.WriteProperties(aWriter);
             aWriter.WriteAttributeString("TypeClass", TypeClass);
         }
-       
+
+        #endregion
+
+
+        #region Read from Dictionary<string, object>
+        public override void Read(Dictionary<string, object> data)
+        {
+            Name = data.GetString("Name");
+            Description = data.GetString("Description");
+            Type = data.GetInt32("Type");
+            TypeClass = data.GetString("TypeClass");
+
+        }
         #endregion
     }
 }

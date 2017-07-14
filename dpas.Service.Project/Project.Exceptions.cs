@@ -48,11 +48,14 @@ namespace dpas.Service.Project
             /// Элемент проекта <{0}> уже существует
             /// </summary>
             public const int ItemAlreadyExists = ItemEmptyName - 1;
-
+            /// <summary>
+            /// Элемент проекта <{0}> отсутствует
+            /// </summary>
+            public const int ItemNotExists = ItemAlreadyExists - 1;
             /// <summary>
             /// Каталог проекта <{0}> уже существует
             /// </summary>
-            public const int CatalogAlreadyExists = ItemAlreadyExists - 1;
+            public const int CatalogAlreadyExists = ItemNotExists - 1;
 
             private static string GetErrorText(int errorCode, params string[] listParams)
             {
@@ -66,6 +69,7 @@ namespace dpas.Service.Project
                     case ItemNotFound: return string.Concat("Элемент проекта ", listParams[0], " не найден.");
                     case ItemEmptyName: return "Для элемента проекта не указано имя";
                     case ItemAlreadyExists: return string.Concat("Элемент проекта ", listParams[0], " уже существует");
+                    case ItemNotExists: return string.Concat("Элемент проекта ", listParams[0], " отсутствует");
                     case CatalogAlreadyExists: return string.Concat("Каталог проекта ", listParams[0], " уже существует");
                 }
                 return "Проект: Неопознанная ошибка";

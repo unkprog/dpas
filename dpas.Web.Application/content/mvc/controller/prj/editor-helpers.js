@@ -80,10 +80,12 @@ var View;
                     item.Path;
                     result += "<br>";
                     result += "{<br>";
-                    result += "    public class ";
+                    result += "    public";
+                    result += item.IsAbstract ? " abstract" : "";
+                    result += " class ";
                     result += "" + item.Name;
                     result += Helper.IsNullOrEmpty(item.Inherited) ? "" : " : " + item.Inherited;
-                    result += "<br>";
+                    result += "<br> ";
                     result += "    {<br>";
                     for (var i = 0, icount = item.Items.length; i < icount; i++) {
                         field = item.Items[i];

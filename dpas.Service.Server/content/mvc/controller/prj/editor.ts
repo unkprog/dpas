@@ -183,11 +183,16 @@ namespace View {
 
             public GetSelectedItemPath(): any {
                 let cirItemId: string = this.GetSelectedItemId();
-                if (cirItemId!== "")
+                if (!Helper.IsNullOrEmpty(cirItemId))
                     return this.ItemsTree[cirItemId];
                 return undefined;
             }
-           
+
+            public UpdateSelectedItem(newPath: string, newName: string): void {
+                let cirItemId: string = this.GetSelectedItemId();
+                this.selectedItem.html(this.DrawItemTree(this, this.GetSelectedItemPath()));
+                this.ItemsTree[cirItemId] = newPath;
+            }
 
             private isSelected(): boolean {
                 return !(this.selectedItem === null || this.selectedItem === undefined || this.selectedItem.length !== 1)

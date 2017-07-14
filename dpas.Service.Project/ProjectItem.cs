@@ -30,6 +30,10 @@ namespace dpas.Service.Project
                                                             : Name;
         }
 
+        public void ChangeOwner(object aOwner)
+        {
+            Owner = aOwner;
+        }
 
         #region IReaderXml
 
@@ -76,7 +80,27 @@ namespace dpas.Service.Project
             aWriter.WriteEndElement();
         }
         #endregion
+
+        #region Read from Dictionary<string, object>
+
+        public virtual void Read(Dictionary<string, object> data)
+        {
+            IsAbstract = data.GetBool("IsAbstract");
+            Name = data.GetString("Name");
+            Description = data.GetString("Description");
+            IsAbstract = data.GetBool("IsAbstract");
+            Type = data.GetInt32("Type");
+
+            List<object> fields = (List<object>)data.GetValue("Items");
+            foreach (var fieldItem in fields)
+            {
+                ProjectItemField field = new ProjectItemField(this);
+                field.Read((Dictionary<string, object>)fieldItem);
+                Items.Add(field);
+            }
+        }
+        #endregion
     }
 
-    
+
 }

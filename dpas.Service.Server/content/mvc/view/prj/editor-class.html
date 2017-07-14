@@ -25,19 +25,20 @@
         <div id="div-class-params" class="row m0">
             <div class="input-field col l5 m5 s5">
                 <input id="class_name" type="text" class="validate m0" >
-                <label for="class_name">Имя класса</label>
+                <label for="class_name" id="label_class_name">Имя класса</label>
             </div>
             <div class="input-field col l5 m5 s5">
                 <input id="class_parent" type="text" class="validate m0">
-                <label for="class_parent">Унаследован от</label>
+                <label for="class_parent" id="label_class_parent">Унаследован от</label>
             </div>
-            <div class="switch col l2 m2 s2">
-                <label>
+            <div class="input-field col l2 m2 s2">
+                <input type="checkbox" id="class_abstract" />
+                <label for="class_abstract">Абстрактный</label>
+                <!--<label>
                     Абстрактный
-                    <input type="checkbox">
+                    <input id="class_abstract" type="checkbox">
                     <span class="lever"></span>
-                    Да
-                </label>
+                </label>-->
             </div>
         </div>
         <div id="div-table-fields" style="overflow:auto;">

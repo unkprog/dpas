@@ -9,8 +9,10 @@
 
         export interface IClass {
             Inherited: string;
+            IsAbstract: boolean;
             Name: string;
             Path: string;
+            Type: number;
             Items: IField[];
         }
 
@@ -86,7 +88,7 @@
                     let field: IField;
                     result += "namespace "; result += item.Path.replace(new RegExp("/", "g"), "."); item.Path; result += "<br>";
                     result += "{<br>";
-                    result += "    public class "; result += "" + item.Name; result += Helper.IsNullOrEmpty(item.Inherited) ? "" : " : " + item.Inherited; result += "<br>";
+                    result += "    public"; result += item.IsAbstract ? " abstract" : ""; result += " class "; result += "" + item.Name; result += Helper.IsNullOrEmpty(item.Inherited) ? "" : " : " + item.Inherited; result += "<br> ";
                     result += "    {<br>";
                     for (let i = 0, icount = item.Items.length; i < icount; i++) {
                         field = item.Items[i];

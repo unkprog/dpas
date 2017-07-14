@@ -2,6 +2,7 @@
 /// <reference path="../../dpas.controller.ts" />
 /// <reference path="editor.ts" />
 /// <reference path="editor-helpers.ts" />
+/// <reference path="../../../ts/materialize.d.ts" />
 
 let hljs: any;
 
@@ -12,6 +13,10 @@ namespace View {
 
             private dialogAdd: JQuery;
             private typeSelect: JQuery;
+
+            private className: JQuery;
+            private classParent: JQuery;
+            private classAbstract: JQuery;
 
             private tableFields: JQuery;
             private tableFieldsBody: JQuery;
@@ -33,6 +38,9 @@ namespace View {
                 that.dataFields = that.NewClassData(null);
 
                 $("#editor-tabs").tabs();
+                that.className = $("#class_name");
+                that.classParent = $("#class_parent");
+                that.classAbstract = $("#class_abstract");
                 that.tableFields = $("#table-fields");
                 that.tableFieldsBody = $("#table-fields-body");
                 that.typeSelect = $("#editor-add-field-type");
@@ -54,7 +62,7 @@ namespace View {
 
             private NewClassData(newClassData: IClass): IClass {
                 if (newClassData === undefined || newClassData === null)
-                    return { Inherited: "", Name : "", Path:"", Items: [] };
+                    return { Inherited: "", IsAbstract: false, Name: "", Path: "", Type:0, Items: [] };
 
                 for (let i = 0, icount = newClassData.Items.length; i < icount; i++) {
                     newClassData["field_" + newClassData.Items[i].Name] = newClassData.Items[i];
@@ -102,10 +110,22 @@ namespace View {
 
                 that.tableFieldsBody.append(newRow);
                 that.SelectFieldRow(newRow);
+                that.SetupView();
                 that.SetupViewSourceCode();
                 
 
                 return true;
+            }
+
+            private SetupView() {
+                let that: EditorClass = this;
+                that.className.val(that.dataFields.Name);
+                if (!Helper.IsNullOrEmpty(that.dataFields.Name))
+                    $("#label_class_name").addClass("active");
+                that.classParent.val(that.dataFields.Inherited);
+                if (!Helper.IsNullOrEmpty(that.dataFields.Inherited))
+                    $("#label_class_parent").addClass("active");
+                that.classAbstract.prop('checked', that.dataFields.IsAbstract);
             }
 
             private SetupViewSourceCode() {
@@ -116,6 +136,11 @@ namespace View {
                 });
             }
 
+            private EnableSaveButtons() {
+                this.btnSave.removeClass("disabled");
+                this.btnCancel.removeClass("disabled");
+            }
+
             private RemoveFieldData(): boolean {
                 if (this.isSelected()) {
                     let field: IField = this.GetSelectedField();
@@ -124,8 +149,7 @@ namespace View {
                     this.dataFields.Items.splice(this.dataFields.Items.indexOf(field), 1); 
                     this.rowSelected.remove();
                     this.SelectFieldRow(undefined);
-                    this.btnSave.removeClass("disabled");
-                    this.btnCancel.removeClass("disabled");
+                    this.EnableSaveButtons();
                 }
                 return true;
             }
@@ -181,6 +205,23 @@ namespace View {
             private SetupHandlers() {
                 let that: EditorClass = this;
 
+                //that.className.on('keydown', function (e) {
+                //    if (e.which == 13)
+                //        that.EnableSaveButtons();
+                //});
+
+                that.className.on('input', function () {
+                    that.EnableSaveButtons();
+                });
+
+                that.classParent.on('input', function () {
+                    that.EnableSaveButtons();
+                });
+
+                that.classAbstract.on('click', function () {
+                    that.EnableSaveButtons();
+                });
+
                 $("#editor-add-field-form").submit(function (e: JQueryEventObject): any {
                     e.preventDefault();
                     //that.dialogAdd.modal("close");
@@ -192,8 +233,7 @@ namespace View {
                     //{ command: "additem", Type: $("#editor-add-type").val(), Name: $("#editor-add-field-type-name").val(), Description: $("#editor-add-field-description").val(), Parent: curItem.Path };
 
                     if (that.AddFieldData(newField)) {
-                        that.btnSave.removeClass("disabled");
-                        that.btnCancel.removeClass("disabled");
+                        that.EnableSaveButtons();
                         that.dialogAdd.modal("close");
                     }
                 });
@@ -254,6 +294,7 @@ namespace View {
                     success: function (result: any): void {
                         if (result.result === true) {
                             that.LoadClassItem(that.NewClassData(result.item));
+                          
                         } else {
                             dpas.app.showError(result.error);
                         }
@@ -270,7 +311,7 @@ namespace View {
                 if (that.dataFields !== undefined && that.dataFields !== null) {
                     htmlString = Helper.IFieldsToHtml(that.dataFields.Items, (field: IField) => { that.dataFields["field_" + field.Name] = field });
                 }
-
+                that.SetupView();
                 that.SetupViewSourceCode();
 
                 let rows: JQuery = $(htmlString);
@@ -283,6 +324,11 @@ namespace View {
 
             private Save(): void {
                 let that: EditorClass = this;
+
+                that.dataFields.Name = that.className.val();
+                that.dataFields.Inherited = that.classParent.val();
+                that.dataFields.IsAbstract = that.classAbstract.prop('checked');
+
                 let data: any = {
                     command: "saveitem",
                     path: Editor.editor.GetSelectedItemPath().Path,
@@ -299,6 +345,8 @@ namespace View {
                     success: function (result: any): void {
                         if (result.result === true) {
                             that.DisableButtons();
+                            that.LoadClassItem(that.NewClassData(result.item));
+                            Editor.editor.UpdateSelectedItem(that.dataFields.Path, that.dataFields.Name);
                         } else {
                             dpas.app.showError(result.error);
                         }

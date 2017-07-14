@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Text;
 
 namespace dpas.Web.Application
 {
@@ -7,6 +9,7 @@ namespace dpas.Web.Application
     {
         public static void Main(string[] args)
         {
+            Console.OutputEncoding = Encoding.UTF8;
             ILoggerFactory loggerFactory = new LoggerFactory().AddConsole().AddDebug();
 
             var host = new WebHostBuilder()

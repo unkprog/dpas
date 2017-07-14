@@ -108,12 +108,11 @@ namespace dpas.Net.Http.Mvc.Api.Prj
                 string path = parameters.GetString("path");
 
                 Dictionary<string, object> data = (Dictionary<string, object>)parameters.GetValue("data");
-                string inherited = data.GetString("Inherited");
-                List<object> fields = (List<object>)data.GetValue("Items");
-               
+                ProjectItem classItem = new ProjectItem(project);
+                classItem.Read(data);
 
-                ProjectManager.Manager.ProjectSaveItem(project, path, fields);
-                context.Response.Write(Json.Serialize(new { result = true }, getSerializeOptions()));
+                ProjectManager.Manager.ProjectSaveItem(project, path, classItem);
+                context.Response.Write(Json.Serialize(new { item = classItem, result = true }, getSerializeOptions()));
             }
         }
     }

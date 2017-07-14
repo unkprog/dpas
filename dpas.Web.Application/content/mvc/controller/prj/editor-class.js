@@ -2,6 +2,7 @@
 /// <reference path="../../dpas.controller.ts" />
 /// <reference path="editor.ts" />
 /// <reference path="editor-helpers.ts" />
+/// <reference path="../../../ts/materialize.d.ts" />
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -22,6 +23,9 @@ var View;
                 var that = this;
                 that.dataFields = that.NewClassData(null);
                 $("#editor-tabs").tabs();
+                that.className = $("#class_name");
+                that.classParent = $("#class_parent");
+                that.classAbstract = $("#class_abstract");
                 that.tableFields = $("#table-fields");
                 that.tableFieldsBody = $("#table-fields-body");
                 that.typeSelect = $("#editor-add-field-type");
@@ -38,7 +42,7 @@ var View;
             };
             EditorClass.prototype.NewClassData = function (newClassData) {
                 if (newClassData === undefined || newClassData === null)
-                    return { Inherited: "", Name: "", Path: "", Items: [] };
+                    return { Inherited: "", IsAbstract: false, Name: "", Path: "", Type: 0, Items: [] };
                 for (var i = 0, icount = newClassData.Items.length; i < icount; i++) {
                     newClassData["field_" + newClassData.Items[i].Name] = newClassData.Items[i];
                 }
@@ -76,14 +80,29 @@ var View;
                 });
                 that.tableFieldsBody.append(newRow);
                 that.SelectFieldRow(newRow);
+                that.SetupView();
                 that.SetupViewSourceCode();
                 return true;
+            };
+            EditorClass.prototype.SetupView = function () {
+                var that = this;
+                that.className.val(that.dataFields.Name);
+                if (!Prj.Helper.IsNullOrEmpty(that.dataFields.Name))
+                    $("#label_class_name").addClass("active");
+                that.classParent.val(that.dataFields.Inherited);
+                if (!Prj.Helper.IsNullOrEmpty(that.dataFields.Inherited))
+                    $("#label_class_parent").addClass("active");
+                that.classAbstract.prop('checked', that.dataFields.IsAbstract);
             };
             EditorClass.prototype.SetupViewSourceCode = function () {
                 this.codeViewTextarea.html(Prj.Helper.IClassToSourceCode(this.dataFields));
                 $('pre code').each(function (i, block) {
                     hljs.highlightBlock(block);
                 });
+            };
+            EditorClass.prototype.EnableSaveButtons = function () {
+                this.btnSave.removeClass("disabled");
+                this.btnCancel.removeClass("disabled");
             };
             EditorClass.prototype.RemoveFieldData = function () {
                 if (this.isSelected()) {
@@ -93,8 +112,7 @@ var View;
                     this.dataFields.Items.splice(this.dataFields.Items.indexOf(field), 1);
                     this.rowSelected.remove();
                     this.SelectFieldRow(undefined);
-                    this.btnSave.removeClass("disabled");
-                    this.btnCancel.removeClass("disabled");
+                    this.EnableSaveButtons();
                 }
                 return true;
             };
@@ -140,6 +158,19 @@ var View;
             };
             EditorClass.prototype.SetupHandlers = function () {
                 var that = this;
+                //that.className.on('keydown', function (e) {
+                //    if (e.which == 13)
+                //        that.EnableSaveButtons();
+                //});
+                that.className.on('input', function () {
+                    that.EnableSaveButtons();
+                });
+                that.classParent.on('input', function () {
+                    that.EnableSaveButtons();
+                });
+                that.classAbstract.on('click', function () {
+                    that.EnableSaveButtons();
+                });
                 $("#editor-add-field-form").submit(function (e) {
                     e.preventDefault();
                     //that.dialogAdd.modal("close");
@@ -149,8 +180,7 @@ var View;
                     var newField = { Type: $("#editor-add-field-type").val(), TypeClass: $("#editor-add-field-type-name").val(), Name: $("#editor-add-field-name").val(), Description: $("#editor-add-field-description").val() };
                     //{ command: "additem", Type: $("#editor-add-type").val(), Name: $("#editor-add-field-type-name").val(), Description: $("#editor-add-field-description").val(), Parent: curItem.Path };
                     if (that.AddFieldData(newField)) {
-                        that.btnSave.removeClass("disabled");
-                        that.btnCancel.removeClass("disabled");
+                        that.EnableSaveButtons();
                         that.dialogAdd.modal("close");
                     }
                 });
@@ -213,6 +243,7 @@ var View;
                 if (that.dataFields !== undefined && that.dataFields !== null) {
                     htmlString = Prj.Helper.IFieldsToHtml(that.dataFields.Items, function (field) { that.dataFields["field_" + field.Name] = field; });
                 }
+                that.SetupView();
                 that.SetupViewSourceCode();
                 var rows = $(htmlString);
                 rows.click(function () {
@@ -223,6 +254,9 @@ var View;
             };
             EditorClass.prototype.Save = function () {
                 var that = this;
+                that.dataFields.Name = that.className.val();
+                that.dataFields.Inherited = that.classParent.val();
+                that.dataFields.IsAbstract = that.classAbstract.prop('checked');
                 var data = {
                     command: "saveitem",
                     path: Prj.Editor.editor.GetSelectedItemPath().Path,
@@ -236,6 +270,8 @@ var View;
                     success: function (result) {
                         if (result.result === true) {
                             that.DisableButtons();
+                            that.LoadClassItem(that.NewClassData(result.item));
+                            Prj.Editor.editor.UpdateSelectedItem(that.dataFields.Path, that.dataFields.Name);
                         }
                         else {
                             dpas.app.showError(result.error);
