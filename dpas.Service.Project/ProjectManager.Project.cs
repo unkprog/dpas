@@ -144,7 +144,7 @@ namespace dpas.Service.Project
             sb.Append("namespace ");
             sb.AppendLine(aItem.Path.Substring(0, aItem.Path.Length - (string.Concat("/", aItem.Name)).Length).Replace('/', '.'));
             sb.AppendLine("{");
-            sb.Append("    public class ");
+            sb.Append(string.Concat("    public", aItem.IsAbstract ? " abstract" : string.Empty, " class "));
             sb.AppendLine(aItem.Name);
             sb.AppendLine("    {");
             IProjectItem item;

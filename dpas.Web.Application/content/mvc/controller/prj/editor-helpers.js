@@ -76,7 +76,7 @@ var View;
                 if (Helper.NotIsNull(item)) {
                     var field = void 0;
                     result += "namespace ";
-                    result += item.Path.replace(new RegExp("/", "g"), ".");
+                    result += item.Path.replace(new RegExp("/", "g"), ".").replace(new RegExp("." + item.Name, "g"), "");
                     item.Path;
                     result += "<br>";
                     result += "{<br>";

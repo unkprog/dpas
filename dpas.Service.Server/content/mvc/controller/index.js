@@ -17,14 +17,6 @@ var View;
         Index.prototype.Initialize = function () {
             _super.prototype.Initialize.call(this);
             var that = this;
-            $("#modal-prj-form").submit(function (e) {
-                e.preventDefault();
-                $("#modal-prj-name").modal("close");
-            });
-            that.modalNewProject = $("#modal-prj-name").modal({
-                dismissible: false,
-                complete: function () { that.NewProject(); }
-            });
             $('#btnNewProject').on("click", function () {
                 //$('#modal-prj-name').modal({
                 //    dismissible: false,
@@ -53,37 +45,6 @@ var View;
         };
         Index.prototype.Dispose = function () {
             _super.prototype.Dispose.call(this);
-        };
-        Index.prototype.NewProject = function () {
-            //if ('' + $('#prjName').val() === '') {
-            //    return;
-            //}
-            //dpas.app.navigateClear();
-            //var data = { prjName: $('#prjName').val(), prjDescription: $('#prjDescription').val() };
-            //dpas.app.postJson({
-            //    url: '/api/prj/create', data: data,
-            //    success: function (result) {
-            //        if (result.result == true)
-            //            dpas.app.navigate("/nav/prj/editor?prj=" + result.project.Code);
-            //        else
-            //            dpas.app.showError(result.error);
-            //    }
-            //});
-            ////$.ajax({
-            ////    type: "POST", url: location.protocol + '//' + location.host + '/api/prj/create',
-            ////    async: true,
-            ////    data: data,
-            ////    dataType: "json",
-            ////    success: function (result) {
-            ////        if (result.resut == true)
-            ////            navigate("/nav/prj/editor");
-            ////        else
-            ////            showError(result.error);
-            ////    },
-            ////    error: function (xhr, ajaxOptions, thrownError) {
-            ////        showError(thrownError);
-            ////    }
-            ////});
         };
         return Index;
     }(dpas.Controller));

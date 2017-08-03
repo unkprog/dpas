@@ -1,3 +1,4 @@
+/// <reference path="../ts/materialize.d.ts" />
 var dpas;
 (function (dpas) {
     var Controller = (function () {
@@ -5,6 +6,7 @@ var dpas;
             dpas.app.navigateSetController(this);
         }
         Controller.prototype.Initialize = function () {
+            Materialize.updateTextFields();
         };
         Controller.prototype.ApplyLayout = function () {
         };

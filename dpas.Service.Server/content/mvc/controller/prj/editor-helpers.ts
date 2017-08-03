@@ -86,7 +86,7 @@
 
                 if (Helper.NotIsNull(item)) {
                     let field: IField;
-                    result += "namespace "; result += item.Path.replace(new RegExp("/", "g"), "."); item.Path; result += "<br>";
+                    result += "namespace "; result += item.Path.replace(new RegExp("/", "g"), ".").replace(new RegExp("." + item.Name, "g"), ""); item.Path; result += "<br>";
                     result += "{<br>";
                     result += "    public"; result += item.IsAbstract ? " abstract" : ""; result += " class "; result += "" + item.Name; result += Helper.IsNullOrEmpty(item.Inherited) ? "" : " : " + item.Inherited; result += "<br> ";
                     result += "    {<br>";

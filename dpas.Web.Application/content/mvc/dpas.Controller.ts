@@ -1,4 +1,6 @@
-﻿namespace dpas {
+﻿/// <reference path="../ts/materialize.d.ts" />
+
+namespace dpas {
 
     export interface IController {
         // Метод вызывается после загрузки представления
@@ -18,7 +20,7 @@
         }
 
         public Initialize(): void {
-            
+            Materialize.updateTextFields();
         }
 
         public ApplyLayout(): void {

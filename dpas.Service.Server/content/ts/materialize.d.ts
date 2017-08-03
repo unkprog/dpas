@@ -7,3 +7,10 @@
     tabs(): JQuery;
     material_select(): JQuery;
 }
+
+interface Materialize {
+    updateTextFields(): JQuery;
+}
+
+declare let Materialize: Materialize;
+declare let hljs: any;

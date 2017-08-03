@@ -4,7 +4,7 @@
 /// <reference path="editor-helpers.ts" />
 /// <reference path="../../../ts/materialize.d.ts" />
 
-let hljs: any;
+
 
 namespace View {
     export module Prj {
