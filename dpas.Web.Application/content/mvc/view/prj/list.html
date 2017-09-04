@@ -1,7 +1,7 @@
 ﻿<script src="/mvc/controller/prj/editor-helpers.js"></script>
 
-<div id="list-projects" class="collection">
-</div>
+<ul id="list-projects" class="collection">
+</ul>
 
 <div class="fixed-action-btn horizontal">
     <a id="btnAddProject" class="btn-floating btn-large waves-effect waves-light amber darken-2"><i class="material-icons">add</i></a>
@@ -34,7 +34,15 @@
 </div>
 
 <script id="list-projects-item-template" type="text/x-dpas-tmpl">
-    <a href="#!" id="{Code}" data-id="{Code}" class="collection-item">
+    <!--<a href="#!" id="{Code}" data-id="{Code}" class="collection-item">
         <span class="title">{Name}</span><p>{Description}</p>
-    </a>
+    </a>-->
+    <li id="{Code}" data-id="{Code}" class="collection-item avatar">
+        <span class="title"><b>{Name}</b></span>
+        <p>
+            <i>{Description}</i>
+        </p>
+        <a href="#!" id="open-{Code}" data-id="{Code}" class="secondary-content right"><i class="material-icons small">send</i></a>
+    </li>
 </script>
+

@@ -2,16 +2,29 @@
 
 namespace dpas.Core.Data
 {
+    /// Интерфейс класса для объекта данных
+    public interface IDataObject
+    {
+        object Owner { get; }
+
+        ObjectState State { get; }
+        bool IsStateNormal { get; }
+        bool IsStateDeleted { get; }
+
+        void SetState(ObjectState aState);
+        event EventHandler StateChange;
+    }
+
     /// <summary>
     /// Базовый класс для объекта данных
     /// </summary>
-    public class DataObject : Disposable
+    public class DataObject : Disposable, IDataObject
     {
         /// <summary>
         /// Конструктор
         /// </summary>
         /// <param name="aOwner">Ссылка на владельца объекта данных</param>
-        public DataObject(Object aOwner)
+        public DataObject(object aOwner)
         {
             Owner = aOwner;
         }
@@ -33,7 +46,7 @@ namespace dpas.Core.Data
         /// <summary>
         /// Ссылка на владельца объекта данных
         /// </summary>
-        public Object Owner { get; protected set; }
+        public object Owner { get; protected set; }
 
 
         

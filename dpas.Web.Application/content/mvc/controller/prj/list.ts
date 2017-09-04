@@ -73,6 +73,16 @@ namespace View {
                         //    }
                         //});
                     });
+                    el = $(document.getElementById("open-" + data[i].Code));
+                    el.click(function () {
+                        var data = { prjCode: $(this).data('id') };
+                        dpas.app.postJson({
+                            url: '/api/prj/current', data: data,
+                            success: function (result) {
+                                dpas.app.navigate({ url: "/nav/prj/editor" });
+                            }
+                        });
+                    });
                 }
             }
 
