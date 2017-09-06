@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <PreserveCompilationContext>true</PreserveCompilationContext>
+    <AssemblyName>dpas.Web.Application</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <PackageId>dpas.Web.Application</PackageId>
+    <RuntimeIdentifiers>win10-x64</RuntimeIdentifiers>
+    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <RuntimeFrameworkVersion>1.1.1</RuntimeFrameworkVersion>
+    <PackageTargetFallback>$(PackageTargetFallback);dotnet5.6;portable-net45+win8</PackageTargetFallback>
+    <TypeScriptToolsVersion>2.3</TypeScriptToolsVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\dpas.Net.Http.Mvc\dpas.Net.Http.Mvc.csproj" />
+    <ProjectReference Include="..\dpas.Service.Project\dpas.Service.Project.csproj" />
+    <ProjectReference Include="..\dpas.Service.Server\dpas.Service.Server.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.1" />
+  </ItemGroup>
+
+  <Target Name="PostcompileScript" AfterTargets="Build">
+    <Exec Command='xcopy "$(MSBuildProjectDirectory)\content" "$(MSBuildProjectDirectory)\..\dpas.Service.Server\content" /Y /R /S /E' />
+  </Target>
+
+</Project>

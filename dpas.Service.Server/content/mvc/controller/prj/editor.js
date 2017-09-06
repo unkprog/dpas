@@ -1,11 +1,16 @@
 /// <reference path="../../../ts/materialize.d.ts" />
 /// <reference path="../../dpas.d.ts" />
 /// <reference path="../../dpas.controller.ts" />
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var View;
 (function (View) {
     var Prj;
@@ -13,9 +18,10 @@ var View;
         var Editor = (function (_super) {
             __extends(Editor, _super);
             function Editor() {
-                _super.call(this);
-                this.ItemsTree = [];
-                Editor.editor = this;
+                var _this = _super.call(this) || this;
+                _this.ItemsTree = [];
+                Editor.editor = _this;
+                return _this;
             }
             Editor.prototype.Initialize = function () {
                 _super.prototype.Initialize.call(this);

@@ -1,35 +1,35 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26823.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dpas.Core", "dpas.Core\dpas.Core.xproj", "{03334850-FE3B-494B-8049-28DA0A5372A6}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dpas.Net", "dpas.Net\dpas.Net.xproj", "{4FC215E9-4F90-4791-83BC-45D5F63C568C}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dpas.Console", "dpas.Console\dpas.Console.xproj", "{98B1FDB8-6274-46E2-9FDA-CF7C7A9A7516}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dpas.Service.Server", "dpas.Service.Server\dpas.Service.Server.xproj", "{1A4B6E33-2D58-4A93-BCBF-DC9805620E14}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{72BD8342-2CCD-4476-9BD0-C9F714CEB99A}"
 	ProjectSection(SolutionItems) = preProject
 		LICENSE.txt = LICENSE.txt
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dpas.Web.Application", "dpas.Web.Application\dpas.Web.Application.xproj", "{8FCE52A0-FE78-45F3-825C-F130A50D8F23}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dpas.Core", "dpas.Core\dpas.Core.csproj", "{03334850-FE3B-494B-8049-28DA0A5372A6}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dpas.Net.Http", "dpas.Net.Http\dpas.Net.Http.xproj", "{91B2563C-2597-4D20-BC98-564D5B0F5BE0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dpas.Net", "dpas.Net\dpas.Net.csproj", "{4FC215E9-4F90-4791-83BC-45D5F63C568C}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dpas.Net.Http.Mvc", "dpas.Net.Http.Mvc\dpas.Net.Http.Mvc.xproj", "{438A85B0-72A0-4BB1-9991-20CDD45A8B9C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dpas.Console", "dpas.Console\dpas.Console.csproj", "{98B1FDB8-6274-46E2-9FDA-CF7C7A9A7516}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dpas.Service.Project", "dpas.Service.Project\dpas.Service.Project.xproj", "{A4F3D22A-F28F-42EC-87B7-3430DBAFC91E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dpas.Service.Server", "dpas.Service.Server\dpas.Service.Server.csproj", "{1A4B6E33-2D58-4A93-BCBF-DC9805620E14}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dpas.Core.Data", "dpas.Core.Data\dpas.Core.Data.xproj", "{A6C84E3C-2608-4C1B-A7D0-7508824C9AF7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dpas.Web.Application", "dpas.Web.Application\dpas.Web.Application.csproj", "{8FCE52A0-FE78-45F3-825C-F130A50D8F23}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dpas.Console.Test", "dpas.Console.Test\dpas.Console.Test.xproj", "{B059D015-E713-4F0E-833B-E6897C3EE29F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dpas.Net.Http", "dpas.Net.Http\dpas.Net.Http.csproj", "{91B2563C-2597-4D20-BC98-564D5B0F5BE0}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dpas.Json", "dpas.Json\dpas.Json.xproj", "{89AA90A9-7ED1-4B7E-B6A4-F0AF610B3CB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dpas.Net.Http.Mvc", "dpas.Net.Http.Mvc\dpas.Net.Http.Mvc.csproj", "{438A85B0-72A0-4BB1-9991-20CDD45A8B9C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dpas.Service.Project", "dpas.Service.Project\dpas.Service.Project.csproj", "{A4F3D22A-F28F-42EC-87B7-3430DBAFC91E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dpas.Core.Data", "dpas.Core.Data\dpas.Core.Data.csproj", "{A6C84E3C-2608-4C1B-A7D0-7508824C9AF7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dpas.Console.Test", "dpas.Console.Test\dpas.Console.Test.csproj", "{B059D015-E713-4F0E-833B-E6897C3EE29F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dpas.Json", "dpas.Json\dpas.Json.csproj", "{89AA90A9-7ED1-4B7E-B6A4-F0AF610B3CB0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -84,5 +84,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FD9E0691-802C-4878-9C51-C8256B40B319}
 	EndGlobalSection
 EndGlobal
