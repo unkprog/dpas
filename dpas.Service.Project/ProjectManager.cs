@@ -110,10 +110,13 @@ namespace dpas.Service.Project
         public void Delete(IProject aProject)
         {
             var find = FindProject(aProject);
-            if (find == null)
+            if (find != null)
             {
                 _Projects.Remove(find);
                 SetState(ObjectState.Modified);
+                CheckProjectsDirectory();
+                string projectFile = string.Concat(pathProjects, @"\\", find.Name);
+                Directory.Delete(projectFile, true);
             }
             
         }

@@ -4,7 +4,13 @@
 </ul>
 
 <div class="fixed-action-btn horizontal">
-    <a id="btnAddProject" class="btn-floating btn-large waves-effect waves-light amber darken-2"><i class="material-icons">add</i></a>
+    <a class="btn-floating btn-large red">
+        <i class="large material-icons">mode_edit</i>
+    </a>
+    <ul>
+        <li><a class="btn-floating blue darken-2" id="list-button-add"><i class="material-icons">add</i></a></li>
+        <li><a class="btn-floating blue darken-2 disabled" id="list-button-del"><i class="material-icons">remove</i></a></li>
+    </ul>
 </div>
 
 <div id="modal-prj-name" class="modal">
@@ -14,14 +20,14 @@
             <div class="row">
                 <div class="input-field col s12">
                     <i class="material-icons prefix">playlist_add</i>
-                    <input id="prjName" name="prjName" type="text" class="validate" value="Базовый">
+                    <input id="prjName" name="prjName" placeholder="Укажите имя проекта" type="text" class="validate">
                     <label for="prjName">Имя проекта</label>
                 </div>
             </div>
             <div class="row">
                 <div class="input-field col s12">
                     <i class="material-icons prefix">info_outline</i>
-                    <input id="prjDescription" name="prjDescription" type="text" class="validate" value="Проект с системными и базовыми классами">
+                    <input id="prjDescription" name="prjDescription" placeholder="Краткое описание проекта" type="text" class="validate">
                     <label for="prjDescription">Комментарий</label>
                 </div>
             </div>
@@ -34,10 +40,7 @@
 </div>
 
 <script id="list-projects-item-template" type="text/x-dpas-tmpl">
-    <!--<a href="#!" id="{Code}" data-id="{Code}" class="collection-item">
-        <span class="title">{Name}</span><p>{Description}</p>
-    </a>-->
-    <li id="{Code}" data-id="{Code}" class="collection-item avatar">
+    <li id="{Code}" data-id="{Code}" data-name="{Name}" class="collection-item avatar">
         <span class="title"><b>{Name}</b></span>
         <p>
             <i>{Description}</i>

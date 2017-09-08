@@ -18,6 +18,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="content\**" />
+    <EmbeddedResource Remove="content\**" />
+    <None Remove="content\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\dpas.Core\dpas.Core.csproj" />
     <ProjectReference Include="..\dpas.Json\dpas.Json.csproj" />
     <ProjectReference Include="..\dpas.Net\dpas.Net.csproj" />

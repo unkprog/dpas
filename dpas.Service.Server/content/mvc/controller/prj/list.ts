@@ -9,29 +9,49 @@ namespace View {
 
             private modalNewProject: JQuery;
             private selectedProject: JQuery;
+            private listButtonAdd: JQuery;
+            private listButtonDel: JQuery;
+
             public Initialize(): void {
                 super.Initialize();
-
                 let that = this;
-                this.LoadProjects(that);
 
                 $("#modal-prj-form").submit(function (e: JQueryEventObject): any {
                     e.preventDefault();
                     $("#modal-prj-name").modal("close");
                 });
 
-
                 that.modalNewProject = $("#modal-prj-name").modal({
                     dismissible: false,
                     complete: function (): void { that.NewProject(); }
                 });
 
-                $('#btnAddProject').on("click", function () {
+                that.listButtonAdd = $('#list-button-add');
+                that.listButtonAdd.on("click", function () {
                     that.modalNewProject.modal('open');
                 });
+
+                that.listButtonDel = $('#list-button-del');
+                that.listButtonDel.on("click", function () {
+                    that.DelProject();
+                });
+
+                that.LoadProjects();
             }
 
-            public LoadProjects(that: any) {
+            private DisableButtons() {
+                let that = this;
+                that.listButtonDel.addClass("disabled");
+            }
+
+            private EnableButtons() {
+                let that = this;
+                that.listButtonDel.removeClass("disabled");
+            }
+
+            public LoadProjects() {
+                let that = this;
+                that.DisableButtons();
                 dpas.app.postJson({
                     url: '/api/prj/list',
                     success: function (result) {
@@ -49,7 +69,6 @@ namespace View {
                 for (; i < icount; i++) {
                     template = dpas.template.getTemplate({ id: 'list-projects-item-template', template: templateContent });
                     elsStr += dpas.template.render({ template: template, data: data[i] });
-                    //elsStr += drawItem(data[i]);
                     ids[data[i].Code] = data[i];
                 }
 
@@ -64,63 +83,64 @@ namespace View {
                             that.selectedProject.removeClass("active");
                         that.selectedProject = $(this);
                         that.selectedProject.addClass("active");
-
-                        //var data = { prjCode: $(this).data('id') };
-                        //dpas.app.postJson({
-                        //    url: '/api/prj/current', data: data,
-                        //    success: function (result) {
-                        //        dpas.app.navigate({ url: "/nav/prj/editor" });
-                        //    }
-                        //});
+                        that.EnableButtons();
                     });
                     el = $(document.getElementById("open-" + data[i].Code));
                     el.click(function () {
-                        var data = { prjCode: $(this).data('id') };
-                        dpas.app.postJson({
-                            url: '/api/prj/current', data: data,
-                            success: function (result) {
-                                dpas.app.navigate({ url: "/nav/prj/editor" });
-                            }
-                        });
+                        that.OpenProject($(this).data('id'));
                     });
                 }
             }
 
+            public DelProject(): void {
+                var that = this;
+                var data = { prjCode: that.selectedProject.data('id') };
+                dpas.app.showDialog(<dpas.IDialogOptions>{
+                    msg: "Удалить проект <b>" + that.selectedProject.data('name') + "</b>?", isCancel: true,
+                    callback: function (result: any) {
+                        if (result.dialogResult) {
+                            dpas.app.postJson({
+                                url: '/api/prj/delete', data: data,
+                                success: function (result) {
+                                    that.LoadProjects();
+                                }
+                            });
+                        }
+                    }});
+                
+            }
+
             public NewProject(): void {
-                //if ('' + $('#prjName').val() === '') {
-                //    return;
-                //}
-                //dpas.app.navigateClear();
-                //var data = { prjName: $('#prjName').val(), prjDescription: $('#prjDescription').val() };
+                let that = this;
+                let prjName: string = $('#prjName').val();
+                if (Helper.IsNullOrEmpty(prjName)) {
+                    dpas.app.showError("Не указано имя проекта.");
+                    return;
+                }
 
-                //dpas.app.postJson({
-                //    url: '/api/prj/create', data: data,
-                //    success: function (result) {
-                //        if (result.result == true)
-                //            dpas.app.navigate("/nav/prj/editor?prj=" + result.project.Code);
-                //        else
-                //            dpas.app.showError(result.error);
-                //    }
-                //});
+                var data = { prjName: prjName, prjDescription: $('#prjDescription').val() };
+                dpas.app.postJson({
+                    url: '/api/prj/create', data: data,
+                    success: function (result) {
+                        if (result.result == true)
+                            that.OpenProject(result.project.Code);
+                        else
+                            dpas.app.showError(result.error);
+                    }
+                });
+            }
 
-                ////$.ajax({
-                ////    type: "POST", url: location.protocol + '//' + location.host + '/api/prj/create',
-                ////    async: true,
-                ////    data: data,
-                ////    dataType: "json",
-                ////    success: function (result) {
-                ////        if (result.resut == true)
-                ////            navigate("/nav/prj/editor");
-                ////        else
-                ////            showError(result.error);
-                ////    },
-                ////    error: function (xhr, ajaxOptions, thrownError) {
-                ////        showError(thrownError);
-                ////    }
-                ////});
+            private OpenProject(prjCode: string): void {
+                var data = { prjCode: prjCode };
+                dpas.app.postJson({
+                    url: '/api/prj/current', data: data,
+                    success: function (result) {
+                        dpas.app.navigate({ url: "/nav/prj/editor" });
+                    }
+                });
             }
         }
     }
 }
 
-new View.Prj.List();
+let listPrj: View.Prj.List = new View.Prj.List();

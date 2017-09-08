@@ -23,7 +23,6 @@ var View;
             List.prototype.Initialize = function () {
                 _super.prototype.Initialize.call(this);
                 var that = this;
-                this.LoadProjects(that);
                 $("#modal-prj-form").submit(function (e) {
                     e.preventDefault();
                     $("#modal-prj-name").modal("close");
@@ -32,11 +31,27 @@ var View;
                     dismissible: false,
                     complete: function () { that.NewProject(); }
                 });
-                $('#btnAddProject').on("click", function () {
+                that.listButtonAdd = $('#list-button-add');
+                that.listButtonAdd.on("click", function () {
                     that.modalNewProject.modal('open');
                 });
+                that.listButtonDel = $('#list-button-del');
+                that.listButtonDel.on("click", function () {
+                    that.DelProject();
+                });
+                that.LoadProjects();
             };
-            List.prototype.LoadProjects = function (that) {
+            List.prototype.DisableButtons = function () {
+                var that = this;
+                that.listButtonDel.addClass("disabled");
+            };
+            List.prototype.EnableButtons = function () {
+                var that = this;
+                that.listButtonDel.removeClass("disabled");
+            };
+            List.prototype.LoadProjects = function () {
+                var that = this;
+                that.DisableButtons();
                 dpas.app.postJson({
                     url: '/api/prj/list',
                     success: function (result) {
@@ -51,7 +66,6 @@ var View;
                 for (; i < icount; i++) {
                     template = dpas.template.getTemplate({ id: 'list-projects-item-template', template: templateContent });
                     elsStr += dpas.template.render({ template: template, data: data[i] });
-                    //elsStr += drawItem(data[i]);
                     ids[data[i].Code] = data[i];
                 }
                 $("#list-projects").html(elsStr);
@@ -64,61 +78,62 @@ var View;
                             that.selectedProject.removeClass("active");
                         that.selectedProject = $(this);
                         that.selectedProject.addClass("active");
-                        //var data = { prjCode: $(this).data('id') };
-                        //dpas.app.postJson({
-                        //    url: '/api/prj/current', data: data,
-                        //    success: function (result) {
-                        //        dpas.app.navigate({ url: "/nav/prj/editor" });
-                        //    }
-                        //});
+                        that.EnableButtons();
                     });
                     el = $(document.getElementById("open-" + data[i].Code));
                     el.click(function () {
-                        var data = { prjCode: $(this).data('id') };
-                        dpas.app.postJson({
-                            url: '/api/prj/current', data: data,
-                            success: function (result) {
-                                dpas.app.navigate({ url: "/nav/prj/editor" });
-                            }
-                        });
+                        that.OpenProject($(this).data('id'));
                     });
                 }
             };
+            List.prototype.DelProject = function () {
+                var that = this;
+                var data = { prjCode: that.selectedProject.data('id') };
+                dpas.app.showDialog({
+                    msg: "Удалить проект <b>" + that.selectedProject.data('name') + "</b>?", isCancel: true,
+                    callback: function (result) {
+                        if (result.dialogResult) {
+                            dpas.app.postJson({
+                                url: '/api/prj/delete', data: data,
+                                success: function (result) {
+                                    that.LoadProjects();
+                                }
+                            });
+                        }
+                    }
+                });
+            };
             List.prototype.NewProject = function () {
-                //if ('' + $('#prjName').val() === '') {
-                //    return;
-                //}
-                //dpas.app.navigateClear();
-                //var data = { prjName: $('#prjName').val(), prjDescription: $('#prjDescription').val() };
-                //dpas.app.postJson({
-                //    url: '/api/prj/create', data: data,
-                //    success: function (result) {
-                //        if (result.result == true)
-                //            dpas.app.navigate("/nav/prj/editor?prj=" + result.project.Code);
-                //        else
-                //            dpas.app.showError(result.error);
-                //    }
-                //});
-                ////$.ajax({
-                ////    type: "POST", url: location.protocol + '//' + location.host + '/api/prj/create',
-                ////    async: true,
-                ////    data: data,
-                ////    dataType: "json",
-                ////    success: function (result) {
-                ////        if (result.resut == true)
-                ////            navigate("/nav/prj/editor");
-                ////        else
-                ////            showError(result.error);
-                ////    },
-                ////    error: function (xhr, ajaxOptions, thrownError) {
-                ////        showError(thrownError);
-                ////    }
-                ////});
+                var that = this;
+                var prjName = $('#prjName').val();
+                if (Prj.Helper.IsNullOrEmpty(prjName)) {
+                    dpas.app.showError("Не указано имя проекта.");
+                    return;
+                }
+                var data = { prjName: prjName, prjDescription: $('#prjDescription').val() };
+                dpas.app.postJson({
+                    url: '/api/prj/create', data: data,
+                    success: function (result) {
+                        if (result.result == true)
+                            that.OpenProject(result.project.Code);
+                        else
+                            dpas.app.showError(result.error);
+                    }
+                });
+            };
+            List.prototype.OpenProject = function (prjCode) {
+                var data = { prjCode: prjCode };
+                dpas.app.postJson({
+                    url: '/api/prj/current', data: data,
+                    success: function (result) {
+                        dpas.app.navigate({ url: "/nav/prj/editor" });
+                    }
+                });
             };
             return List;
         }(dpas.Controller));
         Prj.List = List;
     })(Prj = View.Prj || (View.Prj = {}));
 })(View || (View = {}));
-new View.Prj.List();
+var listPrj = new View.Prj.List();
 //# sourceMappingURL=list.js.map

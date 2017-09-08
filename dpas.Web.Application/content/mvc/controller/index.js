@@ -24,30 +24,11 @@ var View;
             _super.prototype.Initialize.call(this);
             var that = this;
             $('#btnNewProject').on("click", function () {
-                //$('#modal-prj-name').modal({
-                //    dismissible: false,
-                //    complete: function () { that.NewProject(); }
-                //});
                 that.modalNewProject.modal('open');
             });
             $("#btnOpenProject").on("click", function () {
                 dpas.app.navigate({ url: "/nav/prj/list" });
             });
-            //$('#btnTEst').on("click", function () {
-            //    var data = { prjCode: "id" };
-            //    dpas.app.postJson({
-            //        url: '/api/prj/current', data: data,
-            //        success: function (result:any):any {
-            //            dpas.app.postJson({
-            //                url: '/api/prj/editor',
-            //                data: { command: "prjtree" },
-            //                success: function (result) {
-            //                    //showError(JSON.stringify(result.data));
-            //                }
-            //            });
-            //        }
-            //    });
-            //});
         };
         Index.prototype.Dispose = function () {
             _super.prototype.Dispose.call(this);

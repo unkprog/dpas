@@ -118,16 +118,17 @@ namespace dpas.Net.Http.Mvc.Api.Prj
         private void Delete(IControllerContext context)
         {
             var data = WebUtility.UrlDecode(context.Request.Content);
-            IHttpFormParameters parameters = HttpParser.ParseFormParameters(data);
+            Dictionary<string, object> parameters = (Dictionary<string, object>)Json.Parse(data);
 
-            IProject project = ProjectManager.Manager.FindProjectByName(parameters.GetString("prjName"));
-            if (project != null)
-            {
-                ProjectManager.Manager.Delete(project);
-                ProjectManager.Manager.Save();
-                StringBuilder result = ResultProjectToJson(true, project);
-                context.Response.Write(result.ToString());
-            }
+            string prjCode = parameters.GetString("prjCode");
+
+            IProject project = ProjectManager.Manager.FindProjectByCode(prjCode);
+            if (project == null) throw new Project.Exception(Project.Exception.NotFound, prjCode);
+            
+            ProjectManager.Manager.Delete(project);
+            ProjectManager.Manager.Save();
+            StringBuilder result = ResultProjectToJson(true, project);
+            context.Response.Write(result.ToString());
         }
 
         /// <summary>

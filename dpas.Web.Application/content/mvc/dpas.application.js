@@ -23,25 +23,61 @@ var exports = window.exports = window.exports || {};
                 loading.hide();
         }
 
-        var modal_error;
-        var modal_error_content;
-        that.showError = function (msg) {
-            if (modal_error === undefined) {
-                modal_error = $("#modal-error");
-                modal_error_content = $("#modal-error-content");
-                modal_error.modal({
-                    dismissible: false,
-                });
-                $("#modal-error-ok").on("click", function () { modal_error.modal('close'); });
+        that.showDialog = function (options) {
+
+            var htmlDialog = '<div class="modal">';
+            htmlDialog += ' <div class="modal-content">';
+            htmlDialog += '    <h5>'; htmlDialog += options.header ? options.header : 'Сообщение'; htmlDialog += '</h5>';
+            htmlDialog += '    <div class="row modal-dialog-content" style="max-height:250px; overflow:auto">';
+            htmlDialog += '    </div>';
+            htmlDialog += ' </div>';
+            htmlDialog += ' <div class="modal-footer">';
+            if (options.isCancel)
+                htmlDialog += '    <button class="modal-dialog-cancel modal-action waves-effect btn-flat" style="margin:0.1em">Отмена</button>';
+            htmlDialog += '    <button class="modal-dialog-ok modal-action waves-effect btn-flat" style="margin:0.1em">OK</button>';
+            htmlDialog += ' </div>';
+            htmlDialog += '</div>';
+            
+            var modal_dialog = $(htmlDialog);
+            $("body").append(modal_dialog);
+            modal_dialog.modal({
+                dismissible: false,
+            });
+
+            var modal_dialog_content = modal_dialog.find(".modal-dialog-content");
+            var modal_dialog_ok = modal_dialog.find(".modal-dialog-ok");
+            var modal_dialog_cancel = modal_dialog.find(".modal-dialog-cancel");
+
+            if (options.msg)
+                modal_dialog_content.html(options.msg);
+
+            var onClose = function (result) {
+                modal_dialog_ok.off("click");
+                modal_dialog_cancel.off("click");
+                modal_dialog.modal('close');
+                modal_dialog.remove();
+                if (options.callback)
+                    options.callback({ dialogResult: result });
             }
-            modal_error_content.html(msg);
-            modal_error.modal('open');
+
+            modal_dialog_ok.on("click", function (event) {
+                onClose(true);
+            });
+            modal_dialog_cancel.on("click", function () {
+                onClose(false);
+            });
+
+            modal_dialog.modal('open');
+        }
+
+        that.showError = function(errorMsg){
+            this.showDialog({ header: 'Ошибка', msg: errorMsg });
         }
 
         function alertError(num) {
             //ошибки запроса
             var arr = ['Ваш браузер не поддерживает Ajax', 'Не удалось выполнить запрос', 'Адрес не существует', 'Время ожидания истекло']; //['Your browser does not support Ajax', 'Request failed', 'Address does not exist', 'The waiting time left'];
-            that.showError(arr[num]);
+            that.showDialog({ msg: arr[num] });
         }
 
 
@@ -83,9 +119,9 @@ var exports = window.exports = window.exports || {};
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
                     if (xhr.responseText)
-                        that.showError(xhr.responseText);
+                        that.showDialog({ msg: xhr.responseText });
                     else
-                        that.showError(thrownError);
+                        that.showDialog({ msg: thrownError });
                     if (options.showLoading === true)
                         that.hideLoading();
                 }
@@ -179,7 +215,7 @@ var exports = window.exports = window.exports || {};
             that.showLoading();
             var url = options.url;
             if (url === undefined || url === '') {
-                that.showError("Не задана ссылка для перехода.");
+                that.showDialog({ msg: "Не задана ссылка для перехода." });
                 that.hideLoading();
                 return;
             }
@@ -197,7 +233,7 @@ var exports = window.exports = window.exports || {};
             var prefix = navigateGetPrefix(url);
             var content = navigateData.contents[prefix];
             if (content === undefined) {
-                that.showError("Не определен элемент для содежимого.");
+                that.showDialog({ msg: "Не определен элемент для содежимого." });
                 that.hideLoading();
                 return;
             }
@@ -223,9 +259,9 @@ var exports = window.exports = window.exports || {};
                     }
                     else {
                         if (data.view)
-                            that.showError(data.view);
+                            that.showDialog({ msg: data.view });
                         else
-                            that.showError(data.error);
+                            that.showDialog({ msg: data.error });
                     }
                 }
             });
