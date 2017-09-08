@@ -286,7 +286,7 @@ namespace View {
                 let that: EditorClass = this;
                 let data: any = {
                     command: "readitem",
-                    path: Editor.editor.GetSelectedItemPath().Path
+                    path: Editor.editor.GetSelectedItemPath()
                 };
 
                 dpas.app.postJson({
@@ -331,7 +331,7 @@ namespace View {
 
                 let data: any = {
                     command: "saveitem",
-                    path: Editor.editor.GetSelectedItemPath().Path,
+                    path: Editor.editor.GetSelectedItemPath(),
                     data: that.dataFields
                 }
 

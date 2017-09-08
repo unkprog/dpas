@@ -28,7 +28,12 @@ var View;
                 var that = this;
                 that.typeSelect = $("#editor-add-type");
                 that.typeSelect.material_select();
-                that.dialogAdd = $("#editor-add").modal({ dismissible: false, complete: function () { that.AddNewItemCompleted(that); } });
+                that.dialogAdd = $("#editor-add").modal({
+                    dismissible: false
+                    //, complete: function (args): void {
+                    //    that.AddNewItemCompleted(that);
+                    //}
+                });
                 var content = $("#editor-content");
                 dpas.app.navigateSetContent("/prj", content);
                 $("#editor-menu-tree-view").treemenu({ delay: 300 });
@@ -36,6 +41,7 @@ var View;
                 $("#editor-add-form").submit(function (e) {
                     e.preventDefault();
                     that.dialogAdd.modal("close");
+                    that.AddNewItemCompleted(that);
                 });
                 that.buttonAdd = $("#editor-menu-button-add");
                 that.buttonDel = $("#editor-menu-button-del");
@@ -154,11 +160,16 @@ var View;
                     return this.selectedItem.attr("id");
                 return "";
             };
-            Editor.prototype.GetSelectedItemPath = function () {
+            Editor.prototype.GetSelectedItem = function () {
                 var cirItemId = this.GetSelectedItemId();
-                if (!Prj.Helper.IsNullOrEmpty(cirItemId))
+                if (!Prj.Helper.IsNullOrEmpty(cirItemId)) {
                     return this.ItemsTree[cirItemId];
+                }
                 return undefined;
+            };
+            Editor.prototype.GetSelectedItemPath = function () {
+                var cirItem = this.GetSelectedItem();
+                return (cirItem ? cirItem.Path : undefined);
             };
             Editor.prototype.UpdateSelectedItem = function (newPath, newName) {
                 var cirItemId = this.GetSelectedItemId();
@@ -209,6 +220,7 @@ var View;
                     errorMessage += (errorMessage === "" ? "" : "<br>") + "Не задано имя.";
                 }
                 if (errorMessage !== "") {
+                    That.dialogAdd.modal("open");
                     dpas.app.showError(errorMessage);
                     return;
                 }

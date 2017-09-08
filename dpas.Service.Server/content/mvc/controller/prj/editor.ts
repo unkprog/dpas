@@ -25,7 +25,12 @@ namespace View {
 
                 that.typeSelect = $("#editor-add-type");
                 that.typeSelect.material_select();
-                that.dialogAdd = $("#editor-add").modal({ dismissible: false, complete: function (): void { that.AddNewItemCompleted(that); } });
+                that.dialogAdd = $("#editor-add").modal({
+                    dismissible: false
+                    //, complete: function (args): void {
+                    //    that.AddNewItemCompleted(that);
+                    //}
+                });
 
                 let content: JQuery = $("#editor-content");
                 dpas.app.navigateSetContent("/prj", content);
@@ -37,6 +42,7 @@ namespace View {
                 $("#editor-add-form").submit(function (e: JQueryEventObject): any {
                     e.preventDefault();
                     that.dialogAdd.modal("close");
+                    that.AddNewItemCompleted(that);
                 });
 
                 that.buttonAdd = $("#editor-menu-button-add");
@@ -181,11 +187,17 @@ namespace View {
                 return "";
             }
 
-            public GetSelectedItemPath(): any {
+            public GetSelectedItem(): any {
                 let cirItemId: string = this.GetSelectedItemId();
-                if (!Helper.IsNullOrEmpty(cirItemId))
+                if (!Helper.IsNullOrEmpty(cirItemId)) {
                     return this.ItemsTree[cirItemId];
+                }
                 return undefined;
+            }
+
+            public GetSelectedItemPath(): any {
+                let cirItem: any = this.GetSelectedItem();
+                return (cirItem ? cirItem.Path : undefined);
             }
 
             public UpdateSelectedItem(newPath: string, newName: string): void {
@@ -246,6 +258,7 @@ namespace View {
                 }
 
                 if (errorMessage !== "") {
+                    That.dialogAdd.modal("open");
                     dpas.app.showError(errorMessage);
                     return;
                 }

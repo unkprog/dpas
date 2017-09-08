@@ -225,7 +225,7 @@ var View;
                 var that = this;
                 var data = {
                     command: "readitem",
-                    path: Prj.Editor.editor.GetSelectedItemPath().Path
+                    path: Prj.Editor.editor.GetSelectedItemPath()
                 };
                 dpas.app.postJson({
                     url: "/api/prj/editor", data: data,
@@ -263,7 +263,7 @@ var View;
                 that.dataFields.IsAbstract = that.classAbstract.prop('checked');
                 var data = {
                     command: "saveitem",
-                    path: Prj.Editor.editor.GetSelectedItemPath().Path,
+                    path: Prj.Editor.editor.GetSelectedItemPath(),
                     data: that.dataFields
                 };
                 //let cirItemId: any = That.selectedItem.attr("id");
