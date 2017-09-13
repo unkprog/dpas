@@ -13,8 +13,7 @@ namespace View {
                 Editor.editor = this;
             }
 
-            private dialogAdd: JQuery;
-            private typeSelect: JQuery;
+          
             private ItemsTree: any = [];
             public selectedItem: JQuery;
 
@@ -23,15 +22,6 @@ namespace View {
                
                 let that: Editor = this;
 
-                that.typeSelect = $("#editor-add-type");
-                that.typeSelect.material_select();
-                that.dialogAdd = $("#editor-add").modal({
-                    dismissible: false
-                    //, complete: function (args): void {
-                    //    that.AddNewItemCompleted(that);
-                    //}
-                });
-
                 let content: JQuery = $("#editor-content");
                 dpas.app.navigateSetContent("/prj", content);
 
@@ -39,19 +29,13 @@ namespace View {
                 
                 that.TreeProjectLoad(that);
 
-                $("#editor-add-form").submit(function (e: JQueryEventObject): any {
-                    e.preventDefault();
-                    that.dialogAdd.modal("close");
-                    that.AddNewItemCompleted(that);
-                });
-
-                that.buttonAdd = $("#editor-menu-button-add");
-                that.buttonDel = $("#editor-menu-button-del");
                 that.SelectApply(null);
+                that.buttonAdd = $("#editor-menu-button-add");
                 that.buttonAdd.on("click", function (): void {
                     that.AddNewItem();
                 });
 
+                that.buttonDel = $("#editor-menu-button-del");
                 that.buttonDel.on("click", function (): void {
                     that.DeleteItem();
                 });
@@ -64,7 +48,7 @@ namespace View {
                 $("#editor-menu-tree").height(h - 90 - $(".editor-menu-buttons").height());
                 $("#editor-content").height(h);
             }
-
+            
             private TreeProjectLoad(That: Editor): void {
                 dpas.app.postJson({
                     url: "/api/prj/editor",
@@ -75,7 +59,6 @@ namespace View {
                 });
             }
 
-           
 
             private DrawItemTree(That: Editor, curItem: any): string {
 
@@ -210,9 +193,36 @@ namespace View {
                 return !(this.selectedItem === null || this.selectedItem === undefined || this.selectedItem.length !== 1)
             }
 
-            private setupAddNewItemSelectOptions(curItem: any): void {
+            //private setupAddNewItemSelectOptions(curItem: any): void {
 
-                let strHtml: string = "<option value=\"\" disabled selected>Выберите тип</option>";
+            //    let strHtml: string = "<option value=\"\" disabled selected>Выберите тип</option>";
+            //    if (curItem.Type === 0) {
+            //        strHtml += "<option value= \"1\">Справочник</option>";
+            //        strHtml += "<option value= \"2\">Данные</option>";
+            //    }
+            //    else if (curItem.Type === 1) {
+            //        strHtml += "<option value= \"3\">Справочник</option>";
+            //        strHtml += "<option value= \"1\">Группа</option>";
+            //    }
+            //    else if (curItem.Type === 2) {
+            //        strHtml += "<option value= \"4\">Данные</option>";
+            //        strHtml += "<option value= \"2\">Группа</option>";
+            //    }
+            //    this.typeSelect.html(strHtml);
+            //    this.typeSelect.material_select();
+            //}
+
+            
+            private viewDialogAdd(curItem: any) {
+                let that = this;
+                let strHtml: string = '<div class="modal">';
+                strHtml += '    <div class="modal-content">';
+                strHtml += '        <h4>Добавить</h4>';
+                strHtml += '        <form id="editor-add-form" class="col s12">';
+                strHtml += '            <div class="row" style="margin-bottom:0;">';
+                strHtml += '                <div class="input-field col s12">';
+                strHtml += '                    <select id="editor-add-type">';
+                strHtml += "<option value=\"\" disabled selected>Выберите тип</option>";
                 if (curItem.Type === 0) {
                     strHtml += "<option value= \"1\">Справочник</option>";
                     strHtml += "<option value= \"2\">Данные</option>";
@@ -225,17 +235,80 @@ namespace View {
                     strHtml += "<option value= \"4\">Данные</option>";
                     strHtml += "<option value= \"2\">Группа</option>";
                 }
-                this.typeSelect.html(strHtml);
-                this.typeSelect.material_select();
-            }
+                strHtml += '                    </select>';
+                strHtml += '                    <label for="editor-add-name">Тип</label>';
+                strHtml += '                </div>';
+                strHtml += '            </div>';
+                strHtml += '            <div class="row" style="margin-bottom:0;">';
+                strHtml += '                <div class="input-field col s12">';
+                strHtml += '                    <i class="material-icons prefix">playlist_add</i>';
+                strHtml += '                    <input id="editor-add-name" name="addName" placeholder="Укажите имя" type="text" class="validate">';
+                strHtml += '                    <label for="editor-add-name"></label>';
+                strHtml += '                </div>';
+                strHtml += '            </div>';
+                strHtml += '            <div class="row" style="margin-bottom:0;">';
+                strHtml += '                <div class="input-field col s12">';
+                strHtml += '                    <i class="material-icons prefix">info_outline</i>';
+                strHtml += '                    <input id="editor-add-description" name="addDescription"  placeholder="Укажите описание" type="text" class="validate">';
+                strHtml += '                    <label for="editor-add-description"></label>';
+                strHtml += '                </div>';
+                strHtml += '            </div>';
+                strHtml += '            <div class="modal-footer">';
+                strHtml += '                <button class="btn-cancel modal-action waves-effect btn-flat btn-margin8">Отмена</button>';
+                strHtml += '                <button class="btn-add modal-action waves-effect btn-flat btn-margin8" name="add">Создать</button>';
+                strHtml += '            </div>';
+                strHtml += '        </form>';
+                strHtml += '    </div>';
+                strHtml += '</div>';
 
+
+                //private typeSelect: JQuery;
+                //that.typeSelect = $("#editor-add-type");
+                //that.typeSelect.material_select();
+                let dialogAdd: JQuery = $(strHtml).modal({
+                    dismissible: false
+                });
+               
+
+                dialogAdd.find("form").submit(function (e: JQueryEventObject): any {
+                    e.preventDefault();
+                    //dialogAdd.modal("close");
+                    //that.AddNewItemCompleted(that);
+                });
+
+
+                let buttonCancel = dialogAdd.find(".btn-cancel");
+                let buttonAdd = dialogAdd.find(".btn-add");
+
+                var onClose = function (result) {
+                    buttonCancel.off("click");
+                    buttonAdd.off("click");
+                    dialogAdd.modal('close');
+                    if (result) {
+                        let data: any = { command: "additem", Type: dialogAdd.find("#editor-add-type").val(), Name: dialogAdd.find("#editor-add-name").val(), Description: dialogAdd.find("#editor-add-description").val(), Parent: that.GetSelectedItemPath() };
+
+                        that.AddNewItemCompleted(data);
+                    }
+                    dialogAdd.remove();
+                }
+
+                buttonCancel.on("click", function (event) {
+                    onClose(false);
+                });
+                buttonAdd.on("click", function (event) {
+                    onClose(true);
+                });
+
+                $("body").append(dialogAdd);
+                dialogAdd.find("select").material_select();
+                dialogAdd.modal("open");
+
+            }
             public AddNewItem(): void {
                 if (this.isSelected()) {
                     let cirItemId: any = this.selectedItem.attr("id");
                     let curItem: any = this.ItemsTree[cirItemId];
-                    this.setupAddNewItemSelectOptions(curItem);
-
-                    this.dialogAdd.modal("open");
+                    this.viewDialogAdd(curItem);
                 }
             }
 
@@ -243,11 +316,11 @@ namespace View {
             }
 
 
-            private AddNewItemCompleted(That: Editor): void {
+            private AddNewItemCompleted(data:any): void {
                 let errorMessage: string = "";
                 //let cirItemId: any = That.selectedItem.attr("id");
                 //let curItem: any = That.ItemsTree[cirItemId];
-                let data: any = { command: "additem", Type: $("#editor-add-type").val(), Name: $("#editor-add-name").val(), Description: $("#editor-add-description").val(), Parent: That.GetSelectedItemPath() };
+                //let data: any = { command: "additem", Type: $("#editor-add-type").val(), Name: $("#editor-add-name").val(), Description: $("#editor-add-description").val(), Parent: That.GetSelectedItemPath() };
                 //let type: number = $("#editor-add-type").val();
                 //let name: string = "" + $("#editor-add-name").val();
                 if (data.Type === 0 || data.Type === null) {
@@ -258,7 +331,6 @@ namespace View {
                 }
 
                 if (errorMessage !== "") {
-                    That.dialogAdd.modal("open");
                     dpas.app.showError(errorMessage);
                     return;
                 }
