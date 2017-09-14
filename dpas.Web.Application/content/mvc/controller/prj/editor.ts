@@ -193,26 +193,6 @@ namespace View {
                 return !(this.selectedItem === null || this.selectedItem === undefined || this.selectedItem.length !== 1)
             }
 
-            //private setupAddNewItemSelectOptions(curItem: any): void {
-
-            //    let strHtml: string = "<option value=\"\" disabled selected>Выберите тип</option>";
-            //    if (curItem.Type === 0) {
-            //        strHtml += "<option value= \"1\">Справочник</option>";
-            //        strHtml += "<option value= \"2\">Данные</option>";
-            //    }
-            //    else if (curItem.Type === 1) {
-            //        strHtml += "<option value= \"3\">Справочник</option>";
-            //        strHtml += "<option value= \"1\">Группа</option>";
-            //    }
-            //    else if (curItem.Type === 2) {
-            //        strHtml += "<option value= \"4\">Данные</option>";
-            //        strHtml += "<option value= \"2\">Группа</option>";
-            //    }
-            //    this.typeSelect.html(strHtml);
-            //    this.typeSelect.material_select();
-            //}
-
-            
             private viewDialogAdd(curItem: any) {
                 let that = this;
                 let strHtml: string = '<div class="modal">';
@@ -262,9 +242,6 @@ namespace View {
                 strHtml += '</div>';
 
 
-                //private typeSelect: JQuery;
-                //that.typeSelect = $("#editor-add-type");
-                //that.typeSelect.material_select();
                 let dialogAdd: JQuery = $(strHtml).modal({
                     dismissible: false
                 });
@@ -272,8 +249,6 @@ namespace View {
 
                 dialogAdd.find("form").submit(function (e: JQueryEventObject): any {
                     e.preventDefault();
-                    //dialogAdd.modal("close");
-                    //that.AddNewItemCompleted(that);
                 });
 
 
@@ -286,7 +261,6 @@ namespace View {
                     dialogAdd.modal('close');
                     if (result) {
                         let data: any = { command: "additem", Type: dialogAdd.find("#editor-add-type").val(), Name: dialogAdd.find("#editor-add-name").val(), Description: dialogAdd.find("#editor-add-description").val(), Parent: that.GetSelectedItemPath() };
-
                         that.AddNewItemCompleted(data);
                     }
                     dialogAdd.remove();
@@ -313,16 +287,29 @@ namespace View {
             }
 
             public DeleteItem(): void {
+                let that = this;
+                let item = that.GetSelectedItem();
+                if (item) {
+                    dpas.app.showDialog(<dpas.IDialogOptions>{
+                        msg: "Удалить <b>" + item.Name + "</b>?", isCancel: true,
+                        callback: function (result: any) {
+                            if (result.dialogResult) {
+                                dpas.app.postJson({
+                                    url: "/api/prj/editor", data: { command: "deleteitem", Path: item.Path },
+                                    success: function (result) {
+                                        that.selectedItem.parent().remove();
+                                        that.SelectApply(undefined);
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
             }
 
 
             private AddNewItemCompleted(data:any): void {
                 let errorMessage: string = "";
-                //let cirItemId: any = That.selectedItem.attr("id");
-                //let curItem: any = That.ItemsTree[cirItemId];
-                //let data: any = { command: "additem", Type: $("#editor-add-type").val(), Name: $("#editor-add-name").val(), Description: $("#editor-add-description").val(), Parent: That.GetSelectedItemPath() };
-                //let type: number = $("#editor-add-type").val();
-                //let name: string = "" + $("#editor-add-name").val();
                 if (data.Type === 0 || data.Type === null) {
                     errorMessage += (errorMessage === "" ? "" : "<br>")  + "Не указан тип.";
                 }

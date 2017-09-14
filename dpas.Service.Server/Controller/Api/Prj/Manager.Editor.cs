@@ -23,7 +23,7 @@ namespace dpas.Net.Http.Mvc.Api.Prj
                     commandHandlers.Add("additem", AddItem);
                     commandHandlers.Add("saveitem", SaveItem);
                     //commandHandlers.Add("/create", Create);
-                    //commandHandlers.Add("/delete", Delete);
+                    commandHandlers.Add("deleteitem", DeleteItem);
                     //commandHandlers.Add("/rename", Rename);
                     //commandHandlers.Add("/editor", Editor);
                 }
@@ -113,6 +113,16 @@ namespace dpas.Net.Http.Mvc.Api.Prj
 
                 ProjectManager.Manager.ProjectSaveItem(project, path, classItem);
                 context.Response.Write(Json.Serialize(new { item = classItem, result = true }, getSerializeOptions()));
+            }
+
+            public static void DeleteItem(IControllerContext context, Dictionary<string, object> parameters)
+            {
+                IProject project = getProject(context);
+                string path = parameters.GetString("Path");
+                IProjectItem parent = ProjectManager.Manager.FindProjectItemParent(project, path);
+                IProjectItem item = ProjectManager.Manager.FindProjectItem(project, path);
+                ProjectManager.Manager.ProjectRemoveItem(project, parent, item);
+                context.Response.Write(Json.Serialize(new { result = true }, getSerializeOptions()));
             }
         }
     }

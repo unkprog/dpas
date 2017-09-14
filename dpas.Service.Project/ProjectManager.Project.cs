@@ -35,6 +35,22 @@ namespace dpas.Service.Project
         }
 
         /// <summary>
+        /// Поиск родителя
+        /// </summary>
+        /// <param name="aProject">Проект</param>
+        /// <param name="aPath">Ссылка на элемент проекта</param>
+        /// <returns>Найденная ссылка на родителя элемента проекта</returns>
+        public IProjectItem FindProjectItemParent(IProject aProject, string aPath)
+        {
+            if (aProject == null)
+                throw new Project.Exception(Project.Exception.ArgumentNull);
+            if (string.IsNullOrEmpty(aPath))
+                throw new Project.Exception(Project.Exception.EmptyName);
+            string path = aPath.Substring(0, aPath.LastIndexOf('/'));
+            return FindProjectItemByPath(aProject.Items, path);
+        }
+
+        /// <summary>
         /// Поиск элемента проекта по имени
         /// </summary>
         /// <param name="aPath">Имя элемента проекта</param>
